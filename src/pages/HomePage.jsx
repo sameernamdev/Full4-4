@@ -90,7 +90,7 @@ export default function HomePage({ setPage }) {
       <section className="dark-panel relative min-h-screen flex items-center overflow-hidden bg-[#080808]">
         <div className="absolute inset-0">
           <motion.img
-            src="WhatsApp Image 2026-06-12 at 5.15.45 PM.jpeg"
+            src="/hero.jpeg"
             alt="Sports Car"
             fetchPriority="high"
             decoding="async"
