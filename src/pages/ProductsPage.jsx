@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useReveal } from "../hooks/useReveal";
 import ProductCard from "../components/ProductCard";
 import { getallproducts } from "../config/axios";
-import { useCategories } from "../hooks/usecatgories";
+import { useCategories } from "../hooks/useCatgories";
 import { useProducts } from "../hooks/useProducts";
 
 export default function ProductsPage() {
