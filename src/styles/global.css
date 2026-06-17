@@ -1,0 +1,307 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@700;800;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+body {
+  background-color: #080808;
+  color: #141922;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+.site-nav {
+  background: rgba(8, 8, 8, 0.34) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  position: fixed !important;
+  top: 0 !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #e7ebf1; }
+::-webkit-scrollbar-thumb { background: #E31E24; border-radius: 2px; }
+
+/* ── FONTS ── */
+.font-display { font-family: 'Bebas Neue', sans-serif; }
+.font-label  { font-family: 'Rajdhani', sans-serif; }
+.font-body   { font-family: 'Inter', sans-serif; }
+.font-ranger { font-family: 'Orbitron', 'Rajdhani', sans-serif; }
+
+.brand-mark {
+  width: 46px;
+  height: 46px;
+  color: #fff;
+  filter: drop-shadow(0 8px 18px rgba(227, 30, 36, 0.25));
+}
+
+.brand-wordmark {
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 0.9;
+  letter-spacing: 0.08em;
+  color: #fff;
+  transform: scaleX(1.18);
+  transform-origin: left center;
+}
+
+/* ── GRADIENT TEXT ── */
+.text-gradient {
+  background: linear-gradient(135deg, #E31E24, #F5A623);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── GLASS ── */
+.glass {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(20, 25, 34, 0.08);
+  box-shadow: 0 18px 45px rgba(20, 25, 34, 0.08);
+}
+
+.dark-panel,
+.dark-panel .text-white,
+.dark-panel .text-white\/90,
+.dark-panel .text-white\/70,
+.dark-panel .text-white\/65,
+.dark-panel .text-white\/60,
+.dark-panel .text-white\/55,
+.dark-panel .text-white\/40,
+.dark-panel .text-white\/35,
+.dark-panel .text-white\/30,
+.dark-panel .text-white\/25,
+.dark-panel .text-white\/20,
+.dark-panel .text-white\/\[0\.05\] {
+  color: #fff;
+}
+
+/* ── CLIPPED BUTTON ── */
+.btn-clip {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+/* ── REVEAL ANIMATIONS ── */
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+.reveal-left {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+.reveal-right {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+.reveal-left,
+.reveal-right {
+  will-change: opacity, transform;
+}
+
+/* ── HERO ENTRANCE ── */
+.hero-in { animation: heroIn 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+.hero-in-d1 { animation: heroIn 0.9s 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+.hero-in-d2 { animation: heroIn 0.9s 0.3s  cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+.hero-in-d3 { animation: heroIn 0.9s 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+.hero-in-d4 { animation: heroIn 0.9s 0.6s  cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── TICKER ── */
+.ticker-track { display: flex; width: max-content; animation: ticker 30s linear infinite; }
+.ticker-track:hover { animation-play-state: paused; }
+
+/* ── MARQUEE ── */
+.marquee-track { display: flex; width: max-content; animation: marquee 22s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; }
+.brands-track  { display: flex; width: max-content; animation: marquee 28s linear infinite; }
+.brands-track:hover { animation-play-state: paused; }
+
+@keyframes ticker  { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── SPIN SLOW ── */
+.spin-slow { animation: spin 18s linear infinite; }
+@keyframes spin { from{transform:rotate(45deg)} to{transform:rotate(405deg)} }
+
+/* ── BLINK ── */
+.blink { animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── BOUNCE ── */
+.bounce-y { animation: bounceY 2s ease-in-out infinite; }
+@keyframes bounceY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+/* ── PRODUCT CARD ── */
+.product-card {
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+}
+
+.hero-slab {
+  clip-path: polygon(0 0, 88% 0, 100% 100%, 0% 100%);
+}
+
+.hero-car-shadow {
+  filter: drop-shadow(0 42px 55px rgba(0, 0, 0, 0.42)) saturate(1.08);
+}
+
+.service-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(8, 8, 8, 0.96), rgba(8, 8, 8, 0.78), rgba(8, 8, 8, 0.92));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.service-band > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tire-track {
+  background-image:
+    repeating-linear-gradient(62deg, transparent 0 22px, rgba(255,255,255,0.38) 22px 28px, transparent 28px 46px),
+    repeating-linear-gradient(-62deg, transparent 0 22px, rgba(255,255,255,0.24) 22px 28px, transparent 28px 46px);
+  transform: rotate(-12deg) scale(1.2);
+}
+
+.tire-splash {
+  background:
+    radial-gradient(circle at 12% 75%, #111 0 4px, transparent 5px),
+    radial-gradient(circle at 28% 52%, #111 0 6px, transparent 7px),
+    radial-gradient(circle at 52% 72%, #111 0 9px, transparent 10px),
+    repeating-linear-gradient(18deg, transparent 0 18px, #111 18px 24px, transparent 24px 42px);
+  clip-path: polygon(0 50%, 70% 70%, 100% 100%, 0 100%);
+}
+
+.brands-track {
+  animation-duration: 20s;
+}
+
+.marquee-track {
+  animation-duration: 16s;
+}
+
+.cat-card,
+.product-card,
+.testi-card {
+  will-change: transform;
+}
+
+.tilt-card {
+  position: relative;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transform-origin: center;
+}
+
+.tilt-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 12%, rgba(255,255,255,0.18) 34%, transparent 52%);
+  transform: translateX(-120%);
+  transition: transform 0.65s ease;
+  mix-blend-mode: screen;
+}
+
+.tilt-card:hover::before {
+  transform: translateX(120%);
+}
+
+.tilt-card > * {
+  transform: translateZ(1px);
+}
+
+/* ── NAV LINK UNDERLINE ── */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: #E31E24;
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after,
+.nav-link.active::after { width: 100%; }
+
+/* ── BTN SHINE ── */
+.btn-shine { position: relative; overflow: hidden; }
+.btn-shine::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s ease;
+}
+.btn-shine:hover::before { left: 100%; }
+
+/* ── CATEGORY CARD ── */
+.cat-card .cat-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(8,8,8,0.9) 0%, rgba(8,8,8,0.3) 50%, transparent 100%);
+  transition: background 0.4s;
+}
+.cat-card:hover .cat-overlay {
+  background: linear-gradient(to top, rgba(227,30,36,0.85) 0%, rgba(8,8,8,0.5) 60%, transparent 100%);
+}
+.cat-card:hover .cat-img { transform: scale(1.08); filter: saturate(1); }
+.cat-card:hover .cat-arrow { transform: translateX(0) !important; opacity: 1 !important; }
+
+/* ── WHY FEATURE ICON ── */
+.why-feature:hover .why-icon {
+  background: #E31E24;
+  border-color: #E31E24;
+}
+
+/* ── STAT ITEM ── */
+.stat-item::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(227,30,36,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.stat-item:hover::before { opacity: 1; }
+.stat-item:hover .stat-num { color: #E31E24; }
+
+/* ── TESTI CARD ── */
+.testi-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 3px;
+  background: transparent;
+  transition: background 0.3s;
+}
+.testi-card:hover::before { background: #E31E24; }
