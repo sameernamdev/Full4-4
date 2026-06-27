@@ -1,5 +1,4 @@
-import { useParams, Link, useLocation } from "react-router-dom";
-import { PRODUCTS } from "../data/data";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Star,
   ShoppingCart,
@@ -7,334 +6,385 @@ import {
   ArrowLeft,
   Truck,
   ShieldCheck,
+  Check,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { api } from "../config/axios";
+import { useCart } from "../context/CartContext";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useImages from "../hooks/useImages";
+import { useVehicleCompatibility } from "../hooks/useVehicleCompatibility";
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
-  const location = useLocation()
-  const product = location?.state?.product
- const[prod,setProd]=useState(null)
-  const [load, setLoad] = useState(false)
+  // console.log("id hai",id)
+  const { addToCart } = useCart();
+  const { images } = useImages(id); // array of image objects or strings
 
+  const{vehiclecompat, loading: vehicleLoad } =  useVehicleCompatibility(id)
+ 
 
-  console.log(id);
+  const [product, setProduct] = useState(null);
+  const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [adding, setAdding] = useState(false);
 
-useEffect(()=>{
-  if(product){
-    setProd({...prod, ...product})
-  }
-}, [id])
+  // State for the main image (selected from thumbnails)
+  const [selectedImage, setSelectedImage] = useState(null);
 
-console.log(prod);
+  const navigate = useNavigate();
 
+  // Helper function to get image URL safely
+  const getImageUrl = (img) => {
+    if (!img) return null;
+    if (typeof img === "string") return img;
+    if (img.url) return img.url;
+    if (img.image_url) return img.image_url;
+    if (img.image) return img.image;
+    return null;
+  };
 
-  const fetchProduct = async (id) => {
+  const handleAddToCart = async () => {
     try {
-      setLoad(true)
-      const res = await api.get(`/products/get_product_by_id/${id}`);
-      setProd(res.data?.data)
-      console.log(res.data);
-    } catch (error) {}
-    finally{
-      setLoad(false)
+      setAdding(true);
+      await addToCart(selectedItem.id);
+      toast.success("Product added to cart successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+        theme: "dark",
+      });
+    } catch (err) {
+      console.log(err);
+      toast.error(
+        err?.response?.data?.message || "Failed to add product to cart.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+          theme: "dark",
+        }
+      );
+    } finally {
+      setAdding(false);
     }
   };
+
+  // Fetch product and items
   useEffect(() => {
-    if (id) {
-      fetchProduct(id);
+    if (!id) return;
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const productRes = await api.get(`/products/get_product_by_id/${id}`);
+        setProduct(productRes.data?.data);
+
+        const itemsRes = await api.get(
+          `/products/get_all_items?product_id=${id}`
+        );
+        const productItems = itemsRes.data?.data || [];
+        setItems(productItems);
+        if (productItems.length > 0) {
+          setSelectedItem(productItems[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  // Set first image as selected when images load
+  useEffect(() => {
+    if (images && images.length > 0) {
+      console.log("Images received:", images); // debug
+      setSelectedImage(images[0]);
     }
-    return;
-  }, []);
+  }, [images]);
+
+  // Loading and error states
+  if (loading) {
+    return (
+      <div className="pt-24 min-h-screen bg-[#080808] flex items-center justify-center text-white">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!product || !selectedItem) {
+    return (
+      <div className="pt-24 min-h-screen bg-[#080808] flex items-center justify-center text-white">
+        No product found.
+      </div>
+    );
+  }
+
+  // Fallback values
+  const productName = product.name || selectedItem?.product?.name || "Product";
+  const productBrand =
+    product.brand_name || selectedItem?.product?.brand || "Brand";
+  const productCategory =
+    product.category_name || selectedItem?.product?.category || "";
+  const productSubCategory =
+    product.subcategory_name || selectedItem?.product?.sub_category || "";
+  const productDescription =
+    product.long_description || selectedItem?.product?.long_description || "";
+
+  // Main image URL: selected thumbnail or first product image or placeholder
+  const mainImageUrl =
+    getImageUrl(selectedImage) ||
+    (selectedItem?.product?.images?.length > 0
+      ? getImageUrl(selectedItem.product.images[0])
+      : "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png");
+
+  const handleThumbnailClick = (img) => {
+    // console.log("Thumbnail clicked:", img); // debug
+    setSelectedImage(img);
+  };
 
   return (
-//     <div className="pt-24 min-h-screen bg-[#080808]">
-//       <div className="max-w-7xl mx-auto px-4 py-10">
-//         {/* Back Button */}
-//         <Link
-//           to="/products"
-//           className="inline-flex items-center gap-2 text-white/70 hover:text-red-500 mb-8"
-//         >
-//           <ArrowLeft size={18} />
-//           Back to Products
-//         </Link>
+    <div className="pt-24 min-h-screen bg-[#080808] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        {/* Back button */}
+        <Link
+          to="/products"
+          className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition"
+        >
+          <ArrowLeft size={18} />
+          Back to Products
+        </Link>
 
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-14">
+          {/* Image Gallery - left column */}
+          <div>
+            {/* Main Image */}
+            <div className="bg-white/5 rounded-2xl sm:rounded-3xl overflow-hidden aspect-square w-full max-h-[550px] flex items-center justify-center border border-white/10 relative">
+              <img
+                src={mainImageUrl}
+                alt={productName}
+                className="w-full h-full object-cover transition-opacity duration-300"
+              />
+            </div>
 
-// {load ? <p>Loading....</p> : (
+            {/* Thumbnails - mapped from useImages */}
+            {images && images.length > 0 && (
+              <div className="flex gap-3 sm:gap-4 mt-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/20">
+                {images.map((img, index) => {
+                  const thumbUrl = getImageUrl(img);
+                  if (!thumbUrl) return null; // skip if no URL
+                  const isActive = getImageUrl(selectedImage) === thumbUrl;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleThumbnailClick(img)}
+                      className={`w-24 h-24 sm:w-28 sm:h-28 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                        isActive
+                          ? "border-red-500 scale-95"
+                          : "border-white/20 hover:border-white/50 hover:scale-105"
+                      }`}
+                    >
+                      <img
+                        src={thumbUrl}
+                        alt={`Thumbnail ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
-//   <>
-  
-//    <div className="grid lg:grid-cols-2 gap-12">
-//           {/* Product Image */}
-//           <div className="bg-white rounded-3xl overflow-hidden">
-//             <img
-//               src={prod?.img}
-//               alt={prod?.name}
-//               className="w-full h-[500px] object-cover"
-//             />
-//           </div>
+          {/* Product Details - right column */}
+          <div className="space-y-6">
+            {/* Stock badge */}
+            <span
+              className={`inline-block px-4 py-1 rounded-full text-sm font-semibold ${
+                selectedItem.is_available ? "bg-green-600" : "bg-red-600"
+              }`}
+            >
+              {selectedItem.is_available ? "In Stock" : "Out of Stock"}
+            </span>
 
-//           {/* Product Info */}
-//           <div>
-//             <span className="bg-red-600 text-white px-4 py-1 rounded-full text-sm">
-//               {prod?.badge}
-//             </span>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
+              {productName}
+            </h1>
+            <p className="text-gray-400 text-lg">{productBrand}</p>
 
-//             <h1 className="text-4xl font-bold text-white mt-5">
-//               {prod?.name}
-//             </h1>
+            {/* Price */}
+            <div className="mt-2">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl text-red-500 font-bold">
+                ₹{Number(selectedItem.price).toLocaleString()}
+              </h2>
+            </div>
 
-//             <p className="text-white/60 mt-2">Brand: {product.brand}</p>
+            {/* Variation Selector */}
+            {items.length > 1 && (
+              <div className="mt-6">
+                <p className="text-gray-400 text-sm mb-3">Select Variation</p>
+                <div className="flex flex-wrap gap-3">
+                  {items.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setSelectedItem(item)}
+                      className={`px-5 py-2 rounded-full border transition-all flex items-center gap-2 text-sm sm:text-base ${
+                        selectedItem.id === item.id
+                          ? "border-red-500 bg-red-500/20 text-white"
+                          : "border-white/20 hover:border-white/50 text-gray-300"
+                      }`}
+                    >
+                      {item.variation_value}
+                      {selectedItem.id === item.id && <Check size={16} />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-//             {/* <div className="flex items-center gap-2 mt-4">
-//               <Star size={18} fill="#facc15" color="#facc15" />
-//               <span className="text-white">{product.rating}</span>
-//               <span className="text-white/50">({product.reviews} Reviews)</span>
-//             </div> */}
+            {/* Details table */}
+            <div className="mt-6 space-y-3 text-sm sm:text-base">
+              <div className="flex justify-between border-b border-white/10 pb-3">
+                <span className="text-gray-400">Variation</span>
+                <span className="text-white font-medium">
+                  {selectedItem.variation_value}
+                </span>
+              </div>
+              <div className="flex justify-between border-b border-white/10 pb-3">
+                <span className="text-gray-400">SKU</span>
+                <span className="text-white font-medium">
+                  {selectedItem.sku}
+                </span>
+              </div>
+              <div className="flex justify-between border-b border-white/10 pb-3">
+                <span className="text-gray-400">Weight</span>
+                <span className="text-white font-medium">
+                  {selectedItem.weight} kg
+                </span>
+              </div>
+              <div className="flex justify-between border-b border-white/10 pb-3">
+                <span className="text-gray-400">Dimensions</span>
+                <span className="text-white font-medium">
+                  {selectedItem.width} × {selectedItem.height} ×{" "}
+                  {selectedItem.depth} cm
+                </span>
+              </div>
+            </div>
 
-//             {/* Price */}
-//             <div className="flex items-center gap-4 mt-6">
-//               <h2 className="text-4xl font-bold text-red-500">
-//                 ₹{prod.price.toLocaleString()}
-//               </h2>
+            {/* Category */}
+            <div className="mt-6 text-sm sm:text-base">
+              <p className="text-gray-400">
+                Category :{" "}
+                <span className="text-white ml-2">{productCategory}</span>
+              </p>
+              <p className="text-gray-400 mt-1">
+                Sub Category :{" "}
+                <span className="text-white ml-2">{productSubCategory}</span>
+              </p>
+            </div>
 
-//               <span className="text-white/40 line-through text-xl">
-//                 {/* ₹{prod.oldPrice.toLocaleString()} */}
-//               </span>
+            {/* Description */}
+            <div className="mt-6">
+              <h3 className="text-xl sm:text-2xl font-semibold mb-2">
+                Description
+              </h3>
+              <p className="text-gray-400 leading-relaxed sm:leading-8">
+                {productDescription}
+              </p>
+            </div>
 
-//               <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm">
-//                 {discount}% OFF
-//               </span>
-//             </div>
+{/* copatibility */}
+            {/* Vehicle Compatibility */}
+<div className="mt-8">
+  <h3 className="text-2xl font-bold mb-4">
+    Vehicle Compatibility
+  </h3>
 
-//             {/* Compatibility */}
-//             <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10">
-//               <p className="text-white/60 text-sm">Compatibility</p>
-//               {/* <p className="text-white font-medium">{prod.compatible}</p> */}
-//             </div>
+  {!vehicleLoad && vehiclecompat?.length === 0 ? (
+    <p className="text-gray-400">
+      No compatible vehicles found.
+    </p>
+  ) : (
+    <div className="space-y-4">
+      {!vehicleLoad && vehiclecompat?.map((vehicle) => (
+        <div
+          key={vehicle.id}
+          className="bg-white/5 border border-white/10 rounded-xl p-4 flex gap-4 items-center"
+        >
+          <img
+            src={vehicle.make_logo_url}
+            alt={vehicle.make_name}
+            className="w-14 h-14 rounded-full object-cover bg-white"
+          />
 
-//             {/* Description */}
-//             <div className="mt-8">
-//               <h3 className="text-white text-xl font-semibold mb-3">
-//                 Product Description
-//               </h3>
+          {vehicle.model_image_url && (
+            <img
+              src={vehicle.model_image_url}
+              alt={vehicle.model_name}
+              className="w-24 h-16 rounded-lg object-cover"
+            />
+          )}
 
-//               {/* <p className="text-white/60 leading-relaxed">
-//                 Premium quality {prod.name} by {prod.brand}. Designed for
-//                 enhanced performance, durability, and reliability. Perfect for
-//                 enthusiasts looking to upgrade their vehicle with genuine
-//                 aftermarket components.
-//               </p> */}
-//             </div>
+          <div className="flex-1">
+            <h4 className="text-lg font-semibold">
+              {vehicle.make_name} {vehicle.model_name}
+            </h4>
 
-//             {/* Features */}
-//             <div className="grid sm:grid-cols-3 gap-4 mt-8">
-//               <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-//                 <Truck className="text-red-500 mb-2" />
-//                 <p className="text-white text-sm">Free Shipping</p>
-//               </div>
+            <p className="text-gray-400">
+              {vehicle.generation_name}
+            </p>
 
-//               <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-//                 <ShieldCheck className="text-red-500 mb-2" />
-//                 <p className="text-white text-sm">Genuine Product</p>
-//               </div>
+            <p className="text-sm text-gray-500">
+              {vehicle.year_from} - {vehicle.year_to ?? "Present"}
+            </p>
 
-//               <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-//                 <Star className="text-red-500 mb-2" />
-//                 <p className="text-white text-sm">Top Rated</p>
-//               </div>
-//             </div>
-
-//             {/* Buttons */}
-//             <div className="flex flex-wrap gap-4 mt-10">
-//               <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl font-semibold">
-//                 <ShoppingCart size={20} />
-//                 Add to Cart
-//               </button>
-
-//               <button className="flex items-center gap-2 border border-white/20 text-white px-8 py-4 rounded-xl hover:bg-white/10">
-//                 <Heart size={20} />
-//                 Wishlist
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Related Products */}
-//         <div className="mt-20">
-//           <h2 className="text-3xl font-bold text-white mb-8">
-//             Related Products
-//           </h2>
-
-//           <div className="grid md:grid-cols-4 gap-6">
-//             {prod?.filter(
-//               (p) => p.category === prod.category && p.id !== prod.id,
-//             )
-//               .slice(0, 4)
-//               .map((item) => (
-//                 <Link
-//                   key={item.id}
-//                   to={`/products/${item.id}`}
-//                   className="bg-white rounded-2xl overflow-hidden"
-//                 >
-//                   <img
-//                     src={item.img || ""}
-//                     alt={item.name}
-//                     className="w-full h-48 object-cover"
-//                   />
-
-//                   <div className="p-4">
-//                     <h3 className="font-semibold">{item.name}</h3>
-
-//                     <p className="text-red-600 font-bold mt-2">
-//                       ₹{item.price.toLocaleString()}
-//                     </p>
-//                   </div>
-//                 </Link>
-//               ))}
-//           </div>
-//         </div> 
-  
-//   </>
-// )}
-       
-//       </div>
-//     </div>
-<>
-
-<>
-  <div className="pt-24 min-h-screen bg-[#080808]   grid lg:grid-cols-2 gap-12">
-    {/* Product Image */}
-    <div className="bg-white rounded-3xl overflow-hidden flex items-center justify-center h-[500px]">
-      <img
-        src={
-          prod?.primary_image_url ||
-          "https://placehold.co/600x600?text=No+Image"
-        }
-        alt={prod?.name}
-        className="w-full h-full object-cover"
-      />
+            <p className="text-sm text-red-400">
+              Country: {vehicle.make_country}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
+  )}
+</div>
 
-    {/* Product Info */}
-    <div>
-      <span
-        className={`px-4 py-1 rounded-full text-sm ${
-          prod?.status === "active"
-            ? "bg-green-600 text-white"
-            : "bg-gray-600 text-white"
-        }`}
-      >
-        {prod?.status}
-      </span>
+            {/* Features */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-6">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 sm:p-4 text-center">
+                <Truck className="text-red-500 mx-auto mb-1 sm:mb-2" size={20} />
+                <p className="text-xs sm:text-sm">Free Shipping</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 sm:p-4 text-center">
+                <ShieldCheck className="text-red-500 mx-auto mb-1 sm:mb-2" size={20} />
+                <p className="text-xs sm:text-sm">Genuine Product</p>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-3 sm:p-4 text-center">
+                <Star className="text-red-500 mx-auto mb-1 sm:mb-2" size={20} />
+                <p className="text-xs sm:text-sm">Premium Quality</p>
+              </div>
+            </div>
 
-      <h1 className="text-4xl font-bold text-white mt-5">
-        {prod?.name}
-      </h1>
-
-      <p className="text-white/60 mt-2">
-        Brand name: {prod?.brand_name}
-      </p>
-
-      <p className="text-white/60">
-        Category name: {prod?.category_name}
-      </p>
-
-
-        <p className="text-white/60">
-         Min Price: {product?.min_price
-         }
-      </p>
-      <p className="text-white/60">
-         Max Price: {product?.max_price
-         }
-      </p>
-      
-      
-
-      {/* <p className="text-white/60">
-        Sub Category ID: {prod?.sub_category_id}
-      </p> */}
-
-      {/* Short Description */}
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold text-white mb-2">
-          Short Description
-        </h3>
-
-        <p className="text-white/70">
-          {prod?.short_description}
-        </p>
-        <p className="text-white/70">
-          {product?.min_price}
-        </p>
-      </div>
-
-      {/* Long Description */}
-      <div className="mt-8">
-        <h3 className="text-xl font-semibold text-white mb-3">
-          Product Description
-        </h3>
-
-        <p className="text-white/60 leading-8">
-          {prod?.long_description}
-        </p>
-
-      </div>
-
-      {/* SEO */}
-      {/* <div className="mt-8 p-5 rounded-xl bg-white/5 border border-white/10">
-        <h3 className="text-lg text-white font-semibold mb-3">
-          SEO Information
-        </h3>
-
-        <p className="text-white/70">
-          <strong>Title:</strong> {prod?.seo_title}
-        </p>
-
-        <p className="text-white/70 mt-2">
-          <strong>Description:</strong> {prod?.seo_description}
-        </p>
-
-        <p className="text-white/70 mt-2">
-          <strong>Keywords:</strong> {prod?.seo_keywords}
-        </p>
-      </div> */}
-
-      {/* Features */}
-      <div className="grid sm:grid-cols-3 gap-4 mt-8">
-        <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-          <Truck className="text-red-500 mb-2" />
-          <p className="text-white text-sm">Free Shipping</p>
+            {/* Buttons */}
+            <div className="flex flex-wrap gap-4 mt-8">
+              <button
+                onClick={handleAddToCart}
+                disabled={!selectedItem.is_available || adding}
+                className={`flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold transition text-sm sm:text-base ${
+                  selectedItem.is_available
+                    ? "bg-red-600 hover:bg-red-700 text-white"
+                    : "bg-gray-600 cursor-not-allowed text-gray-300"
+                }`}
+              >
+                <ShoppingCart size={20} />
+                {adding ? "Adding..." : "Add to Cart"}
+              </button>
+            </div>
+          </div>
         </div>
-
-        <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-          <ShieldCheck className="text-red-500 mb-2" />
-          <p className="text-white text-sm">Genuine Product</p>
-        </div>
-
-        <div className="bg-white/5 p-4 rounded-xl border border-white/10">
-          <Star className="text-red-500 mb-2" />
-          <p className="text-white text-sm">Premium Quality</p>
-        </div>
-      </div>
-
-      {/* Buttons */}
-      <div className="flex gap-4 mt-10">
-        <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl">
-          <ShoppingCart size={20} />
-          Add to Cart
-        </button>
-
-        <button className="flex items-center gap-2 border border-white/20 text-white px-8 py-4 rounded-xl hover:bg-white/10">
-          <Heart size={20} />
-          Wishlist
-        </button>
       </div>
     </div>
-  </div>
-</>
-</>
-    );
+  );
 }

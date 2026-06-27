@@ -9,7 +9,7 @@ export default function AboutPage() {
       <div className="dark-panel relative py-20 bg-[#080808] overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 text-center relative">
           <div className="font-body text-brand-red text-xs tracking-[0.3em] uppercase mb-3">/ Our Story</div>
-          <h1 className="font-display text-6xl lg:text-8xl font-black text-white">ABOUT <span className="text-gradient">AUTOPRO</span></h1>
+          <h1 className="font-display text-6xl lg:text-8xl font-black text-white">ABOUT <span className="text-gradient">DRIVE RANGER</span></h1>
         </div>
       </div>
 
@@ -19,7 +19,7 @@ export default function AboutPage() {
           <div className="reveal">
             <div className="font-body text-brand-red text-xs tracking-[0.3em] uppercase mb-3">/ Who We Are</div>
             <h2 className="font-display text-5xl font-black text-brand-ink mb-8">POWERING INDIA'S<br /><span className="text-gradient">CAR CULTURE</span><br />SINCE 2009</h2>
-            <p className="font-body text-brand-ink/60 leading-relaxed mb-6">AutoPro was born from a simple frustration: finding genuine car parts in India was a nightmare. Counterfeit products, sky-high prices, and zero technical support. We decided to change that.</p>
+            <p className="font-body text-brand-ink/60 leading-relaxed mb-6">Drive Ranger was born from a simple frustration: finding genuine car parts in India was a nightmare. Counterfeit products, sky-high prices, and zero technical support. We decided to change that.</p>
             <p className="font-body text-brand-ink/60 leading-relaxed mb-6">Starting with a small warehouse in Pune, we've grown into India's most trusted auto parts platform, stocking over 20,000 SKUs from 100+ global brands, serving customers from Kashmir to Kanyakumari.</p>
             <p className="font-body text-brand-ink/60 leading-relaxed">Our team of 150+ automotive enthusiasts and certified engineers work tirelessly to ensure every part we sell is 100% genuine, competitively priced, and backed by expert support.</p>
           </div>
