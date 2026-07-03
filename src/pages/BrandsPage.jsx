@@ -74,17 +74,17 @@ export default function BrandsPage({ setPage }) {
               navigate(`/products?brandId=${brand.id}`)
             }}
             // onClick={() => navigate(`/products?brandId=${brand.id}`)}
-              className="reveal bg-[#080808] border border-white/10 rounded-2xl p-8 text-center group hover:border-brand-red/60 hover:bg-[#111] hover:shadow-xl hover:shadow-brand-red/15 transition-all duration-300"
+              className="reveal bg-gray-50 border border-white/10 rounded-2xl p-8 text-center group hover:border-brand-red/60  hover:shadow-xl hover:shadow-brand-red/15 transition-all duration-300"
               style={{ transitionDelay: `${i * 0.1}s` }}>
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 font-display text-2xl font-black text-white group-hover:scale-110 transition-transform" style={{ background: `${brand.color}55` }}>
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 font-display text-2xl font-black text-black group-hover:scale-110 transition-transform" style={{ background: `${brand.color}55` }}>
                 
                 {brand?.logo_url ? (  <img src={brand.logo_url} alt="" />): (  brand.name[0] )}
 
               </div>
-              <h3 className="font-display text-xl font-black text-white mb-1 group-hover:text-brand-red transition-colors">{brand.name}</h3>
+              <h3 className="font-display text-xl font-black text-black mb-1 group-hover:text-brand-red transition-colors">{brand.name}</h3>
               {/* <div className="font-body text-xs text-white/50 mb-1">{brand.origin}</div> */}
               {/* <div className="font-body text-xs text-brand-red">{brand.specialty}</div> */}
-              <div className="mt-4 font-body text-xs text-white/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+              <div className="mt-4 font-body text-xs text-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
                <Link to="/products" > View Parts <ChevronRight size={12} /></Link>
               </div>
             </button>

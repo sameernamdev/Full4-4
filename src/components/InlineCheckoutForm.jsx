@@ -4,16 +4,63 @@ import { X, CreditCard, Truck, AlertCircle, Plus, RefreshCw, Trash2 } from "luci
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useAddresses } from "../hooks/useAddresses";
-import { createOrder } from "../config/axios";
+import { api, createOrder } from "../config/axios";
+const openRazorpay = async (data, setSuccess) => {
+  console.log(data);
+console.log("Inside OpenR=azoprPay");
 
-export default function InlineCheckoutForm({ 
-  onBack, 
-  onOrderPlaced, 
-  couponDiscount = 0,   // 👈 receives discount amount
-  couponCode = null    // 👈 receives coupon code
+  const options = {
+    key: data.key, // or import.meta.env.VITE_RAZORPAY_KEY
+
+    amount: data.amount,
+    currency: data.currency,
+    order_id: data.razorpayOrderId,
+
+    name: "My Ecom",
+    description: "Order Payment",
+
+    handler: async function (response) {
+      console.log(response);
+      const verify = await api.post("/orders/verify-payment", {
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature,
+      });
+
+      // if (verify.data.success) {
+      //   alert("Payment Successful");
+      // }
+      
+
+       if (verify.data.success) {
+        setSuccess(true);
+        if (onOrderPlaced) onOrderPlaced();
+        setTimeout(() => onBack(), 2000);
+      } else {
+        setError(response.message || "Failed to place order");
+      }
+
+      // else {
+      //   alert("Payment Failed");
+      // }
+    },
+
+    theme: {
+      color: "#3399cc",
+    },
+  };
+
+  const rzp = new window.Razorpay(options);
+  await rzp.open();
+};
+export default function InlineCheckoutForm({
+  onBack,
+  onOrderPlaced,
+  couponDiscount = 0,   // discount amount
+  couponCode = null     // coupon code
 }) {
   const { isAuthenticated } = useAuth();
-  const { cart, totalPrice } = useCart();
+  const { cart, totalPrice,fetchCart } = useCart();
   const {
     addresses,
     loading: addressLoading,
@@ -29,10 +76,8 @@ export default function InlineCheckoutForm({
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
-  // Ref to prevent multiple fetches (fixes flickering)
   const fetchedRef = useRef(false);
 
-  // New address form fields
   const [newAddress, setNewAddress] = useState({
     address_type: "shipping",
     full_name: "",
@@ -47,10 +92,11 @@ export default function InlineCheckoutForm({
     is_default: false,
   });
 
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  // const [paymentMethod, setPaymentMethod] = useState("cash");
+  
   const [notes, setNotes] = useState("");
 
-  // Fetch addresses ONLY ONCE when form mounts
+  // Fetch addresses only once
   useEffect(() => {
     if (isAuthenticated && !fetchedRef.current) {
       fetchedRef.current = true;
@@ -63,8 +109,7 @@ export default function InlineCheckoutForm({
         })
         .catch((err) => console.warn("Address fetch failed:", err));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated]);
+  }, [isAuthenticated, fetchAddresses]);
 
   // Auto-select default when addresses change
   useEffect(() => {
@@ -85,7 +130,6 @@ export default function InlineCheckoutForm({
   const handleCreateAddress = async (e) => {
     e.preventDefault();
     setError("");
-    // Validation
     if (!newAddress.full_name.trim()) {
       setError("Full name is required");
       return;
@@ -156,7 +200,6 @@ export default function InlineCheckoutForm({
     }
   };
 
-  // ✅ Submit order – includes coupon discount and code
   const handleSubmitOrder = async (e) => {
     e.preventDefault();
     setError("");
@@ -175,49 +218,52 @@ export default function InlineCheckoutForm({
         customer_notes: notes,
         shipping_cost: 0,
         tax_amount: 0,
-        discount_amount: couponDiscount,   // ✅ from props
-        coupon_code: couponCode,           // ✅ from props
-        currency_code: "INR",
-        payment_method: paymentMethod,
+        discount_amount: couponDiscount,
+        coupon_code: couponCode,  
+        currency_code: "INR",  
+        // payment_method: paymentMethod,
       };
       const response = await createOrder(orderPayload);
-      if (response.success) {
-        setSuccess(true);
-        if (onOrderPlaced) onOrderPlaced();
-        setTimeout(() => onBack(), 2000);
-      } else {
-        setError(response.message || "Failed to place order");
-      }
+      // console.log(response)
+
+      openRazorpay(response.data, setSuccess)
+      
+      // if (response.success) {
+      //   setSuccess(true);
+      //   if (onOrderPlaced) onOrderPlaced();
+      //   setTimeout(() => onBack(), 2000);
+      // } else {
+      //   setError(response.message || "Failed to place order");
+      // }
     } catch (err) {
-      setError(err.message || "Something went wrong");
+    console.error("Order submission failed:", err);
+      // setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
 
-  // Success view
   if (success) {
     return (
       <div className="text-center py-8">
-        <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Truck size={40} className="text-green-500" />
+        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Truck size={40} className="text-green-600" />
         </div>
-        <h3 className="text-2xl font-bold text-white">Order Placed!</h3>
-        <p className="text-gray-400 mt-2">Your order has been placed successfully.</p>
+        <h3 className="text-2xl font-bold text-gray-800">Order Placed!</h3>
+        <p className="text-gray-600 mt-2">Your order has been placed successfully.</p>
         <p className="text-gray-500 text-sm mt-4">Redirecting to summary...</p>
       </div>
     );
   }
 
-  // Main checkout form
   return (
     <div className="space-y-6">
-      {/* Header with back button */}
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Checkout</h2>
+        <h2 className="text-xl font-bold text-gray-800">Checkout</h2>
         <button
           onClick={onBack}
-          className="text-white/50 hover:text-white transition-colors p-2"
+          className="text-gray-400 hover:text-gray-600 transition-colors p-2"
         >
           <X size={24} />
         </button>
@@ -225,15 +271,15 @@ export default function InlineCheckoutForm({
 
       <form onSubmit={handleSubmitOrder} className="space-y-6">
         {/* Order Summary */}
-        <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-          <h3 className="text-white font-semibold mb-3">Order Summary</h3>
+        <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+          <h3 className="text-gray-800 font-semibold mb-3">Order Summary</h3>
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {cart.map((item) => {
               const productName = item.product?.name || item.product_name || "Product";
               const price = Number(item.current_price || item.price || 0);
               const itemId = item.product_item_id || item.id;
               return (
-                <div key={itemId} className="flex justify-between text-sm text-gray-300">
+                <div key={itemId} className="flex justify-between text-sm text-gray-600">
                   <span>
                     {productName} × {item.quantity}
                   </span>
@@ -242,49 +288,48 @@ export default function InlineCheckoutForm({
               );
             })}
           </div>
-          <div className="border-t border-white/10 mt-3 pt-3 flex justify-between text-white font-bold">
+          <div className="border-t border-gray-200 mt-3 pt-3 flex justify-between text-gray-800 font-bold">
             <span>Total</span>
             <span>₹{totalPrice.toFixed(2)}</span>
           </div>
-          {/* Optional: show discount if applied */}
           {couponDiscount > 0 && (
-            <div className="border-t border-white/10 mt-2 pt-2 flex justify-between text-green-400">
-              <span>Discount</span>
-              <span>- ₹{couponDiscount.toFixed(2)}</span>
-            </div>
-          )}
-          {couponDiscount > 0 && (
-            <div className="flex justify-between text-white font-bold text-lg border-t border-white/10 mt-2 pt-2">
-              <span>Final Total</span>
-              <span>₹{(totalPrice - couponDiscount).toFixed(2)}</span>
-            </div>
+            <>
+              <div className="border-t border-gray-200 mt-2 pt-2 flex justify-between text-green-600">
+                <span>Discount</span>
+                <span>- ₹{couponDiscount.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-gray-800 font-bold text-lg border-t border-gray-200 mt-2 pt-2">
+                <span>Final Total</span>
+                <span>₹{(totalPrice - couponDiscount).toFixed(2)}</span>
+              </div>
+            </>
           )}
         </div>
 
-        {/* Address Selection (same as before) */}
+        {/* Address Selection */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-white font-semibold">Shipping Address</h3>
+            <h3 className="text-gray-800 font-semibold">Shipping Address</h3>
             <button
               type="button"
               onClick={handleRefresh}
               disabled={addressLoading}
-              className="flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 transition disabled:opacity-50"
+              className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 transition disabled:opacity-50"
             >
               <RefreshCw size={14} className={addressLoading ? "animate-spin" : ""} />
               Refresh
             </button>
           </div>
           {addressLoading ? (
-            <div className="text-gray-400">Loading addresses...</div>
+            <div className="text-gray-500">Loading addresses...</div>
           ) : addressError ? (
-            <div className="text-red-500 text-sm bg-red-500/10 p-3 rounded-xl">
+            <div className="text-red-600 text-sm bg-red-50 p-3 rounded-xl border border-red-200">
               <AlertCircle size={16} className="inline mr-2" />
               {addressError}
               <button
                 type="button"
                 onClick={handleRefresh}
-                className="ml-2 text-red-400 underline hover:text-red-300"
+                className="ml-2 text-red-600 underline hover:text-red-700"
               >
                 Retry
               </button>
@@ -298,8 +343,8 @@ export default function InlineCheckoutForm({
                       key={addr.id}
                       className={`flex items-start gap-3 p-3 rounded-xl border transition ${
                         selectedAddressId === addr.id
-                          ? "border-red-500 bg-red-500/10"
-                          : "border-white/10 hover:border-white/30"
+                          ? "border-red-400 bg-red-50"
+                          : "border-gray-200 hover:border-gray-300"
                       }`}
                     >
                       <input
@@ -311,18 +356,18 @@ export default function InlineCheckoutForm({
                         className="mt-1 text-red-600 cursor-pointer flex-shrink-0"
                       />
                       <div className="flex-1 text-sm">
-                        <p className="text-white font-medium">{addr.full_name}</p>
-                        <p className="text-gray-400">
+                        <p className="text-gray-800 font-medium">{addr.full_name}</p>
+                        <p className="text-gray-600">
                           {addr.line1}
                           {addr.line2 ? `, ${addr.line2}` : ""}
                         </p>
-                        <p className="text-gray-400">
+                        <p className="text-gray-600">
                           {addr.city}, {addr.state} {addr.postal_code}
                         </p>
-                        <p className="text-gray-400">{addr.country}</p>
-                        <p className="text-gray-400">Phone: {addr.phone}</p>
+                        <p className="text-gray-600">{addr.country}</p>
+                        <p className="text-gray-600">Phone: {addr.phone}</p>
                         {addr.is_default && (
-                          <span className="inline-block mt-1 text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">
+                          <span className="inline-block mt-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
                             Default
                           </span>
                         )}
@@ -330,7 +375,7 @@ export default function InlineCheckoutForm({
                       <button
                         type="button"
                         onClick={() => handleDeleteAddress(addr.id, addr.full_name)}
-                        className="text-red-500 hover:text-red-400 transition p-1 flex-shrink-0"
+                        className="text-red-500 hover:text-red-700 transition p-1 flex-shrink-0"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -338,9 +383,7 @@ export default function InlineCheckoutForm({
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-400 text-sm">
-                  No saved addresses found. Please add a new address.
-                </p>
+                <p className="text-gray-500 text-sm">No saved addresses found. Please add a new address.</p>
               )}
 
               <button
@@ -349,7 +392,7 @@ export default function InlineCheckoutForm({
                   setShowNewAddressForm(!showNewAddressForm);
                   setError("");
                 }}
-                className="mt-3 flex items-center gap-2 text-sm text-red-500 hover:text-red-400 transition"
+                className="mt-3 flex items-center gap-2 text-sm text-red-600 hover:text-red-700 transition"
               >
                 <Plus size={16} />
                 {showNewAddressForm ? "Cancel" : "Add New Address"}
@@ -358,101 +401,101 @@ export default function InlineCheckoutForm({
           )}
         </div>
 
-        {/* New Address Form  */}
+        {/* New Address Form */}
         {showNewAddressForm && (
-          <div className="bg-white/5 rounded-xl p-4 border border-white/10 space-y-4">
-            <h4 className="text-white font-medium">New Address</h4>
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 space-y-4">
+            <h4 className="text-gray-800 font-medium">New Address</h4>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Full Name *</label>
+                <label className="block text-sm text-gray-600 mb-1">Full Name *</label>
                 <input
                   type="text"
                   name="full_name"
                   value={newAddress.full_name}
                   onChange={handleNewAddressChange}
-                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
                   placeholder="John Doe"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Phone *</label>
+                <label className="block text-sm text-gray-600 mb-1">Phone *</label>
                 <input
                   type="tel"
                   name="phone"
                   value={newAddress.phone}
                   onChange={handleNewAddressChange}
-                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
                   placeholder="9876543210"
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-sm text-gray-400 mb-1">Address Line 1 *</label>
+                <label className="block text-sm text-gray-600 mb-1">Address Line 1 *</label>
                 <input
                   type="text"
                   name="line1"
                   value={newAddress.line1}
                   onChange={handleNewAddressChange}
-                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
                   placeholder="Street, building, apartment"
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-sm text-gray-400 mb-1">Address Line 2 (Optional)</label>
+                <label className="block text-sm text-gray-600 mb-1">Address Line 2 (Optional)</label>
                 <input
                   type="text"
                   name="line2"
                   value={newAddress.line2}
                   onChange={handleNewAddressChange}
-                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
                   placeholder="Near landmark..."
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">City *</label>
+                <label className="block text-sm text-gray-600 mb-1">City *</label>
                 <input
                   type="text"
                   name="city"
                   value={newAddress.city}
                   onChange={handleNewAddressChange}
-                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
                   placeholder="City"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">State *</label>
+                <label className="block text-sm text-gray-600 mb-1">State *</label>
                 <input
                   type="text"
                   name="state"
                   value={newAddress.state}
                   onChange={handleNewAddressChange}
-                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
                   placeholder="State"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Postal Code *</label>
+                <label className="block text-sm text-gray-600 mb-1">Postal Code *</label>
                 <input
                   type="text"
                   name="postal_code"
                   value={newAddress.postal_code}
                   onChange={handleNewAddressChange}
-                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
                   placeholder="462038"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Country</label>
+                <label className="block text-sm text-gray-600 mb-1">Country</label>
                 <input
                   type="text"
                   name="country"
                   value={newAddress.country}
                   onChange={handleNewAddressChange}
-                  className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
                   placeholder="India"
                 />
               </div>
               <div className="col-span-2">
-                <label className="flex items-center gap-2 text-sm text-gray-400">
+                <label className="flex items-center gap-2 text-sm text-gray-600">
                   <input
                     type="checkbox"
                     name="is_default"
@@ -465,7 +508,7 @@ export default function InlineCheckoutForm({
               </div>
             </div>
             {error && (
-              <div className="flex items-center gap-2 text-red-500 bg-red-500/10 p-2 rounded-lg">
+              <div className="flex items-center gap-2 text-red-600 bg-red-50 p-2 rounded-lg border border-red-200">
                 <AlertCircle size={16} />
                 <span className="text-sm">{error}</span>
               </div>
@@ -482,10 +525,10 @@ export default function InlineCheckoutForm({
         )}
 
         {/* Payment Method */}
-        <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Payment Method</label>
+        {/* <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
           <div className="flex gap-4">
-            <label className="flex items-center gap-2 text-white/80">
+            <label className="flex items-center gap-2 text-gray-700">
               <input
                 type="radio"
                 name="paymentMethod"
@@ -496,7 +539,7 @@ export default function InlineCheckoutForm({
               />
               Cash on Delivery
             </label>
-            <label className="flex items-center gap-2 text-white/80">
+            <label className="flex items-center gap-2 text-gray-700">
               <input
                 type="radio"
                 name="paymentMethod"
@@ -508,34 +551,34 @@ export default function InlineCheckoutForm({
               Credit / Debit Card
             </label>
           </div>
-        </div>
+        </div> */}
 
         {/* Notes */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Order Notes (Optional)</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Order Notes (Optional)</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows="2"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition"
+            className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
             placeholder="Any special instructions..."
           />
         </div>
 
         {/* Global Error */}
         {error && !error.includes("address") && (
-          <div className="flex items-center gap-2 text-red-500 bg-red-500/10 p-3 rounded-xl">
+          <div className="flex items-center gap-2 text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
             <AlertCircle size={18} />
             <span className="text-sm">{error}</span>
           </div>
         )}
 
         {/* Actions */}
-        <div className="flex gap-4 pt-4 border-t border-white/10">
+        <div className="flex gap-4 pt-4 border-t border-gray-200">
           <button
             type="button"
             onClick={onBack}
-            className="flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-xl transition"
+            className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl transition"
           >
             Cancel
           </button>
@@ -547,20 +590,8 @@ export default function InlineCheckoutForm({
             {loading ? (
               <>
                 <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
                 Placing Order...
               </>
@@ -573,7 +604,7 @@ export default function InlineCheckoutForm({
           </button>
         </div>
         {!selectedAddressId && !showNewAddressForm && addresses.length === 0 && !addressLoading && (
-          <p className="text-yellow-500 text-sm text-center -mt-2">
+          <p className="text-yellow-600 text-sm text-center -mt-2">
             Please add a shipping address to continue
           </p>
         )}

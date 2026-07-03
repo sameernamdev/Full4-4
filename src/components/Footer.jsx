@@ -37,7 +37,8 @@ const contactItems = [
 
 export default function Footer({ setPage }) {
   return (
-    <footer className="bg-[#ece7db] border-t border-white/5 pt-20 pb-8">
+    // <footer className="bg-[#ece7db] border-t border-white/5 pt-20 pb-8">
+    <footer className="bg-white border-t border-white/2 pt-20 pb-8">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>

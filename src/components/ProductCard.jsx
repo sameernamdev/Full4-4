@@ -42,8 +42,10 @@ const handleAdd = async (e) => {
       <div className="relative h-52 overflow-hidden bg-brand-light">
         <img
           src={
-            product.primary_image ||
-            "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=500&q=80"
+            // product.primary_image ||
+            product.media[0]?.image_url ||
+            // "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=500&q=80"
+             "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png"
           }
           alt={product.name}
           loading="lazy"
@@ -112,12 +114,10 @@ const handleAdd = async (e) => {
                 light ? "text-brand-ink" : "text-white"
               }`}
             >
-              Min $ {product.min_price} 
+              Price $ {product.price} 
             </div>
 
-            <div className="font-body text-[15px] text-black">
-              Max $ {product.max_price}
-            </div>
+           
           </div>
               
           <button

@@ -747,31 +747,7 @@ export default function HomePage({ setPage }) {
         </div>
       </section>
 
-      {/* <section className="dark-panel bg-brand-red py-28 relative overflow-hidden">
-        <div className="absolute inset-0 font-display text-white/[0.06] flex items-center justify-center whitespace-nowrap pointer-events-none" style={{ fontSize: "clamp(90px, 16vw, 230px)", letterSpacing: "0.05em" }}>
-          DRIVE RANGER
-        </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-          <div className="reveal">
-            <div className="font-label font-semibold text-[12px] tracking-[0.4em] uppercase text-white/70 mb-5">
-              Limited Time Offer - Weekend Special
-            </div>
-            <h2 className="font-display text-white leading-[0.88] mb-5" style={{ fontSize: "clamp(60px, 10vw, 140px)" }}>
-              UP TO 40%<br />OFF THIS<br />WEEKEND
-            </h2>
-            <p className="font-body font-light text-[18px] text-white/75 mb-12">
-              Don't miss our biggest sale. Premium parts at unbeatable prices.
-            </p>
-            <motion.button
-              onClick={() => setPage("products")}
-              className="btn-shine bg-white text-brand-red font-label font-bold text-[14px] tracking-[0.2em] uppercase px-14 py-5 inline-flex items-center gap-3 hover:bg-brand-off transition-all"
-              whileHover={{ scale: 1.08, y: -4 }}
-            >
-              Shop the Sale <ArrowRight size={18} />
-            </motion.button>
-          </div>
-        </div>
-      </section> */}
+      
     </div>
   );
 }

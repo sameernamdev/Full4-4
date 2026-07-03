@@ -14,6 +14,8 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import MyOrdersPage from "../pages/MyOrdersPage";
 import OrderDetailsPage from "../pages/OrderDetailPage";
 import CategoryPage from "../pages/CategoryPage";
+import ProfilePage from "../pages/ProfilePage";
+import MyReviewsPage from "../pages/MyReviewsPage";
 
 function AppRoutes() {
   return (
@@ -33,6 +35,8 @@ function AppRoutes() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify-otp" element={<VerifyOTPPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/profile" element={<ProfilePage/>}/>
+        <Route path="/my-reviews" element={<MyReviewsPage/>}/>
 
         {/* orders */}
         <Route

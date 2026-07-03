@@ -183,6 +183,7 @@ import {
   UserCircle,
   ChevronRight,
   ShoppingBag,
+  Star,
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -623,7 +624,20 @@ export default function Navbar() {
                 <ChevronRight size={18} />
               </button>
 
-              <button
+
+                <button
+  onClick={() => {
+    setProfileOpen(false);
+    navigate("/my-reviews");
+  }}
+  className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white"
+>
+  <Star size={22} />   {/* or any icon you like */}
+  <span className="flex-1 text-left">My Reviews</span>
+  <ChevronRight size={18} />
+</button>
+
+              {/* <button
                 onClick={() => {
                   setProfileOpen(false);
                   navigate("/settings");
@@ -635,7 +649,7 @@ export default function Navbar() {
                   Settings
                 </span>
                 <ChevronRight size={18} />
-              </button>
+              </button> */}
 
               <div className="border-t border-white/10 my-4" />
 

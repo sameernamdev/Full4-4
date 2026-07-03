@@ -557,7 +557,7 @@ export default function ProductsPage() {
     category_id: null,
     sub_category_id: null,
     search: "",
-    sort: "featured",
+    //sort: "featured",
   });
 
   // ─── Data fetching ─────────────────────────────────────────────
@@ -622,7 +622,7 @@ export default function ProductsPage() {
       category_id: null,
       sub_category_id: null,
       search: "",
-      sort: "featured",
+      // sort: "featured",
     });
     searchParams.delete("brandId");
     setSearchParams(searchParams);
@@ -700,7 +700,7 @@ export default function ProductsPage() {
                 </button>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <label htmlFor="sortSelect" className="text-sm text-gray-500 whitespace-nowrap">
                 Sort by
               </label>
@@ -714,7 +714,7 @@ export default function ProductsPage() {
                 <option value="price-low">Price: Low to High</option>
                 <option value="price-high">Price: High to Low</option>
               </select>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

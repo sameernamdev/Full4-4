@@ -13,7 +13,6 @@ export default function CartPage() {
   const { cart, totalPrice, increaseQuantity, decreaseQuantity, removeFromCart, fetchCart, loading } =
     useCart();
   const { isAuthenticated } = useAuth();
-  const { coupons } = useCoupons();
   const navigate = useNavigate();
 
   const [showCheckout, setShowCheckout] = useState(false);
@@ -27,8 +26,9 @@ export default function CartPage() {
   const [couponLoading, setCouponLoading] = useState(false);
 
   const handleRemove = (itemId) => {
-    alert("are you sure");
-    removeFromCart(itemId);
+    if (window.confirm("Are you sure you want to remove this item?")) {
+      removeFromCart(itemId);
+    }
   };
 
   const handleCheckout = () => {
@@ -89,14 +89,14 @@ export default function CartPage() {
 
   const finalTotal = totalPrice - discountAmount;
 
-  // Cart empty check
+  // Cart empty check – light themed
   if (!cart || cart.length === 0) {
     return (
-      <div className="pt-24 min-h-screen bg-[#080808] flex items-center justify-center">
+      <div className="pt-24 min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <ShoppingCart size={64} className="text-white/20 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white">Your cart is empty</h2>
-          <p className="text-gray-400 mt-2">Start shopping to add items</p>
+          <ShoppingCart size={64} className="text-gray-300 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800">Your cart is empty</h2>
+          <p className="text-gray-500 mt-2">Start shopping to add items</p>
           <Link
             to="/products"
             className="inline-block mt-6 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl transition"
@@ -109,12 +109,12 @@ export default function CartPage() {
   }
 
   return (
-    <div className="pt-24 min-h-screen bg-[#080808] py-10 ">
-      <div className="max-w-7xl mx-auto px-4  ">
+    <div className="pt-24 min-h-screen bg-gray-50 py-10">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center gap-4 mb-8">
           <Link
             to="/products"
-            className="text-white/60 hover:text-white transition flex items-center gap-2"
+            className="text-gray-500 hover:text-gray-800 transition flex items-center gap-2"
           >
             <ArrowLeft size={18} />
             Continue Shopping
@@ -126,46 +126,44 @@ export default function CartPage() {
           <div className="lg:col-span-2 space-y-4">
             {cart.map((item) => {
               const productName = item.product?.name || item.product_name || "Product";
-              const variation = item.variation_value || "";
               const price = Number(item.current_price || item.price || 0);
               const image = item.product?.primary_image || item.primary_image || null;
-              const itemId = item.product_item_id || item.id;
+              const itemId = item.product_id || item.id;
 
               return (
                 <motion.div
                   key={itemId}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white/5 rounded-xl p-4 border border-white/10 flex flex-col sm:flex-row items-center gap-4"
+                  className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm flex flex-col sm:flex-row items-center gap-4 hover:shadow-md transition-shadow"
                 >
                   <img
                     src={image || "https://placehold.co/100x100?text=No+Image"}
                     alt={productName}
-                    className="w-24 h-24 object-cover rounded-lg bg-white/5"
+                    className="w-24 h-24 object-cover rounded-lg bg-gray-100"
                   />
                   <div className="flex-1">
-                    <h3 className="text-white font-semibold">{productName}</h3>
-                    {variation && <p className="text-gray-400 text-sm">Variation: {variation}</p>}
-                    <p className="text-red-500 font-bold mt-1">₹{price}</p>
+                    <h3 className="text-gray-800 font-semibold">{productName}</h3>
+                    <p className="text-red-600 font-bold mt-1">₹{price.toFixed(2)}</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => decreaseQuantity(itemId, item.quantity)}
-                      className="p-1 bg-white/10 rounded-lg hover:bg-white/20 transition"
+                      className="p-1 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                     >
-                      <Minus size={16} className="text-white" />
+                      <Minus size={16} className="text-gray-600" />
                     </button>
-                    <span className="text-white w-8 text-center">{item.quantity}</span>
+                    <span className="text-gray-800 w-8 text-center">{item.quantity}</span>
                     <button
                       onClick={() => increaseQuantity(itemId, item.quantity)}
-                      className="p-1 bg-white/10 rounded-lg hover:bg-white/20 transition"
+                      className="p-1 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                     >
-                      <Plus size={16} className="text-white" />
+                      <Plus size={16} className="text-gray-600" />
                     </button>
                   </div>
                   <button
                     onClick={() => handleRemove(itemId)}
-                    className="text-red-500 hover:text-red-400 transition p-2"
+                    className="text-red-500 hover:text-red-700 transition p-2"
                   >
                     <Trash2 size={20} />
                   </button>
@@ -174,27 +172,27 @@ export default function CartPage() {
             })}
           </div>
 
-          {/* Order Summary / Checkout Inline */}
-          <div className="bg-white/5 rounded-xl p-6 border border-red-500 h-fit sticky top-28 ">
+          {/* Order Summary / Checkout Inline – light card */}
+          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-md h-fit sticky top-28">
             {!showCheckout ? (
               // -------- SUMMARY VIEW --------
               <>
-                <h2 className="text-xl font-bold text-white mb-4">Order Summary</h2>
-                <div className="space-y-2 text-gray-300">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Order Summary</h2>
+                <div className="space-y-2 text-gray-600">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
                     <span>₹{totalPrice.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span className="text-green-500">Free</span>
+                    <span className="text-green-600">Free</span>
                   </div>
 
                   {/* Coupon Section */}
-                  <div className="border-t border-white/10 pt-3 mt-3">
+                  <div className="border-t border-gray-200 pt-3 mt-3">
                     <div className="flex items-center gap-2">
-                      <Ticket size={16} className="text-white/40" />
-                      <span className="text-sm text-gray-400">Coupon</span>
+                      <Ticket size={16} className="text-gray-400" />
+                      <span className="text-sm text-gray-500">Coupon</span>
                     </div>
                     <div className="flex items-center gap-2 mt-2">
                       <input
@@ -202,7 +200,7 @@ export default function CartPage() {
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                         placeholder="Enter code"
-                        className="flex-1 bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 text-sm focus:outline-none focus:border-red-500 transition"
+                        className="flex-1 bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
                         disabled={!!appliedCoupon || couponLoading}
                       />
                       {!appliedCoupon ? (
@@ -216,33 +214,34 @@ export default function CartPage() {
                       ) : (
                         <button
                           onClick={handleRemoveCoupon}
-                          className="text-red-500 hover:text-red-400 transition p-1"
+                          className="text-red-500 hover:text-red-700 transition p-1"
                         >
                           <X size={18} />
                         </button>
                       )}
                     </div>
-                    {couponError && <p className="text-red-500 text-xs mt-1">{couponError}</p>}
-                    {couponSuccess && <p className="text-green-500 text-xs mt-1">{couponSuccess}</p>}
+                    {couponError && <p className="text-red-600 text-xs mt-1">{couponError}</p>}
+                    {couponSuccess && <p className="text-green-600 text-xs mt-1">{couponSuccess}</p>}
                     {appliedCoupon && (
-                      <p className="text-green-400 text-xs mt-1">
+                      <p className="text-green-600 text-xs mt-1">
                         Coupon {appliedCoupon.code} applied – ₹{appliedCoupon.discount} off
                       </p>
                     )}
                   </div>
 
                   {discountAmount > 0 && (
-                    <div className="flex justify-between text-green-400 border-t border-white/10 pt-2 mt-2">
+                    <div className="flex justify-between text-green-600 border-t border-gray-200 pt-2 mt-2">
                       <span>Discount</span>
                       <span>- ₹{discountAmount.toFixed(2)}</span>
                     </div>
                   )}
-                  <div className="border-t border-white/10 pt-2 mt-2 flex justify-between text-white font-bold text-lg">
+                  <div className="border-t border-gray-200 pt-2 mt-2 flex justify-between text-gray-800 font-bold text-lg">
                     <span>Total</span>
                     <span>₹{finalTotal.toFixed(2)}</span>
                   </div>
                 </div>
                 <button
+                  type="submit"
                   onClick={handleCheckout}
                   disabled={cart.length === 0}
                   className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-semibold transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -251,7 +250,7 @@ export default function CartPage() {
                   Proceed to Checkout
                 </button>
                 {!isAuthenticated && (
-                  <p className="text-yellow-500 text-sm text-center mt-3">
+                  <p className="text-yellow-600 text-sm text-center mt-3">
                     Please login to checkout
                   </p>
                 )}

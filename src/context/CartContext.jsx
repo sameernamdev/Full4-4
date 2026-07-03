@@ -32,10 +32,10 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   // Add Product
-const addToCart = async (productItemId, quantity = 1) => {
+const addToCart = async (productId, quantity = 1) => {
   try {
     await addCartApi({
-      product_item_id: productItemId,
+      product_id: productId,
       quantity,
     });
 
@@ -48,25 +48,26 @@ const addToCart = async (productItemId, quantity = 1) => {
 
 
   // Increase Quantity
-const increaseQuantity = async (itemId, quantity) => {
+const increaseQuantity = async (productId, quantity) => {
   // Optimistic Update
   setCart((prev) =>
     prev.map((item) =>
-      item.product_item_id === itemId
+      item.product_id === productId
         ? { ...item, quantity: quantity + 1 }
         : item
     )
   );
 
   try {
-    await updateCart(itemId, quantity + 1);
+    // console.log("Updating cart for productId:", productId, "to quantity:", quantity + 1);
+    await updateCart(productId, quantity + 1);
   } catch (error) {
     console.log(error);
 
     // Rollback
     setCart((prev) =>
       prev.map((item) =>
-        item.product_item_id === itemId
+        item.product_id === productId
           ? { ...item, quantity }
           : item
       )
@@ -75,28 +76,28 @@ const increaseQuantity = async (itemId, quantity) => {
 };
 
   // Decrease Quantity
- const decreaseQuantity = async (itemId, quantity) => {
+ const decreaseQuantity = async (productId, quantity) => {
   if (quantity <= 1) {
-    removeFromCart(itemId);
+    removeFromCart(productId);
     return;
   }
 
   setCart((prev) =>
     prev.map((item) =>
-      item.product_item_id === itemId
+      item.product_id === productId
         ? { ...item, quantity: quantity - 1 }
         : item
     )
   );
 
   try {
-    await updateCart(itemId, quantity - 1);
+    await updateCart(productId, quantity - 1);
   } catch (error) {
     console.log(error);
 
     setCart((prev) =>
       prev.map((item) =>
-        item.product_item_id === itemId
+        item.product_id === productId
           ? { ...item, quantity }
           : item
       )
@@ -105,10 +106,10 @@ const increaseQuantity = async (itemId, quantity) => {
 };
 
   // Remove Product
-  const removeFromCart = async (itemId) => {
+  const removeFromCart = async (productId) => {
     try {
       setLoading(true)
-      await removeCartItem(itemId);
+      await removeCartItem(productId);
 
       await fetchCart();
     } catch (error) {

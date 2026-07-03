@@ -61,6 +61,37 @@ export async function getGuestToken() {
   }
 }
 
+
+
+
+//get user profile
+export const getUserProfile=async()=>{
+  try {
+    const res=await api.get("/users/me")
+    return res.data;
+  } catch (error) {
+    console.error("Failed to fetch user profile:", error);
+    throw error;
+  }
+}
+export const updateUserProfilepage=async(data)=>{
+  try {
+    const res=await api.put("/users/update-profile", data,{
+      headers: { "Content-Type": "multipart/form-data" }
+    })
+    
+    return res.data;
+  } catch (error) {
+    console.error("Failed to update user profile:", error);
+    throw error;
+  }
+}
+
+
+
+
+
+
 // ... rest of your existing functions (products, categories, cart, auth, addresses, orders)
 // Make sure they are all present from your original file.
 
@@ -82,6 +113,8 @@ export async function getGuestToken() {
 //     }
 // }
 
+
+//products
 export const getallproducts = async (params = {}) => {
   try {
     const res = await api.get(
@@ -590,3 +623,35 @@ export const getVehicleCompatibility=async(productId)=>{
   }
 }
 
+
+
+
+// reviews
+export const addReview = (formData) =>
+  api.post("/reviews/add", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+
+  export const getMyReview = async() =>{
+   const res = await api.get("/reviews/my-reviews")
+    return res.data?.data
+  }
+
+export const updateReview = (id, formData) =>
+  api.put(`/reviews/update/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+export const getProductReviews = (
+  productId,
+  page = 1,
+  limit = 10
+) =>
+  api.get(
+    `/reviews/product/${productId}?page=${page}&limit=${limit}`
+  );
