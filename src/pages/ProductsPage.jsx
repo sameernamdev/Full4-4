@@ -558,8 +558,10 @@ export default function ProductsPage() {
     sub_category_id: null,
     search: "",
     //sort: "featured",
+    sort_by: "",
+   
   });
-
+console.log(filters);
   // ─── Data fetching ─────────────────────────────────────────────
   const { categories = [], loading: catLoading } = useCategories();
   const { sub = [] } = useSubCategories();
@@ -622,7 +624,8 @@ export default function ProductsPage() {
       category_id: null,
       sub_category_id: null,
       search: "",
-      // sort: "featured",
+      sort_by: "",
+    
     });
     searchParams.delete("brandId");
     setSearchParams(searchParams);
@@ -634,7 +637,8 @@ export default function ProductsPage() {
       filters.brand_id !== null ||
       filters.category_id !== null ||
       filters.sub_category_id !== null ||
-      filters.search.trim() !== ""
+      filters.search.trim() !== "",
+      filters.sort_by !== ""
     );
   }, [filters]);
 
@@ -643,6 +647,8 @@ export default function ProductsPage() {
     if (filters.brand_id) count++;
     if (filters.category_id) count++;
     if (filters.sub_category_id) count++;
+    if(filters.search.trim() !== "") count++;
+    if(filters.sort_by !== "") count++;
     return count;
   }, [filters]);
 
@@ -700,21 +706,23 @@ export default function ProductsPage() {
                 </button>
               )}
             </div>
-            {/* <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <label htmlFor="sortSelect" className="text-sm text-gray-500 whitespace-nowrap">
                 Sort by
               </label>
               <select
                 id="sortSelect"
-                value={filters.sort}
-                onChange={(e) => updateFilter("sort", e.target.value)}
+                value={filters.sort_by}
+                onChange={(e) => updateFilter("sort_by", e.target.value)}
                 className="border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-red"
               >
-                <option value="featured">Featured</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
+                <option value="">Featured</option>
+                <option value="latest">Latest</option>
+                <option value="oldest">Oldest</option>
+                <option value="price_low_high">Price: Low to High</option>
+                <option value="price_high_low">Price: High to Low</option>
               </select>
-            </div> */}
+            </div>
           </div>
         </div>
       </section>

@@ -913,6 +913,8 @@ export default function OrderDetailsPage() {
               let sku = item.sku || "";
               let unitPrice = parseFloat(item.unit_price) || 0;
 
+            
+
               if (item.product_data_snapshot) {
                 try {
                   const snapshot =
@@ -941,6 +943,10 @@ export default function OrderDetailsPage() {
                       ₹{(unitPrice * item.quantity).toFixed(2)}
                     </p>
                     <p className="text-sm text-gray-500">₹{unitPrice.toFixed(2)} each</p>
+
+
+
+                    
 
                     {/* --- Use the new component here --- */}
                     <OrderItemReviewButton
@@ -986,6 +992,90 @@ export default function OrderDetailsPage() {
             </div>
           </div>
         </div>
+
+        {/* Shipments */}
+{order.shipments?.length > 0 && (
+  <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-8">
+    <h2 className="text-2xl font-bold text-gray-900 mb-6">
+      Shipments
+    </h2>
+
+    <div className="flex gap-5 overflow-x-auto pb-2">
+      {order.shipments.map((shipment) => (
+        <div
+          key={shipment.id}
+          className="min-w-[340px] flex-shrink-0 rounded-xl border border-gray-200 p-5 bg-gray-50"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-lg">
+              Shipment #{shipment.id}
+            </h3>
+
+            <span className="rounded-full bg-blue-100 text-blue-700 px-3 py-1 text-xs font-medium capitalize">
+              {shipment.current_status}
+            </span>
+          </div>
+
+          <div className="space-y-2 text-sm">
+            {/* <div>
+              <p className="text-gray-500">Carrier</p>
+              <p className="font-medium">
+                {shipment.carrier || "Not Assigned"}
+              </p>
+            </div> */}
+
+            <div>
+              <p className="text-gray-500">Delivery Address</p>
+              <p>{shipment.recipient_address}</p>
+            </div>
+
+            {/* <div>
+              <p className="text-gray-500">Created</p>
+              <p>
+                {new Date(shipment.created_at).toLocaleDateString("en-IN")}
+              </p>
+            </div> */}
+          </div>
+
+          {/* Tracking Timeline */}
+          {shipment.tracking_history?.length > 0 && (
+            <div className="mt-5 border-t pt-4">
+              <p className="font-semibold mb-3">
+                Tracking History
+              </p>
+
+              <div className="space-y-3">
+                {shipment.tracking_history.flatMap((history) => {
+                  try {
+                    return JSON.parse(history);
+                  } catch {
+                    return [];
+                  }
+                }).map((track, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-3"
+                  >
+                    <div className="mt-1 h-2.5 w-2.5 rounded-full bg-red-600" />
+
+                    <div>
+                      <p className="font-medium">
+                        {track.event}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {track.timestamp}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
         {/* Shipping Address */}
         {order.shipping_address && (

@@ -16,6 +16,7 @@ import OrderDetailsPage from "../pages/OrderDetailPage";
 import CategoryPage from "../pages/CategoryPage";
 import ProfilePage from "../pages/ProfilePage";
 import MyReviewsPage from "../pages/MyReviewsPage";
+import WarrantyPage from "../pages/WarrantyPage";
 
 function AppRoutes() {
   return (
@@ -37,6 +38,7 @@ function AppRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/profile" element={<ProfilePage/>}/>
         <Route path="/my-reviews" element={<MyReviewsPage/>}/>
+        <Route path="/my-warranties" element={<WarrantyPage/>}/>
 
         {/* orders */}
         <Route

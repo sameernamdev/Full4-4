@@ -525,6 +525,7 @@ export default function ProductDetailsPage() {
     long_description,
     short_description,
     warranty_months,
+    brand_name
   } = product;
 
   const productName = name || "Product";
@@ -601,8 +602,12 @@ export default function ProductDetailsPage() {
               <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mt-2 leading-tight">
                 {productName}
               </h1>
-              {brand_id && (
+              {/* {brand_id && (
                 <p className="text-sm text-gray-500 mt-1">Brand ID: {brand_id}</p>
+              )} */}
+
+                 {brand_name && (
+                <p className="text-sm text-gray-500 mt-1">Brand Name: {brand_name}</p>
               )}
             </div>
 
@@ -711,12 +716,13 @@ export default function ProductDetailsPage() {
                       <ShieldCheck className="text-red-500 mx-auto mb-1" size={20} />
                       <p className="text-xs text-gray-600">Genuine Product</p>
                     </div>
-                    <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                    {warranty_months?( <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
                       <Star className="text-red-500 mx-auto mb-1" size={20} />
                       <p className="text-xs text-gray-600">
-                        Premium {warranty_months && `(${warranty_months}mo warranty)`}
+                        Premium quality {warranty_months && `(${warranty_months}month warranty)`}
                       </p>
-                    </div>
+                    </div>):""}
+                   
                   </div>
                 </div>
               )}

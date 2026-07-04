@@ -72,6 +72,7 @@ export default function BrandsPage({ setPage }) {
             <button key={brand.id} onClick={() => {
               // setPage('products')
               navigate(`/products?brandId=${brand.id}`)
+              // navigate(`/products?brandId=${brand.id}&brand_name=${brand.name}`)
             }}
             // onClick={() => navigate(`/products?brandId=${brand.id}`)}
               className="reveal bg-gray-50 border border-white/10 rounded-2xl p-8 text-center group hover:border-brand-red/60  hover:shadow-xl hover:shadow-brand-red/15 transition-all duration-300"

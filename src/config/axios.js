@@ -675,3 +675,24 @@ export const getProductReviews = (
     throw error;
   }
 };
+
+
+
+
+
+//warranty section
+export const claimWarranty = async (orderItemId, claim_quantity) => {
+  const res = await api.post(
+    `/warranty/claim/${orderItemId}`,
+    {
+      claim_quantity,
+    }
+  );
+
+  return res.data;
+};
+
+export const getMyWarranties = async () => {
+  const res = await api.get("/warranty/my-warranties");
+  return res.data;
+};

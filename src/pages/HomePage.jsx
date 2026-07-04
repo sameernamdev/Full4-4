@@ -162,7 +162,7 @@ export default function HomePage({ setPage }) {
   useReveal();
   const [statsVisible, setStatsVisible] = useState(false);
   const statsRef = useRef(null);
-  const { products, loading, error } = useProducts();
+  const { products, loading, error } = useProducts({is_front:true});
   const { brands } = useBrands();
   const { categories } = useCategories({ is_front: true });
   // taking load state for categories
