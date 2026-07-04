@@ -655,3 +655,23 @@ export const getProductReviews = (
   api.get(
     `/reviews/product/${productId}?page=${page}&limit=${limit}`
   );
+
+
+
+  // on homepage
+  export const getFeaturedReviews = async (page = 1, limit = 6) => {
+  try {
+    const res = await api.get("/reviews/get_featured_reviews", {
+      params: {
+        page,
+        limit,
+      },
+    });
+
+    console.log(res.data)
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

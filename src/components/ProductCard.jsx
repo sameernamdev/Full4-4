@@ -11,7 +11,7 @@ export default function ProductCard({ product, light = true }) {
   const [added, setAdded] = useState(false);
   console.log(product)
   const handleCardClick = () => {
-    navigate(`/products/${product.id}`, {
+    navigate(`/products/${product.slug}`, {
       state: { product },
     });
   };
@@ -114,7 +114,7 @@ const handleAdd = async (e) => {
                 light ? "text-brand-ink" : "text-white"
               }`}
             >
-              Price $ {product.price} 
+              Price ₹ {product.price} 
             </div>
 
            

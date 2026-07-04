@@ -30,6 +30,7 @@ import { useProducts } from "../hooks/useProducts";
 import { Link, useNavigate } from "react-router-dom";
 import { useCategories } from "../hooks/useCatgories";
 import { useBrands } from "../hooks/useBrands";
+import { useReviews } from "../hooks/useReviews";
 
 const imageFallback = (e) => {
   e.currentTarget.onerror = null;
@@ -200,6 +201,17 @@ export default function HomePage({ setPage }) {
   const handleCategoryClick = (categoryId) => {
     navigate(`/category/${categoryId}`);
   };
+
+
+
+
+  const{featuredReviews,fetchFeaturedReviews,featuredLoading}=useReviews()
+  // console.log("featuredReviews",featuredReviews)
+  // console.log(fetchFeaturedReviews)
+  useEffect(() => {
+  fetchFeaturedReviews();
+}, []);
+
 
   return (
     <div className="bg-brand-off">
@@ -649,7 +661,7 @@ export default function HomePage({ setPage }) {
               WHAT PEOPLE SAY
             </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          {/* <div className="grid md:grid-cols-3 gap-8">
             {TESTIMONIALS.map((t, i) => (
               <motion.div
                 key={t.name}
@@ -691,7 +703,91 @@ export default function HomePage({ setPage }) {
                 </div>
               </motion.div>
             ))}
+          </div> */}
+
+     <div className="overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory scroll-smooth">
+  {featuredLoading ? (
+    <div className="py-16 text-center text-brand-ink/60">
+      Loading reviews...
+    </div>
+  ) : featuredReviews.length === 0 ? (
+    <div className="py-16 text-center text-brand-ink/60">
+      No customer reviews yet.
+    </div>
+  ) : (
+    <div className="flex gap-6 w-max px-1">
+      {featuredReviews.map((review, i) => (
+        <motion.div
+          key={review.id}
+          whileHover={{
+            y: -8,
+            rotate: i % 2 === 0 ? -1 : 1,
+          }}
+          transition={{ duration: 0.25 }}
+         className="snap-start w-[320px] sm:w-[340px] lg:w-[360px] flex-shrink-0 rounded-3xl border border-brand-ink/10 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl"
+        >
+          {/* Header */}
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-red text-xl font-bold uppercase text-white">
+              {review.full_name?.charAt(0)}
+            </div>
+
+            <div className="flex-1">
+              <h3 className="font-label text-lg font-bold text-brand-ink">
+                {review.full_name}
+              </h3>
+
+              <p className="mt-1 text-sm text-brand-ink/50">
+                {review.product_name}
+              </p>
+
+              {review.is_verified_purchase === 1 && (
+                <span className="mt-2 inline-flex rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-semibold text-green-700">
+                  ✓ Verified Purchase
+                </span>
+              )}
+            </div>
           </div>
+
+          {/* Rating */}
+          <div className="mt-6 flex gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                size={16}
+                className={
+                  star <= review.rating
+                    ? "fill-brand-gold text-brand-gold"
+                    : "text-gray-300"
+                }
+              />
+            ))}
+          </div>
+
+          {/* Review */}
+          <p className="mt-5 min-h-[80px] text-[15px] leading-7 text-brand-ink/70">
+            "{review.review}"
+          </p>
+
+          {/* Footer */}
+          <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
+            <span className="text-xs text-brand-ink/40">
+              {new Date(review.created_at).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              })}
+            </span>
+
+            <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-brand-red">
+              {review.rating}.0 ★
+            </span>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  )}
+</div>
         </div>
       </section>
 
