@@ -471,7 +471,7 @@ export default function Navbar() {
 
 
 
-        <button
+        {/* <button
   onClick={() => {
     setProfileOpen(false);
     navigate("/my-warranties");
@@ -481,7 +481,7 @@ export default function Navbar() {
   <Shield size={22} />
   <span className="flex-1 text-left">My Warranty</span>
   <ChevronRight size={18} />
-</button>
+</button> */}
 
               {/* <button
                 onClick={() => {

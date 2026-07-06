@@ -168,10 +168,10 @@ const WarrantyPage = () => {
                       <h3 className="text-lg font-semibold text-gray-800">
                         {warranty.product_name}
                       </h3>
-                      <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                      {/* <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
                         <Hash size={14} />
                         {warranty.sku || "No SKU"}
-                      </p>
+                      </p> */}
                     </div>
                     {getStatusBadge(warranty.warranty_status)}
                   </div>

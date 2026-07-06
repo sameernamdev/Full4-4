@@ -7,9 +7,11 @@ import useProfile from "../hooks/useProfile";
 import { updateUserProfilepage } from "../config/axios";
 
 export default function ProfilePage() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated,updatePassword,setUser, loading: authLoading } = useAuth();
 
-  if (!isAuthenticated) {
+  if (!authLoading&&!isAuthenticated) {
+    // console.log("Not autheticated");
+    
     return <Navigate to="/login" replace />;
   }
 
@@ -24,6 +26,96 @@ export default function ProfilePage() {
   });
 
   const [preview, setPreview] = useState("");
+
+
+
+  // Password change state
+  const [passwordError, setPasswordError] = useState("");
+const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+  currentPassword: "",
+  newPassword: "",
+  confirmPassword: "",
+});
+const [changingPassword, setChangingPassword] = useState(false);
+
+const handlePasswordInput = (e) => {
+  const { name, value } = e.target;
+
+  setPasswordData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+const handleChangePassword = async () => {
+  setPasswordError("");
+  setPasswordSuccess("");
+
+  if (
+    !passwordData.currentPassword ||
+    !passwordData.newPassword ||
+    !passwordData.confirmPassword
+  ) {
+    setPasswordError("Please fill all fields.");
+    return;
+  }
+
+  // New Password validation
+  if (passwordData.newPassword.length < 6) {
+    setPasswordError("New password must be at least 6 characters.");
+    return;
+  }
+
+  if (passwordData.newPassword.length > 10) {
+    setPasswordError("New password cannot be more than 10 characters.");
+    return;
+  }
+
+  // Confirm Password validation
+  if (passwordData.confirmPassword.length < 6) {
+    setPasswordError("Confirm password must be at least 6 characters.");
+    return;
+  }
+
+  if (passwordData.confirmPassword.length > 10) {
+    setPasswordError("Confirm password cannot be more than 10 characters.");
+    return;
+  }
+
+  if (passwordData.newPassword !== passwordData.confirmPassword) {
+    setPasswordError("New password and confirm password do not match.");
+    return;
+  }
+
+  try {
+    setChangingPassword(true);
+
+    const result = await updatePassword(passwordData);
+
+    if (result.success) {
+      setPasswordSuccess(result.message || "Password changed successfully.");
+
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+
+      setTimeout(() => {
+        setShowPasswordForm(false);
+        setPasswordSuccess("");
+      }, 1500);
+    } else {
+      setPasswordError(result.error || "Failed to change password.");
+    }
+  } catch (err) {
+    setPasswordError(err?.message || "Something went wrong.");
+  } finally {
+    setChangingPassword(false);
+  }
+};
+
 
   useEffect(() => {
     if (profile) {
@@ -68,9 +160,11 @@ export default function ProfilePage() {
         payload.append("profile_image", formData.profile_image);
       }
 
-      await updateUserProfilepage(payload);
+     const res =  await updateUserProfilepage(payload);
+     setUser(res?.data);
+     
 
-      await refetch();
+      // await refetch();
 
       setIsEditing(false);
     } catch (err) {
@@ -118,7 +212,7 @@ export default function ProfilePage() {
                 src={
                   preview ||
                   `https://ui-avatars.com/api/?background=ffffff&color=dc2626&size=200&name=${encodeURIComponent(
-                    profile?.full_name || "User",
+                    profile?.full_name[0] || "User",
                   )}`
                 }
                 alt="Profile"
@@ -220,6 +314,117 @@ export default function ProfilePage() {
             />
           </div>
         </div>
+        
+
+        <div className="border-t border-gray-200 px-5 sm:px-8 py-6">
+
+  <div className="flex items-center justify-between">
+
+    <div>
+
+      <h3 className="text-lg font-semibold">
+        Security
+      </h3>
+
+      <p className="text-sm text-gray-500">
+        Change your account password
+      </p>
+
+    </div>
+
+    {!showPasswordForm && (
+
+      <button
+        onClick={() => setShowPasswordForm(true)}
+        className="px-5 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700"
+      >
+        Change Password
+      </button>
+
+    )}
+
+  </div>
+
+  {showPasswordForm && (
+
+    <div className="mt-6 space-y-4">
+
+      <input
+        type="password"
+        name="currentPassword"
+        placeholder="Current Password"
+        value={passwordData.currentPassword}
+        onChange={handlePasswordInput}
+        className="w-full border rounded-xl px-4 py-3"
+      />
+
+      <input
+        type="password"
+        name="newPassword"
+        placeholder="New Password"
+        value={passwordData.newPassword}
+
+        onChange={handlePasswordInput}
+        className="w-full border rounded-xl px-4 py-3"
+      />
+
+      <input
+        type="password"
+        name="confirmPassword"
+        placeholder="Confirm Password"
+
+        value={passwordData.confirmPassword}
+        onChange={handlePasswordInput}
+        className="w-full border rounded-xl px-4 py-3"
+      />
+
+      {passwordError && (
+  <div className="rounded-lg bg-red-50 border border-red-200 text-red-600 px-4 py-3 text-sm">
+    {passwordError}
+  </div>
+)}
+
+{passwordSuccess && (
+  <div className="rounded-lg bg-green-50 border border-green-200 text-green-600 px-4 py-3 text-sm">
+    {passwordSuccess}
+  </div>
+)}
+
+      <div className="flex justify-end gap-3">
+
+        <button
+          onClick={()=>{
+            setShowPasswordForm(false);
+
+            setPasswordData({
+              currentPassword:"",
+              newPassword:"",
+              confirmPassword:"",
+            });
+
+          }}
+          className="px-5 py-3 rounded-xl border"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleChangePassword}
+          disabled={changingPassword}
+          className="px-5 py-3 rounded-xl bg-red-600 text-white"
+        >
+          {changingPassword
+            ? "Updating..."
+            : "Update Password"}
+        </button>
+
+      </div>
+
+    </div>
+
+  )}
+
+</div>
 
         {/* Footer */}
         {isEditing && (
@@ -253,6 +458,8 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+
+      
     </section>
   );
 }

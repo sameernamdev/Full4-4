@@ -26,7 +26,7 @@
 - **Response:** `200` - `{ success, message }`
 
 ### POST `/api/auth/verify-otp`
-- **Input:** `application/json` - `{ phone, otp }`
+- **Input:** `application/json` - `{ email, otp }`
 - **Response:** `200` - `{ success, message }`
 
 ### POST `/api/auth/resend`

@@ -32,22 +32,46 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 🟢 Optional: Response interceptor to handle 401 globally
+// // 🟢 Optional: Response interceptor to handle 401 globally
+// api.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response?.status === 401) {
+//       // If unauthorized, clear tokens and redirect to login
+//       localStorage.removeItem("authToken");
+//       localStorage.removeItem("user");
+//       // Optionally redirect
+//       if (window.location.pathname !== "/login") {
+//         window.location.href = "/login";
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // If unauthorized, clear tokens and redirect to login
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("user");
-      // Optionally redirect
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
-      }
+    const status = error.response?.status;
+    const data = error.response?.data;
+
+    const isTokenExpired =
+      status === 401 && String(data?.data || "").includes("jwt expired");
+
+    if (isTokenExpired) {
+      console.log("Logging out because token expired");
+
+      localStorage.clear();
+      sessionStorage.clear();
+
+      window.location.href = "/auth";
+
+      return Promise.reject(error);
     }
+
     return Promise.reject(error);
-  }
+  },
 );
+
 
 export async function getGuestToken() {
   try {
@@ -60,6 +84,11 @@ export async function getGuestToken() {
     throw error;
   }
 }
+
+
+
+
+
 
 
 
@@ -86,6 +115,16 @@ export const updateUserProfilepage=async(data)=>{
     throw error;
   }
 }
+export const changePassword = async (data) => {
+  try {
+    const res = await api.post("/users/change-password", data);
+
+    return res.data;
+  } catch (error) {
+    console.error("Change password error:", error);
+    throw error.response?.data || error;
+  }
+};
 
 
 
@@ -299,156 +338,264 @@ export const removeCartItem = async (id) => {
 
 
 
-// ============= AUTH FUNCTIONS =============
+// // ============= AUTH FUNCTIONS =============
 
-// Register User
+// // Register User
+// export const registerUser = async (userData) => {
+//   try {
+//     const res = await api.post("/auth/register", userData);
+//     console.log("Register Response:", res);
+//     return res.data;
+//   } catch (error) {
+//     console.error("Register error:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+
+// // Verify OTP
+// export const verifyOTP = async (data) => {
+//   try {
+//     const res = await api.post("/auth/verify-otp", data); // data = { phone, otp }
+//     console.log("OTP Verification Response:", res);
+//     return res.data;
+//   } catch (error) {
+//     console.error("OTP verification error:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+
+// // Resend OTP
+// export const resendOTP = async (data) => {
+//   try {
+//     const res = await api.post("/auth/resend-otp", data); // data = { phone }
+//     console.log("Resend OTP Response:", res);
+//     return res.data;
+//   } catch (error) {
+//     console.error("Resend OTP error:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+
+// // Login User - FIXED
+// export const loginUser = async (data) => {
+//   try {
+//     const res = await api.post("/auth/login", data);
+//     console.log("Login API Response:", res);
+    
+//     // The response is at the root level, not nested in data.data
+//     // Check if the response has success and token directly
+//     if (res.data?.success && res.data?.token) {
+//       // Store auth token
+//       localStorage.setItem("authToken", res.data.token);
+//       if (res.data.user) {
+//         localStorage.setItem("user", JSON.stringify(res.data.user));
+//       }
+//       return res.data; // Return the whole response
+//     } else {
+//       // If the response is nested differently
+//       return res.data;
+//     }
+//   } catch (error) {
+//     console.error("Login error:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+
+// // Logout User
+// export const logoutUser = async () => {
+//   try {
+//     const res = await api.post("/auth/logout");
+//     console.log("Logout Response:", res);
+    
+//     // Clear auth data from localStorage
+//     localStorage.removeItem("authToken");
+//     localStorage.removeItem("user");
+    
+//     return res.data;
+//   } catch (error) {
+//     console.error("Logout error:", error);
+//     // Still clear localStorage even if API fails
+//     localStorage.removeItem("authToken");
+//     localStorage.removeItem("user");
+//     throw error.response?.data || error;
+//   }
+// };
+
+// // Forgot Password
+// export const forgotPassword = async (data) => {
+//   try {
+//     const res = await api.post("/auth/forgot-password", data);
+//     console.log("Forgot Password Response:", res);
+//     return res.data;
+//   } catch (error) {
+//     console.error("Forgot password error:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+
+// // Reset Password
+// export const resetPassword = async (data) => {
+//   try {
+//     const res = await api.post("/auth/reset-password", data);
+//     console.log("Reset Password Response:", res);
+//     return res.data;
+//   } catch (error) {
+//     console.error("Reset password error:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+
+// // Get Current User Profile
+// export const getCurrentUser = async () => {
+//   try {
+//     const res = await api.get("/auth/me");
+//     console.log("Get User Response:", res);
+//     return res.data;
+//   } catch (error) {
+//     console.error("Get user error:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+
+// // Update User Profile
+// export const updateUserProfile = async (data) => {
+//   try {
+//     const res = await api.put("/auth/profile", data);
+//     console.log("Update Profile Response:", res);
+    
+//     // Update stored user data
+//     if (res.data?.success && res.data?.data) {
+//       localStorage.setItem("user", JSON.stringify(res.data.data));
+//     }
+    
+//     return res.data;
+//   } catch (error) {
+//     console.error("Update profile error:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+
+// // Change Password
+// export const changePassword = async (data) => {
+//   try {
+//     const res = await api.put("/auth/change-password", data);
+//     console.log("Change Password Response:", res);
+//     return res.data;
+//   } catch (error) {
+//     console.error("Change password error:", error);
+//     throw error.response?.data || error;
+//   }
+// };
+
+
+
+// ============= AUTH FUNCTIONS =============
+// Pure API calls only. No localStorage / state logic here — that all lives
+// in AuthContext.jsx so there's a single source of truth for auth state.
+ 
+// Register User — multipart/form-data, profile_image optional
 export const registerUser = async (userData) => {
   try {
-    const res = await api.post("/auth/register", userData);
-    console.log("Register Response:", res);
-    return res.data;
+    const formData = new FormData();
+    formData.append("full_name", userData.full_name);
+    formData.append("email", userData.email);
+    formData.append("phone", userData.phone);
+    formData.append("password", userData.password);
+    if (userData.profile_image) {
+      formData.append("profile_image", userData.profile_image);
+    }
+ 
+    const res = await api.post("/auth/register", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data; // { success, message, otp, data }
   } catch (error) {
     console.error("Register error:", error);
     throw error.response?.data || error;
   }
 };
-
-// Verify OTP
+ 
+// Verify OTP — { email, otp }
 export const verifyOTP = async (data) => {
   try {
-    const res = await api.post("/auth/verify-otp", data); // data = { phone, otp }
-    console.log("OTP Verification Response:", res);
-    return res.data;
+    const res = await api.post("/auth/verify-otp", data);
+    return res.data; // { success, message }
   } catch (error) {
     console.error("OTP verification error:", error);
     throw error.response?.data || error;
   }
 };
-
-// Resend OTP
+ 
+// Resend OTP — keyed by EMAIL, not phone
 export const resendOTP = async (data) => {
   try {
-    const res = await api.post("/auth/resend-otp", data); // data = { phone }
-    console.log("Resend OTP Response:", res);
-    return res.data;
+    const res = await api.post("/auth/resend", data); // { email }
+    return res.data; // { success, message, data }
   } catch (error) {
     console.error("Resend OTP error:", error);
     throw error.response?.data || error;
   }
 };
-
-// Login User - FIXED
+ 
+// Login User — { email, password } -> { success, message, token, user }
 export const loginUser = async (data) => {
   try {
     const res = await api.post("/auth/login", data);
-    console.log("Login API Response:", res);
-    
-    // The response is at the root level, not nested in data.data
-    // Check if the response has success and token directly
-    if (res.data?.success && res.data?.token) {
-      // Store auth token
-      localStorage.setItem("authToken", res.data.token);
-      if (res.data.user) {
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-      }
-      return res.data; // Return the whole response
-    } else {
-      // If the response is nested differently
-      return res.data;
-    }
+    return res.data;
   } catch (error) {
     console.error("Login error:", error);
     throw error.response?.data || error;
   }
 };
-
+ 
 // Logout User
 export const logoutUser = async () => {
   try {
     const res = await api.post("/auth/logout");
-    console.log("Logout Response:", res);
-    
-    // Clear auth data from localStorage
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
-    
     return res.data;
   } catch (error) {
     console.error("Logout error:", error);
-    // Still clear localStorage even if API fails
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("user");
     throw error.response?.data || error;
   }
 };
-
-// Forgot Password
-export const forgotPassword = async (data) => {
-  try {
-    const res = await api.post("/auth/forgot-password", data);
-    console.log("Forgot Password Response:", res);
-    return res.data;
-  } catch (error) {
-    console.error("Forgot password error:", error);
-    throw error.response?.data || error;
-  }
-};
-
-// Reset Password
+ 
+// Forget Password — single endpoint: { email, otp, password, confirmPassword }
 export const resetPassword = async (data) => {
   try {
-    const res = await api.post("/auth/reset-password", data);
-    console.log("Reset Password Response:", res);
-    return res.data;
+    const res = await api.post("/auth/forget-password", data);
+    return res.data; // { success, message, data }
   } catch (error) {
-    console.error("Reset password error:", error);
+    console.error("Forget password error:", error);
     throw error.response?.data || error;
   }
 };
-
-// Get Current User Profile
+ 
+// Get Current User Profile — flat user object
 export const getCurrentUser = async () => {
   try {
     const res = await api.get("/auth/me");
-    console.log("Get User Response:", res);
     return res.data;
   } catch (error) {
     console.error("Get user error:", error);
     throw error.response?.data || error;
   }
 };
-
-// Update User Profile
-export const updateUserProfile = async (data) => {
+ 
+// Update Profile Image — PATCH, multipart
+export const updateProfileImage = async (file) => {
   try {
-    const res = await api.put("/auth/profile", data);
-    console.log("Update Profile Response:", res);
-    
-    // Update stored user data
-    if (res.data?.success && res.data?.data) {
-      localStorage.setItem("user", JSON.stringify(res.data.data));
-    }
-    
-    return res.data;
+    const formData = new FormData();
+    formData.append("profile_image", file);
+ 
+    const res = await api.patch("/auth/update-profile-image", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data; // { success, message, data }
   } catch (error) {
-    console.error("Update profile error:", error);
+    console.error("Update profile image error:", error);
     throw error.response?.data || error;
   }
 };
-
-// Change Password
-export const changePassword = async (data) => {
-  try {
-    const res = await api.put("/auth/change-password", data);
-    console.log("Change Password Response:", res);
-    return res.data;
-  } catch (error) {
-    console.error("Change password error:", error);
-    throw error.response?.data || error;
-  }
-};
-
-
 
 
 

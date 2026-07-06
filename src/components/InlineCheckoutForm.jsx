@@ -5,6 +5,8 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useAddresses } from "../hooks/useAddresses";
 import { api, createOrder } from "../config/axios";
+
+
 const openRazorpay = async (data, setSuccess) => {
   console.log(data);
 console.log("Inside OpenR=azoprPay");
@@ -53,6 +55,8 @@ console.log("Inside OpenR=azoprPay");
   const rzp = new window.Razorpay(options);
   await rzp.open();
 };
+
+
 export default function InlineCheckoutForm({
   onBack,
   onOrderPlaced,

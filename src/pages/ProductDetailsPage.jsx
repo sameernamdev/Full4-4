@@ -378,11 +378,6 @@
 //   );
 // }
 
-
-
-
-
-
 import { useParams, Link } from "react-router-dom";
 import {
   Star,
@@ -397,6 +392,7 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Loader,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getProductId } from "../config/axios";
@@ -409,8 +405,6 @@ import { useReviews } from "../hooks/useReviews";
 export default function ProductDetailsPage() {
   const { id } = useParams();
   const { addToCart } = useCart();
-  const { vehiclecompat, loading: vehicleLoad } = useVehicleCompatibility(id);
-  const { reviews, loading: reviewsLoad } = useReviews(id);
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -423,6 +417,9 @@ export default function ProductDetailsPage() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { vehiclecompat, loading: vehicleLoad } =
+    useVehicleCompatibility(product);
+  const { reviews, loading: reviewsLoad } = useReviews(product?.id);
 
   // ─── ALL LOGIC UNCHANGED ──────────────────────────────
   const getImageUrl = (mediaItem) => {
@@ -441,6 +438,7 @@ export default function ProductDetailsPage() {
       setAdding(false);
     }
   };
+  // console.log(product);
 
   useEffect(() => {
     if (!id) return;
@@ -483,13 +481,13 @@ export default function ProductDetailsPage() {
 
   const goPrev = () => {
     setCurrentImageIndex((prev) =>
-      prev === 0 ? lightboxImages.length - 1 : prev - 1
+      prev === 0 ? lightboxImages.length - 1 : prev - 1,
     );
   };
 
   const goNext = () => {
     setCurrentImageIndex((prev) =>
-      prev === lightboxImages.length - 1 ? 0 : prev + 1
+      prev === lightboxImages.length - 1 ? 0 : prev + 1,
     );
   };
 
@@ -525,11 +523,13 @@ export default function ProductDetailsPage() {
     long_description,
     short_description,
     warranty_months,
-    brand_name
+    brand_name,
   } = product;
 
   const productName = name || "Product";
-  const productPrice = price ? `₹${Number(price).toLocaleString()}` : "Price on request";
+  const productPrice = price
+    ? `₹${Number(price).toLocaleString()}`
+    : "Price on request";
   const isInStock = is_available === 1 && available_stock > 0;
 
   const mainImageUrl =
@@ -594,7 +594,9 @@ export default function ProductDetailsPage() {
             <div>
               <span
                 className={`inline-block px-4 py-1.5 rounded-full text-sm font-semibold ${
-                  isInStock ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                  isInStock
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
                 }`}
               >
                 {isInStock ? "✓ In Stock" : "✗ Out of Stock"}
@@ -606,15 +608,19 @@ export default function ProductDetailsPage() {
                 <p className="text-sm text-gray-500 mt-1">Brand ID: {brand_id}</p>
               )} */}
 
-                 {brand_name && (
-                <p className="text-sm text-gray-500 mt-1">Brand Name: {brand_name}</p>
+              {brand_name && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Brand Name: {brand_name}
+                </p>
               )}
             </div>
 
             {/* ─── PRICE & CART ──────────────────────────────── */}
             <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <p className="text-sm text-gray-500 uppercase tracking-wide">Price</p>
+                <p className="text-sm text-gray-500 uppercase tracking-wide">
+                  Price
+                </p>
                 <span className="text-4xl font-bold text-red-600">
                   {productPrice}
                 </span>
@@ -661,16 +667,34 @@ export default function ProductDetailsPage() {
                 >
                   <Car size={16} className="inline mr-1" /> Compatibility
                 </button>
-                <button
-                  onClick={() => setActiveTab("reviews")}
-                  className={`pb-3 transition ${
-                    activeTab === "reviews"
-                      ? "border-b-2 border-red-500 text-red-600"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  <MessageCircle size={16} className="inline mr-1" /> Reviews ({reviews.length})
-                </button>
+
+
+                {reviewsLoad ? (
+                  <button
+                   disabled
+                    className={`pb-3 transition flex items-center gap-2 ${
+                      activeTab === "reviews"
+                        ? "border-b-2 border-red-500 text-red-600"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <MessageCircle size={16} className="inline mr-1" /> Reviews
+                    <div className="w-6 h-6 border-4 border-brand-red border-t-transparent rounded-full animate-spin mx-auto"></div>
+
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setActiveTab("reviews")}
+                    className={`pb-3 transition ${
+                      activeTab === "reviews"
+                        ? "border-b-2 border-red-500 text-red-600"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                  >
+                    <MessageCircle size={16} className="inline mr-1" /> Reviews
+                    ({reviews.length})
+                  </button>
+                )}
               </div>
             </div>
 
@@ -690,7 +714,9 @@ export default function ProductDetailsPage() {
                     </div>
                     <div className="flex justify-between border-b border-gray-200 pb-2">
                       <span className="text-gray-500">Weight</span>
-                      <span className="font-medium">{weight ? `${weight} kg` : "N/A"}</span>
+                      <span className="font-medium">
+                        {weight ? `${weight} kg` : "N/A"}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-500">Dimensions</span>
@@ -702,7 +728,9 @@ export default function ProductDetailsPage() {
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 mb-1">Full Description</h4>
+                    <h4 className="font-semibold text-gray-800 mb-1">
+                      Full Description
+                    </h4>
                     <p className="text-gray-600 leading-relaxed">
                       {long_description || "No description available."}
                     </p>
@@ -713,16 +741,24 @@ export default function ProductDetailsPage() {
                       <p className="text-xs text-gray-600">Free Shipping</p>
                     </div>
                     <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
-                      <ShieldCheck className="text-red-500 mx-auto mb-1" size={20} />
+                      <ShieldCheck
+                        className="text-red-500 mx-auto mb-1"
+                        size={20}
+                      />
                       <p className="text-xs text-gray-600">Genuine Product</p>
                     </div>
-                    {warranty_months?( <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
-                      <Star className="text-red-500 mx-auto mb-1" size={20} />
-                      <p className="text-xs text-gray-600">
-                        Premium quality {warranty_months && `(${warranty_months}month warranty)`}
-                      </p>
-                    </div>):""}
-                   
+                    {warranty_months ? (
+                      <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                        <Star className="text-red-500 mx-auto mb-1" size={20} />
+                        <p className="text-xs text-gray-600">
+                          Premium quality{" "}
+                          {warranty_months &&
+                            `(${warranty_months}month warranty)`}
+                        </p>
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
               )}
@@ -730,7 +766,9 @@ export default function ProductDetailsPage() {
               {activeTab === "compatibility" && (
                 <div>
                   {!vehicleLoad && vehiclecompat?.length === 0 ? (
-                    <p className="text-gray-500">No compatible vehicles found.</p>
+                    <p className="text-gray-500">
+                      No compatible vehicles found.
+                    </p>
                   ) : (
                     <div className="space-y-4">
                       {!vehicleLoad &&
@@ -755,7 +793,9 @@ export default function ProductDetailsPage() {
                               <h4 className="text-lg font-semibold text-gray-800">
                                 {v.make_name} {v.model_name}
                               </h4>
-                              <p className="text-gray-500">{v.generation_name}</p>
+                              <p className="text-gray-500">
+                                {v.generation_name}
+                              </p>
                               <p className="text-sm text-gray-400">
                                 {v.year_from} - {v.year_to ?? "Present"}
                               </p>
@@ -781,7 +821,8 @@ export default function ProductDetailsPage() {
                     <div className="space-y-6 max-h-96 overflow-y-auto pr-2">
                       {reviews.map((review) => {
                         // Extract image URLs from the review
-                        const reviewImages = review.images?.map((img) => img.url) || [];
+                        const reviewImages =
+                          review.images?.map((img) => img.url) || [];
                         return (
                           <div
                             key={review.id}
@@ -811,7 +852,9 @@ export default function ProductDetailsPage() {
                                 )} */}
                               </div>
                               <span className="text-sm text-gray-500">
-                                {new Date(review.created_at).toLocaleDateString("en-IN")}
+                                {new Date(review.created_at).toLocaleDateString(
+                                  "en-IN",
+                                )}
                               </span>
                             </div>
 
@@ -829,7 +872,9 @@ export default function ProductDetailsPage() {
                               ))}
                             </div>
 
-                            <p className="mt-3 text-gray-700 leading-7">{review.review}</p>
+                            <p className="mt-3 text-gray-700 leading-7">
+                              {review.review}
+                            </p>
 
                             {/* ─── Review Images with click-to-open lightbox ─── */}
                             {reviewImages.length > 0 && (
@@ -837,7 +882,9 @@ export default function ProductDetailsPage() {
                                 {reviewImages.map((url, idx) => (
                                   <button
                                     key={idx}
-                                    onClick={() => openLightbox(reviewImages, idx)}
+                                    onClick={() =>
+                                      openLightbox(reviewImages, idx)
+                                    }
                                     className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 hover:border-red-400 transition focus:outline-none focus:ring-2 focus:ring-red-300"
                                   >
                                     <img
@@ -865,7 +912,9 @@ export default function ProductDetailsPage() {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-xl font-bold text-red-600">{productPrice}</span>
+            <span className="text-xl font-bold text-red-600">
+              {productPrice}
+            </span>
             <span className="ml-2 text-sm text-gray-500">
               {isInStock ? "In stock" : "Out of stock"}
             </span>

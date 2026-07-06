@@ -164,7 +164,7 @@ export default function HomePage({ setPage }) {
   const statsRef = useRef(null);
   const { products, loading, error } = useProducts({is_front:true});
   const { brands } = useBrands();
-  const { categories } = useCategories({ is_front: true });
+  const { categories,loading:categoriesLoading } = useCategories({ is_front: true });
   // taking load state for categories
   const[load,setLoad]=useState(false)
 
@@ -381,7 +381,13 @@ export default function HomePage({ setPage }) {
               View All Categories
             </motion.button>
           </div>
-
+          {categoriesLoading?(
+            
+            <div className="flex items-center justify-center py-12">
+              <span className="text-brand-red">Loading Categories </span>&nbsp;<div className="w-8 h-8 border-4 border-brand-red border-t-transparent rounded-full animate-spin"></div>
+            
+          </div>
+          ):(
           <div className="grid grid-cols-12 gap-4 w-full">
            {load?"Loading....":( rows.map((row, rowIndex) => {
               // Determine column span for each item based on row length
@@ -394,6 +400,7 @@ export default function HomePage({ setPage }) {
 
               return (
                 <div
+
                   key={rowIndex}
                   className="col-span-12 grid grid-cols-12 gap-4"
                 >
@@ -433,6 +440,7 @@ export default function HomePage({ setPage }) {
             }))} 
           
           </div>
+          )}
         </div>
       </section>
 
@@ -599,7 +607,12 @@ export default function HomePage({ setPage }) {
               <Link to="/products"> View All</Link> <ArrowRight size={15} />
             </motion.button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          {loading?
+         <div className="flex items-center justify-center py-12">
+              <span className="text-brand-red">Loading products </span>&nbsp;<div className="w-8 h-8 border-4 border-brand-red border-t-transparent rounded-full animate-spin"></div>
+            
+          </div>:( <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {loading ? (
               "Loading....."
             ) : (
@@ -615,7 +628,9 @@ export default function HomePage({ setPage }) {
                 ))}
               </>
             )}
-          </div>
+          </div>)  
+        }
+         
         </div>
       </section>
 

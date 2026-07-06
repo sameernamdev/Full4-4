@@ -24,6 +24,7 @@ export default function CartPage() {
   const [couponSuccess, setCouponSuccess] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponLoading, setCouponLoading] = useState(false);
+  const [showCouponSection, setShowCouponSection] = useState(false);
 
   const handleRemove = (itemId) => {
     if (window.confirm("Are you sure you want to remove this item?")) {
@@ -188,8 +189,9 @@ export default function CartPage() {
                     <span className="text-green-600">Free</span>
                   </div>
 
+              
                   {/* Coupon Section */}
-                  <div className="border-t border-gray-200 pt-3 mt-3">
+                  {/* <div className="border-t border-gray-200 pt-3 mt-3">
                     <div className="flex items-center gap-2">
                       <Ticket size={16} className="text-gray-400" />
                       <span className="text-sm text-gray-500">Coupon</span>
@@ -227,7 +229,83 @@ export default function CartPage() {
                         Coupon {appliedCoupon.code} applied – ₹{appliedCoupon.discount} off
                       </p>
                     )}
-                  </div>
+                  </div> */}
+                  {/* Coupon Section */}
+<div className="border-t border-gray-200 pt-3 mt-3">
+  {!showCouponSection ? (
+    <button
+      onClick={() => setShowCouponSection(true)}
+      className="text-sm text-red-600 hover:text-red-700 font-medium transition"
+    >
+      Have a coupon code?
+    </button>
+  ) : (
+    <>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <Ticket size={16} className="text-gray-400" />
+          <span className="text-sm text-gray-500">Coupon</span>
+        </div>
+
+        {!appliedCoupon && (
+          <button
+            onClick={() => {
+              setShowCouponSection(false);
+              setCouponCode("");
+              setCouponError("");
+            }}
+            className="text-xs text-gray-500 hover:text-red-600"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          value={couponCode}
+          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+          placeholder="Enter coupon code"
+          className="flex-1 bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 text-sm focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
+          disabled={!!appliedCoupon || couponLoading}
+        />
+
+        {!appliedCoupon ? (
+          <button
+            onClick={handleApplyCoupon}
+            disabled={couponLoading}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition disabled:opacity-50"
+          >
+            {couponLoading ? "..." : "Apply"}
+          </button>
+        ) : (
+          <button
+            onClick={handleRemoveCoupon}
+            className="text-red-500 hover:text-red-700 transition p-1"
+          >
+            <X size={18} />
+          </button>
+        )}
+      </div>
+
+      {couponError && (
+        <p className="text-red-600 text-xs mt-1">{couponError}</p>
+      )}
+
+      {couponSuccess && (
+        <p className="text-green-600 text-xs mt-1">{couponSuccess}</p>
+      )}
+
+      {appliedCoupon && (
+        <p className="text-green-600 text-xs mt-1">
+          Coupon <strong>{appliedCoupon.code}</strong> applied – ₹
+          {appliedCoupon.discount} off
+        </p>
+      )}
+    </>
+  )}
+</div>
 
                   {discountAmount > 0 && (
                     <div className="flex justify-between text-green-600 border-t border-gray-200 pt-2 mt-2">
