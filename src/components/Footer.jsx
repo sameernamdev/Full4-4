@@ -1,5 +1,7 @@
 import { ChevronRight, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { CATEGORIES } from "../data/data";
+import { useNavigate } from "react-router-dom";
+import { useCategories } from "../hooks/useCatgories";
 
 const socials = [
   {
@@ -12,11 +14,11 @@ const socials = [
     href: "https://www.instagram.com/",
     path: "M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm5 6.2A3.8 3.8 0 1 0 12 15.8 3.8 3.8 0 0 0 12 8.2zm6-1.1a1.1 1.1 0 1 0-1.1 1.1A1.1 1.1 0 0 0 18 7.1z",
   },
-  {
-    label: "YouTube",
-    href: "https://www.youtube.com/",
-    path: "M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.5 12 4.5 12 4.5s-5.7 0-7.5.6a3 3 0 0 0-2.1 2.1A31 31 0 0 0 2 12a31 31 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.6 7.5.6 7.5.6s5.7 0 7.5-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 22 12a31 31 0 0 0-.4-4.8zM10 15.5v-7l6 3.5-6 3.5z",
-  },
+  // {
+  //   label: "YouTube",
+  //   href: "https://www.youtube.com/",
+  //   path: "M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.5 12 4.5 12 4.5s-5.7 0-7.5.6a3 3 0 0 0-2.1 2.1A31 31 0 0 0 2 12a31 31 0 0 0 .4 4.8 3 3 0 0 0 2.1 2.1c1.8.6 7.5.6 7.5.6s5.7 0 7.5-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 22 12a31 31 0 0 0-.4-4.8zM10 15.5v-7l6 3.5-6 3.5z",
+  // },
   {
     label: "X",
     href: "https://x.com/",
@@ -36,6 +38,8 @@ const contactItems = [
 ];
 
 export default function Footer({ setPage }) {
+  const{categories}=useCategories({is_front:true})
+  const navigate=useNavigate()
   return (
     // <footer className="bg-[#ece7db] border-t border-white/5 pt-20 pb-8">
     <footer className="bg-white border-t border-white/2 pt-20 pb-8">
@@ -45,12 +49,17 @@ export default function Footer({ setPage }) {
             <div className=" font-display text-3xl tracking-[0.08em] text-black mb-1">
               DRIVE <span className="text-brand-red">RANGER</span>
             </div>
-            <div className="font-label text-[9px] tracking-[0.3em] uppercase text-black mb-5">
+            <div className="font-label text-[10px] tracking-[0.3em] uppercase text-black font-extrabold mb-5">
               Car Parts & Accessories
             </div>
             <p className="font-body text-sm text-black leading-relaxed mb-6 max-w-xs">
-              India's most trusted online platform for genuine OEM and performance
-              car parts. Quality you can count on, delivery you can trust.
+              {/* India's most trusted online platform for genuine OEM and performance
+              car parts. Quality you can count on, delivery you can trust. */}
+
+              Among India's Leading Destinations for Genuine OEM & Performance Car Parts.
+Quality Assured. Nationwide Delivery. Trusted by Enthusiasts.
+
+
             </p>
             <div className="flex gap-2">
               {socials.map(({ label, href, path }) => (
@@ -76,13 +85,13 @@ export default function Footer({ setPage }) {
               Quick Links
             </h4>
             <ul className="space-y-3">
-              {["Home", "Products", "Brands", "About Us", "Contact", "Track Order"].map((l) => (
+              {["Home", "Products", "Brands", "About Us", "Contact",].map((l) => (
                 <li key={l}>
                   <button
                     type="button"
                     onClick={() => {
-                      const pages = { Home: "home", Products: "products", Brands: "brands", "About Us": "about", Contact: "contact" };
-                      if (pages[l]) setPage(pages[l]);
+                      const pages = { Home: "/", Products: "products", Brands: "brands", "About Us": "about", Contact: "contact" };
+                      if (pages[l]) navigate(pages[l]);
                     }}
                     className="font-body text-sm text-black hover:text-brand-red transition-colors flex items-center gap-2"
                   >
@@ -99,16 +108,17 @@ export default function Footer({ setPage }) {
               Categories
             </h4>
             <ul className="space-y-3">
-              {CATEGORIES.map((c) => (
-                <li key={c.name}>
+              {categories.map((c) => (
+                <li key={c.id}>
                   <button
                     type="button"
-                    onClick={() => setPage("products")}
+                    // onClick={() => navigate("products")}
+                    onClick={() => navigate(`/products?category=${c.id}`)}
                     className="font-body text-sm text-black hover:text-brand-red transition-colors flex items-center gap-2"
                   >
                     <ChevronRight size={12} className="text-brand-red" />
                     {c.name}
-                    <span className="text-[11px] text-white/20">({c.count})</span>
+                    {/* <span className="text-[11px] text-white/20">({c.count})</span> */}
                   </button>
                 </li>
               ))}

@@ -9,7 +9,7 @@ export default function ProductCard({ product, light = true }) {
   const { addToCart } = useCart();
 
   const [added, setAdded] = useState(false);
-  console.log(product)
+
   const handleCardClick = () => {
     navigate(`/products/${product.slug}`, {
       state: { product },

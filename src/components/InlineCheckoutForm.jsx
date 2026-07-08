@@ -5,11 +5,13 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useAddresses } from "../hooks/useAddresses";
 import { api, createOrder } from "../config/axios";
+import Swal from 'sweetalert2'
 
 
-const openRazorpay = async (data, setSuccess) => {
+const openRazorpay = async (data, setSuccess,onOrderPlaced, setLoading, fetchCart,onBack) => {
   console.log(data);
-console.log("Inside OpenR=azoprPay");
+  
+console.log("Inside OpenRazoprPay");
 
   const options = {
     key: data.key, // or import.meta.env.VITE_RAZORPAY_KEY
@@ -22,24 +24,38 @@ console.log("Inside OpenR=azoprPay");
     description: "Order Payment",
 
     handler: async function (response) {
-      console.log(response);
-      const verify = await api.post("/orders/verify-payment", {
-        razorpay_order_id: response.razorpay_order_id,
-        razorpay_payment_id: response.razorpay_payment_id,
-        razorpay_signature: response.razorpay_signature,
-      });
-
-      // if (verify.data.success) {
-      //   alert("Payment Successful");
-      // }
-      
-
-       if (verify.data.success) {
-        setSuccess(true);
-        if (onOrderPlaced) onOrderPlaced();
-        setTimeout(() => onBack(), 2000);
-      } else {
-        setError(response.message || "Failed to place order");
+      try {
+        setLoading(true)
+        console.log(response);
+        const verify = await api.post("/orders/verify-payment", {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        });
+  
+        // if (verify.data.success) {
+        //   alert("Payment Successful");
+        // }
+        
+  
+         if (verify.data.success) {
+          setSuccess(true);
+          Swal.fire({
+  title: 'Order Placed!',
+  text: 'Successfully',
+  icon: 'success',
+  confirmButtonText: 'Ok'
+})
+          if (onOrderPlaced) onOrderPlaced();
+          setTimeout(() => onBack(), 2000);
+        } else {
+          setError(response.message || "Failed to place order");
+        }
+      } catch (error) {
+        console.log(error);
+        
+      }finally{
+        setLoading(false)
       }
 
       // else {
@@ -54,6 +70,7 @@ console.log("Inside OpenR=azoprPay");
 
   const rzp = new window.Razorpay(options);
   await rzp.open();
+  fetchCart()
 };
 
 
@@ -230,7 +247,7 @@ export default function InlineCheckoutForm({
       const response = await createOrder(orderPayload);
       // console.log(response)
 
-      openRazorpay(response.data, setSuccess)
+      openRazorpay(response.data, setSuccess,onOrderPlaced, setLoading, fetchCart,onBack)
       
       // if (response.success) {
       //   setSuccess(true);
@@ -243,25 +260,37 @@ export default function InlineCheckoutForm({
     console.error("Order submission failed:", err);
       // setError(err.message || "Something went wrong");
     } finally {
+      console.log("HIIIIIIIII");
+      
       setLoading(false);
+
     }
   };
 
-  if (success) {
-    return (
-      <div className="text-center py-8">
-        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Truck size={40} className="text-green-600" />
-        </div>
-        <h3 className="text-2xl font-bold text-gray-800">Order Placed!</h3>
-        <p className="text-gray-600 mt-2">Your order has been placed successfully.</p>
-        <p className="text-gray-500 text-sm mt-4">Redirecting to summary...</p>
-      </div>
-    );
-  }
+  
+
+  
+  // if (success) {
+  //   return (
+  //     <div className="text-center py-8">
+  //       <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+  //         <Truck size={40} className="text-green-600" />
+  //       </div>
+  //       <h3 className="text-2xl font-bold text-gray-800">Order Placed!</h3>
+  //       <p className="text-gray-600 mt-2">Your order has been placed successfully.</p>
+  //       {/* <p className="text-gray-500 text-sm mt-4">Redirecting to summary...</p> */}
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-6">
+
+      {loading && (
+         <div className="flex items-center justify-between">
+             <h2 className="text-xl font-bold text-gray-800">Loading...</h2>
+          </div>
+      )}
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-800">Checkout</h2>
@@ -281,14 +310,22 @@ export default function InlineCheckoutForm({
             {cart.map((item) => {
               const productName = item.product?.name || item.product_name || "Product";
               const price = Number(item.current_price || item.price || 0);
-              const itemId = item.product_item_id || item.id;
+              // const itemId = item.product_item_id || item.id;  pehle product item id ja rahi thi ab product_id kar diya hai
+
+              const itemId = item.product_id || item.id;
               return (
+                <>
+              
                 <div key={itemId} className="flex justify-between text-sm text-gray-600">
                   <span>
                     {productName} × {item.quantity}
                   </span>
                   <span>₹{(price * item.quantity).toFixed(2)}</span>
                 </div>
+                   {/* <div>
+                    <img src={item.primary_image} alt="" />
+                  </div> */}
+                </>
               );
             })}
           </div>
@@ -340,55 +377,73 @@ export default function InlineCheckoutForm({
             </div>
           ) : (
             <>
-              {addresses.length > 0 ? (
-                <div className="space-y-3 max-h-60 overflow-y-auto">
-                  {addresses.map((addr) => (
-                    <div
-                      key={addr.id}
-                      className={`flex items-start gap-3 p-3 rounded-xl border transition ${
-                        selectedAddressId === addr.id
-                          ? "border-red-400 bg-red-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="address"
-                        value={addr.id}
-                        checked={selectedAddressId === addr.id}
-                        onChange={() => setSelectedAddressId(addr.id)}
-                        className="mt-1 text-red-600 cursor-pointer flex-shrink-0"
-                      />
-                      <div className="flex-1 text-sm">
-                        <p className="text-gray-800 font-medium">{addr.full_name}</p>
-                        <p className="text-gray-600">
-                          {addr.line1}
-                          {addr.line2 ? `, ${addr.line2}` : ""}
-                        </p>
-                        <p className="text-gray-600">
-                          {addr.city}, {addr.state} {addr.postal_code}
-                        </p>
-                        <p className="text-gray-600">{addr.country}</p>
-                        <p className="text-gray-600">Phone: {addr.phone}</p>
-                        {addr.is_default && (
-                          <span className="inline-block mt-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                            Default
-                          </span>
-                        )}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteAddress(addr.id, addr.full_name)}
-                        className="text-red-500 hover:text-red-700 transition p-1 flex-shrink-0"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-sm">No saved addresses found. Please add a new address.</p>
+           {addresses.length > 0 ? (
+  <>
+    {/* {console.log("Addresses:", addresses)} */}
+
+    <div className="space-y-3 max-h-60 overflow-y-auto">
+      {addresses.map((addr, index) => {
+        // console.log(`Address ${index}:`, addr);
+        // console.log("Address ID:", addr.id);
+
+        return (
+          <div
+            key={addr.id}
+            className={`flex items-start gap-3 p-3 rounded-xl border transition ${
+              selectedAddressId === addr.id
+                ? "border-red-400 bg-red-50"
+                : "border-gray-200 hover:border-gray-300"
+            }`}
+          >
+            <input
+              type="radio"
+              name="address"
+              value={addr.id}
+              checked={selectedAddressId === addr.id}
+              onChange={() => setSelectedAddressId(addr.id)}
+              className="mt-1 text-red-600 cursor-pointer flex-shrink-0"
+            />
+
+            <div className="flex-1 text-sm">
+              <p className="text-gray-800 font-medium">{addr.full_name}</p>
+
+              <p className="text-gray-600">
+                {addr.line1}
+                {addr.line2 ? `, ${addr.line2}` : ""}
+              </p>
+
+              <p className="text-gray-600">
+                {addr.city}, {addr.state} {addr.postal_code}
+              </p>
+
+              <p className="text-gray-600">{addr.country}</p>
+
+              <p className="text-gray-600">Phone: {addr.phone}</p>
+
+              {addr.is_default && (
+                <span className="inline-block mt-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                  Default
+                </span>
               )}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handleDeleteAddress(addr.id, addr.full_name)}
+              className="text-red-500 hover:text-red-700 transition p-1 flex-shrink-0"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  </>
+) : (
+  <p className="text-gray-500 text-sm">
+    No saved addresses found. Please add a new address.
+  </p>
+)}
 
               <button
                 type="button"
@@ -404,7 +459,7 @@ export default function InlineCheckoutForm({
             </>
           )}
         </div>
-
+          
         {/* New Address Form */}
         {showNewAddressForm && (
           <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 space-y-4">

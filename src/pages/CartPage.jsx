@@ -126,11 +126,18 @@ export default function CartPage() {
           {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {cart.map((item) => {
+              
               const productName = item.product?.name || item.product_name || "Product";
               const price = Number(item.current_price || item.price || 0);
               const image = item.product?.primary_image || item.primary_image || null;
               const itemId = item.product_id || item.id;
-
+// console.log("Cart Item Key:", itemId, item);
+// console.log({
+//   id: item.id,
+//   product_id: item.product_id,
+//   product_item_id: item.product_item_id,
+//   cart_item_id: item.cart_item_id,
+// });
               return (
                 <motion.div
                   key={itemId}

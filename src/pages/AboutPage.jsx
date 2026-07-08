@@ -116,20 +116,20 @@ export default function AboutPage() {
         <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
           <div className="reveal">
             <div className="font-body text-brand-red text-xs tracking-[0.3em] uppercase mb-3">/ Who We Are</div>
-            <h2 className="font-display text-5xl font-black text-brand-ink mb-8">POWERING INDIA'S<br /><span className="text-gradient">CAR CULTURE</span><br />SINCE 2009</h2>
+            <h2 className="font-display text-5xl font-black text-brand-ink mb-8">POWERING INDIA'S<br /><span className="text-gradient">CAR CULTURE</span><br />SINCE 2017</h2>
             <p className="font-body text-brand-ink/60 leading-relaxed mb-6">Drive Ranger was born from a simple frustration: finding genuine car parts in India was a nightmare. Counterfeit products, sky-high prices, and zero technical support. We decided to change that.</p>
-            <p className="font-body text-brand-ink/60 leading-relaxed mb-6">Starting with a small warehouse in Pune, we've grown into India's most trusted auto parts platform, stocking over 20,000 SKUs from 100+ global brands, serving customers from Kashmir to Kanyakumari.</p>
+            <p className="font-body text-brand-ink/60 leading-relaxed mb-6">we've grown into India's most trusted auto parts platform, stocking over 20,000 SKUs from 20+ global brands, serving customers from Kashmir to Kanyakumari.</p>
             <p className="font-body text-brand-ink/60 leading-relaxed">Our team of 150+ automotive enthusiasts and certified engineers work tirelessly to ensure every part we sell is 100% genuine, competitively priced, and backed by expert support.</p>
           </div>
           <div className="reveal">
             <div className="grid grid-cols-2 gap-4">
               {[
-                { year: '2009', event: 'Founded in Bhopal' },
-                { year: '2012', event: '10,000 SKUs milestone' },
-                { year: '2016', event: 'ISO 9001 Certification' },
-                { year: '2019', event: 'Pan-India expansion' },
-                { year: '2021', event: '12K+ customers served' },
-                { year: '2024', event: '40K+ parts, 20+ brands' },
+                { year: '2017', event: 'Founded in Bhopal' },
+                { year: '2023', event: '10,000 SKUs milestone' },
+                // { year: '2016', event: 'ISO 9001 Certification' },
+                { year: '2024', event: 'Pan-India expansion' },
+                { year: '2023', event: '16K+ customers served' },
+                // { year: '2024', event: '40K+ parts, 20+ brands' },
               ].map(({ year, event }) => (
                 <div key={year} className="bg-white border border-brand-ink/10 rounded-xl p-5 hover:border-brand-red/30 transition-all">
                   <div className="font-display text-2xl font-black text-brand-red mb-1">{year}</div>
@@ -150,7 +150,7 @@ export default function AboutPage() {
             {[
               { icon: Shield, title: 'Authenticity First', desc: 'We maintain a zero-tolerance policy for counterfeit parts. Every product is verified with the manufacturer before it hits our shelves.' },
               { icon: Users, title: 'Customer Obsessed', desc: 'Our team of certified engineers is available 6 days a week to help you find the right part and ensure perfect fitment.' },
-              { icon: Zap, title: 'Speed & Reliability', desc: 'From order to delivery, we move fast. 95% of our orders are dispatched within 24 hours, reaching you in 2-5 days.' },
+              { icon: Zap, title: 'Speed & Reliability', desc: 'From order to delivery, we move fast. 95% of our orders are dispatched within 24 hours, reaching you in 5-6 days.' },
             ].map(({ icon: Icon, title, desc }) => (
               <div key={title} className="reveal relative overflow-hidden  border border-brand-red rounded-2xl p-8 text-center text-black shadow-2xl shadow-brand-red/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-brand-red/35">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_35%)]" />
@@ -167,7 +167,7 @@ export default function AboutPage() {
         {/* Stats strip */}
         <div className="reveal rounded-3xl p-12 bg-white border border-brand-ink/10 shadow-xl shadow-brand-ink/5">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {[['40K+', 'Parts in Stock'], ['20+', 'Brand Partners'], ['17 Yrs', 'In Business'], ['12K+', 'Happy Customers']].map(([v, l]) => (
+            {[['15K+', 'Parts in Stock'], ['20+', 'Brand Partners'], ['9 Yrs', 'In Business'], ['16K+', 'Happy Customers']].map(([v, l]) => (
               <div key={l}>
                 <div className="font-display text-4xl font-black text-gradient mb-2">{v}</div>
                 <div className="font-body text-brand-ink/55 text-sm">{l}</div>

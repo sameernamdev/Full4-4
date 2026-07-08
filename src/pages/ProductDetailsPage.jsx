@@ -402,6 +402,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { useVehicleCompatibility } from "../hooks/useVehicleCompatibility";
 import { useReviews } from "../hooks/useReviews";
 
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Thumbs } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/thumbs';
+
 export default function ProductDetailsPage() {
   const { id } = useParams();
   const { addToCart } = useCart();
@@ -412,13 +418,13 @@ export default function ProductDetailsPage() {
   const [adding, setAdding] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [activeTab, setActiveTab] = useState("description");
+  
 
   // ── Lightbox state (UI only) ──
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const { vehiclecompat, loading: vehicleLoad } =
-    useVehicleCompatibility(product);
+  const { vehiclecompat, loading: vehicleLoad } =useVehicleCompatibility(product);
   const { reviews, loading: reviewsLoad } = useReviews(product?.id);
 
   // ─── ALL LOGIC UNCHANGED ──────────────────────────────
@@ -524,6 +530,7 @@ export default function ProductDetailsPage() {
     short_description,
     warranty_months,
     brand_name,
+    is_universal
   } = product;
 
   const productName = name || "Product";
@@ -532,6 +539,7 @@ export default function ProductDetailsPage() {
     : "Price on request";
   const isInStock = is_available === 1 && available_stock > 0;
 
+  
   const mainImageUrl =
     selectedImage?.image_url ||
     (media.length > 0 ? media[0].image_url : null) ||
@@ -668,7 +676,7 @@ export default function ProductDetailsPage() {
                   <Car size={16} className="inline mr-1" /> Compatibility
                 </button>
 
-
+                
                 {reviewsLoad ? (
                   <button
                    disabled
@@ -682,7 +690,7 @@ export default function ProductDetailsPage() {
                     <div className="w-6 h-6 border-4 border-brand-red border-t-transparent rounded-full animate-spin mx-auto"></div>
 
                   </button>
-                ) : (
+                ) : (!reviewsLoad && reviews.length > 0)? (
                   <button
                     onClick={() => setActiveTab("reviews")}
                     className={`pb-3 transition ${
@@ -694,7 +702,7 @@ export default function ProductDetailsPage() {
                     <MessageCircle size={16} className="inline mr-1" /> Reviews
                     ({reviews.length})
                   </button>
-                )}
+                ): null}
               </div>
             </div>
 
@@ -762,53 +770,75 @@ export default function ProductDetailsPage() {
                   </div>
                 </div>
               )}
+{activeTab === "compatibility" && (
+  <div>
+    {is_universal === 1 ? (
+      <div className="bg-green-50 border border-green-200 rounded-xl p-6 flex items-start gap-4">
+        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+          <Car className="text-green-600" size={24} />
+        </div>
 
-              {activeTab === "compatibility" && (
-                <div>
-                  {!vehicleLoad && vehiclecompat?.length === 0 ? (
-                    <p className="text-gray-500">
-                      No compatible vehicles found.
-                    </p>
-                  ) : (
-                    <div className="space-y-4">
-                      {!vehicleLoad &&
-                        vehiclecompat?.map((v) => (
-                          <div
-                            key={v.id}
-                            className="bg-white border border-gray-200 rounded-xl p-4 flex gap-4 items-center shadow-sm"
-                          >
-                            <img
-                              src={v.make_logo_url}
-                              alt={v.make_name}
-                              className="w-14 h-14 rounded-full object-cover bg-gray-100"
-                            />
-                            {v.model_image_url && (
-                              <img
-                                src={v.model_image_url}
-                                alt={v.model_name}
-                                className="w-24 h-16 rounded-lg object-cover"
-                              />
-                            )}
-                            <div className="flex-1">
-                              <h4 className="text-lg font-semibold text-gray-800">
-                                {v.make_name} {v.model_name}
-                              </h4>
-                              <p className="text-gray-500">
-                                {v.generation_name}
-                              </p>
-                              <p className="text-sm text-gray-400">
-                                {v.year_from} - {v.year_to ?? "Present"}
-                              </p>
-                              <p className="text-sm text-red-500">
-                                Country: {v.make_country}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  )}
-                </div>
-              )}
+        <div>
+          <h3 className="text-lg font-semibold text-green-700">
+            Universal Product
+          </h3>
+
+          <p className="text-gray-600 mt-1">
+            This product is universal and is not limited to any specific
+            vehicle make or model. It can be used with all compatible vehicles.
+          </p>
+        </div>
+      </div>
+    ) : vehicleLoad ? (
+      <div className="flex justify-center py-8">
+        <Loader className="animate-spin text-red-500" size={30} />
+      </div>
+    ) : vehiclecompat?.length === 0 ? (
+      <p className="text-gray-500">
+        No compatible vehicles found.
+      </p>
+    ) : (
+      <div className="space-y-4">
+        {vehiclecompat.map((v) => (
+          <div
+            key={v.id}
+            className="bg-white border border-gray-200 rounded-xl p-4 flex gap-4 items-center shadow-sm"
+          >
+            <img
+              src={v.make_logo_url}
+              alt={v.make_name}
+              className="w-14 h-14 rounded-full object-cover bg-gray-100"
+            />
+
+            {v.model_image_url && (
+              <img
+                src={v.model_image_url}
+                alt={v.model_name}
+                className="w-24 h-16 rounded-lg object-cover"
+              />
+            )}
+
+            <div className="flex-1">
+              <h4 className="text-lg font-semibold">
+                {v.make_name} {v.model_name}
+              </h4>
+
+              <p className="text-gray-500">{v.generation_name}</p>
+
+              <p className="text-sm text-gray-400">
+                {v.year_from} - {v.year_to ?? "Present"}
+              </p>
+
+              <p className="text-sm text-red-500">
+                Country: {v.make_country}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
 
               {/* ─── REVIEWS TAB ──────────────────────────────── */}
               {activeTab === "reviews" && (

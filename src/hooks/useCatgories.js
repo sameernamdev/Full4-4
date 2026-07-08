@@ -10,7 +10,7 @@ export const useCategories = (params={}) => {
     const fetchCategories = async () => {
       try {
         const data = await getallcategories(params);
-        console.log(data);
+       
         setCategories(data);
       } catch (err) {
         setError(err);

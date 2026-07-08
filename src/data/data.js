@@ -1,11 +1,11 @@
-export const NAV_LINKS = [
-  { label: "Home",     page: "" },
-  { label: "Products", page: "products", sub: ["Engine Parts","Suspension","Brakes","Electrical","Body Parts","Wheels & Tyres"] },
-  { label: "Brands",   page: "brands" },
-  { label: "About Us", page: "about" },
-  { label: "Contact",  page: "contact" },
+// export const NAV_LINKS = [
+//   { label: "Home",     page: "" },
+//   { label: "Products", page: "products", sub: ["Engine Parts","Suspension","Brakes","Electrical","Body Parts","Wheels & Tyres"] },
+//   { label: "Brands",   page: "brands" },
+//   { label: "About Us", page: "about" },
+//   { label: "Contact",  page: "contact" },
   
-];
+// ];
 
 export const PRODUCTS = [
   { id:1, name:"Performance Brake Pads",    brand:"Brembo",   category:"Brakes",        price:4299,  oldPrice:5999,  rating:4.8, reviews:234, badge:"Best Seller", compatible:"Universal Fit",
@@ -47,10 +47,10 @@ export const CATEGORIES = [
 ];
 
 export const STATS = [
-  { value:40000, suffix:"+",  label:"Parts in Stock" },
+  { value:15000, suffix:"+",  label:"Parts in Stock" },
   { value:20,   suffix:"+",  label:"Trusted Brands" },
-  { value:2500, suffix:"+",  label:"Happy Customers" },
-  { value:17,    suffix:"Yr", label:"Experience" },
+  { value:16000, suffix:"+",  label:"Happy Customers" },
+  { value:9,    suffix:"Yr", label:"Experience" },
 ];
 
 export const TESTIMONIALS = [
