@@ -2,7 +2,8 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import {
   Menu, X, ShoppingCart, User, LogOut, Settings,
   UserCircle, ChevronRight, ShoppingBag, Star, Shield,
-  ChevronDown, ChevronUp
+  ChevronDown, ChevronUp,
+  Ticket
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -232,6 +233,8 @@ export default function Navbar() {
                 Contact
               </Link>
             </li>
+
+            
           </ul>
 
           {/* Right Side */}
@@ -421,6 +424,11 @@ export default function Navbar() {
               <button onClick={() => { setProfileOpen(false); navigate("/my-reviews"); }} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white">
                 <Star size={22} /> <span className="flex-1 text-left">My Reviews</span> <ChevronRight size={18} />
               </button>
+
+                <button onClick={() => { setProfileOpen(false); navigate("/coupons"); }} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white">
+      <Ticket size={22} /> <span className="flex-1 text-left">My Coupons</span> <ChevronRight size={18} />
+    </button>
+
               <div className="border-t border-white/10 my-4" />
               <button onClick={handleLogout} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-red-500/10 transition text-red-400">
                 <LogOut size={22} /> <span className="flex-1 text-left font-semibold">Logout</span> <ChevronRight size={18} />

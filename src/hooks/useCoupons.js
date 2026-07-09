@@ -1,25 +1,37 @@
-import { useEffect, useState } from "react"
-import { getcoupons } from "../config/axios"
+import { useEffect, useState } from "react";
+import { getcoupons } from "../config/axios";
 
-export const useCoupons=()=>{
-    const [coupons,setCoupons]=useState([])
-    const [loading,setLoading]=useState(false)
+export const useCoupons = () => {
+  const [coupons, setCoupons] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    useEffect(()=>{
-        const fecthCoupons=async()=>{
-            try {
-                setLoading(true)
-                const data=await getcoupons()
-                setCoupons(data)
-                console.log(data)
-            }
-            catch (err) {
+  useEffect(() => {
+    const fetchCoupons = async () => {
+      try {
+        setLoading(true);
+
+        const response = await getcoupons();
+
+        if (response?.success) {
+          setCoupons(response.data || []);
+        } else {
+          setCoupons([]);
+        }
+      } catch (err) {
         console.log(err);
+        setError(err);
       } finally {
         setLoading(false);
       }
-        }
-        fecthCoupons()
-    },[])
-    return{coupons,loading}
-}
+    };
+
+    fetchCoupons();
+  }, []);
+
+  return {
+    coupons,
+    loading,
+    error,
+  };
+};

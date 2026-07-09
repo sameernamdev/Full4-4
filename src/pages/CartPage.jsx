@@ -88,7 +88,24 @@ export default function CartPage() {
     setCouponError("");
   };
 
-  const finalTotal = totalPrice - discountAmount;
+
+  const totalTax = cart.reduce((total, item) => {
+  const price = Number(item.current_price || item.price || 0);
+  const itemSubtotal = price * item.quantity;
+
+  const itemDiscount =
+    totalPrice > 0 ? (itemSubtotal / totalPrice) * discountAmount : 0;
+
+  const taxableAmount = itemSubtotal - itemDiscount;
+
+  const itemTax =
+    (taxableAmount * Number(item.tax_percentage || 0)) / 100;
+
+  return total + itemTax;
+}, 0);
+
+const finalTotal = totalPrice - discountAmount + totalTax;
+  // const finalTotal = totalPrice - discountAmount;
 
   // Cart empty check – light themed
   if (!cart || cart.length === 0) {
@@ -131,6 +148,7 @@ export default function CartPage() {
               const price = Number(item.current_price || item.price || 0);
               const image = item.product?.primary_image || item.primary_image || null;
               const itemId = item.product_id || item.id;
+              
 // console.log("Cart Item Key:", itemId, item);
 // console.log({
 //   id: item.id,
@@ -181,7 +199,8 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary / Checkout Inline – light card */}
-          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-md h-fit sticky top-28">
+          {/* <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-md h-fit sticky top-28"> */}
+          <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-md h-fit lg:sticky lg:top-28 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
             {!showCheckout ? (
               // -------- SUMMARY VIEW --------
               <>
@@ -192,9 +211,13 @@ export default function CartPage() {
                     <span>₹{totalPrice.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
+  <span>Tax</span>
+  <span>₹{totalTax.toFixed(2)}</span>
+</div>
+                  {/* <div className="flex justify-between">
                     <span>Shipping</span>
                     <span className="text-green-600">Free</span>
-                  </div>
+                  </div> */}
 
               
                   {/* Coupon Section */}
@@ -351,6 +374,8 @@ export default function CartPage() {
                 }}
                 couponDiscount={discountAmount}   // already a number
                 couponCode={appliedCoupon?.code || null}
+                 taxAmount={totalTax}
+  finalTotal={finalTotal}
               />
             )}
           </div>

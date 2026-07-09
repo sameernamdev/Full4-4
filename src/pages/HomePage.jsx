@@ -162,7 +162,8 @@ export default function HomePage() {
   useReveal();
   const [statsVisible, setStatsVisible] = useState(false);
   const statsRef = useRef(null);
-  const { products, loading, error } = useProducts({ is_front: true });
+  // const { products, loading, error } = useProducts({ is_front: true });
+  const { products, loading, error } = useProducts({ is_featured: true });
   const { brands } = useBrands();
   const { categories, loading: categoriesLoading } = useCategories({
     is_front: true,
@@ -170,7 +171,7 @@ export default function HomePage() {
   // taking load state for categories
   const [load, setLoad] = useState(false);
 
-  const categoriesToShow = categories.slice(0);
+  const categoriesToShow = categories.slice();
 
   // Build rows
   const rowSizes = getRowSizes(categoriesToShow.length);
@@ -227,7 +228,7 @@ export default function HomePage() {
       <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-screen">
         <div className="absolute inset-0">
           <motion.img
-            src="/hero.jpeg"
+            src="/newhero.png"
             alt="Sports Car"
             fetchPriority="high"
             decoding="async"
@@ -414,12 +415,14 @@ export default function HomePage() {
                         {row.map((item, itemIndex) => (
                           <Link
                             className={`col-span-12 ${spanClass} h-[320px] relative overflow-hidden group`}
-                            to={`/products?category=${item.id}`}
+                            // to={`/products?${item.slug}`}
+                            // to={`/products?category=${item.id}`}
+                           to={`/products?category=${item.slug}&category_id=${item.id}`}
                             key={item.id}
                           >
                             {console.log(item.id)}
                             <motion.div
-                              onClick={() => handleCategoryClick(item.id)}
+                              onClick={() => handleCategoryClick(item.slug)}
                               // whileHover={{ scale: 1.02 }}
                               className="h-full"
                             >
@@ -839,18 +842,22 @@ export default function HomePage() {
               GLOBAL BRANDS
             </h2>
           </div>
-          <div className="overflow-hidden mb-8 reveal">
-            <div className="brands-track">
-              {brandsDouble.map((b, i) => (
-                <div
-                  key={i}
-                  className="flex-shrink-0 px-8 py-5 border border-white/10 bg-white/[0.03] mx-2 font-display text-[20px] tracking-[0.1em] text-white/45 hover:text-brand-red hover:border-brand-red hover:bg-brand-red/10 cursor-pointer transition-all duration-300 whitespace-nowrap"
-                >
-                  {b}
-                </div>
-              ))}
-            </div>
-          </div>
+     <div className="overflow-hidden mb-8 reveal">
+  <div className="brands-track">
+    {brands.map((b) => (
+      <div
+        key={b.id}
+        className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl border border-white/10  p-4 hover:border-brand-red hover:bg-white/10 transition-all duration-300"
+      >
+        <img
+          src={b.logo_url}
+          alt={b.name}
+          className="max-h-16 w-auto object-contain  hover:grayscale-0 transition duration-300"
+        />
+      </div>
+    ))}
+  </div>
+</div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 reveal">
             {BRAND_PHOTOS.map((photo, i) => (
               <div

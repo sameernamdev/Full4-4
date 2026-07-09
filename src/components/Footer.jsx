@@ -113,7 +113,10 @@ Quality Assured. Nationwide Delivery. Trusted by Enthusiasts.
                   <button
                     type="button"
                     // onClick={() => navigate("products")}
-                    onClick={() => navigate(`/products?category=${c.id}`)}
+                    // onClick={() => navigate(`/products?category=${c.id}`)}
+                     onClick={() =>
+    navigate(`/products?category=${c.slug}&category_id=${c.id}`)
+  }
                     className="font-body text-sm text-black hover:text-brand-red transition-colors flex items-center gap-2"
                   >
                     <ChevronRight size={12} className="text-brand-red" />

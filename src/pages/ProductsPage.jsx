@@ -550,7 +550,7 @@ export default function ProductsPage() {
     page: 1,
     limit: 10,
     brand_id: brandIdFromUrl,
-    category_id: searchParams.get("category") || "",
+    category_id: searchParams.get("category_id") || "",
     sub_category_id: null,
     search: "",
     sort_by: "",
@@ -570,7 +570,7 @@ export default function ProductsPage() {
 
   // ─── Sync URL params to filters ──────────────────────
   useEffect(() => {
-    const categoryId = searchParams.get("category") || undefined;
+    const categoryId = searchParams.get("category_id") || undefined;
 
     const subcategoryId = searchParams.get("subcategory");
     const brandId = searchParams.get("brandId");

@@ -77,7 +77,7 @@ export default function BrandsPage({ setPage }) {
             // onClick={() => navigate(`/products?brandId=${brand.id}`)}
               className="reveal bg-gray-50 border border-white/10 rounded-2xl p-8 text-center group hover:border-brand-red/60  hover:shadow-xl hover:shadow-brand-red/15 transition-all duration-300"
               style={{ transitionDelay: `${i * 0.1}s` }}>
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 font-display text-2xl font-black text-black group-hover:scale-110 transition-transform" style={{ background: `${brand.color}55` }}>
+              <div className="w-32 h-16 rounded-full flex items-center justify-center mx-auto mb-4 font-display text-2xl font-black text-black group-hover:scale-110 transition-transform" style={{ background: `${brand.color}55` }}>
                 
                 {brand?.logo_url ? (  <img src={brand.logo_url} alt="" />): (  brand.name[0] )}
 

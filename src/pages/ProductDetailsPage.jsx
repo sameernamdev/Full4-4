@@ -402,11 +402,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { useVehicleCompatibility } from "../hooks/useVehicleCompatibility";
 import { useReviews } from "../hooks/useReviews";
 
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Thumbs } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/thumbs';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/navigation";
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
@@ -418,13 +418,13 @@ export default function ProductDetailsPage() {
   const [adding, setAdding] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [activeTab, setActiveTab] = useState("description");
-  
 
-  // ── Lightbox state (UI only) ──
+  const [mainSwiper, setMainSwiper] = useState(null); // ── Lightbox state (UI only) ──
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const { vehiclecompat, loading: vehicleLoad } =useVehicleCompatibility(product);
+  const { vehiclecompat, loading: vehicleLoad } =
+    useVehicleCompatibility(product);
   const { reviews, loading: reviewsLoad } = useReviews(product?.id);
 
   // ─── ALL LOGIC UNCHANGED ──────────────────────────────
@@ -530,7 +530,8 @@ export default function ProductDetailsPage() {
     short_description,
     warranty_months,
     brand_name,
-    is_universal
+    is_universal,
+    tax_percentage
   } = product;
 
   const productName = name || "Product";
@@ -539,7 +540,6 @@ export default function ProductDetailsPage() {
     : "Price on request";
   const isInStock = is_available === 1 && available_stock > 0;
 
-  
   const mainImageUrl =
     selectedImage?.image_url ||
     (media.length > 0 ? media[0].image_url : null) ||
@@ -557,41 +557,62 @@ export default function ProductDetailsPage() {
           <ArrowLeft size={18} />
           Back to Products
         </Link>
-
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+{/* grid lg:grid-cols-2 gap-8 lg:gap-12 */}
+        <div className="grid lg:grid-cols-2 gap-10 grid-cols-1">
           {/* ─── LEFT: Image Gallery ─────────────────────────── */}
-          <div>
-            <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 aspect-square w-full max-h-[550px] flex items-center justify-center">
-              <img
-                src={mainImageUrl}
-                alt={productName}
-                className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-              />
-            </div>
-            {media.length > 0 && (
-              <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-thin">
-                {media.map((item) => {
-                  const thumbUrl = item.image_url;
-                  if (!thumbUrl) return null;
-                  const isActive = selectedImage?.id === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleThumbnailClick(item)}
-                      className={`w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                        isActive
-                          ? "border-red-500 shadow-md scale-95"
-                          : "border-gray-200 hover:border-gray-400 hover:scale-105"
-                      }`}
-                    >
-                      <img
-                        src={thumbUrl}
-                        alt={`Thumb ${item.id}`}
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  );
-                })}
+          <div className="w-full min-h-60">
+            <Swiper
+              modules={[Navigation]}
+              navigation
+              onSwiper={setMainSwiper}
+              spaceBetween={10}
+              slidesPerView={1}
+              loop={media.length > 1}
+              className="rounded-2xl border border-gray-200 overflow-hidden shadow-lg"
+            >
+              {(media.length
+                ? media
+                : [
+                    {
+                      id: "default",
+                      image_url:
+                        "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png",
+                    },
+                  ]
+              ).map((item, index) => (
+                <SwiperSlide key={item.id ?? index}>
+                  <img
+                    src={item.image_url}
+                    alt={productName}
+                    className="w-full aspect-square object-cover cursor-pointer"
+                    onClick={() =>
+                      openLightbox(
+                        media.length
+                          ? media.map((m) => m.image_url)
+                          : [item.image_url],
+                        index,
+                      )
+                    }
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+
+            {media.length > 1 && (
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 mt-3">
+                {media.map((item, index) => (
+                  <button
+                    key={item.id}
+                    onClick={() => mainSwiper?.slideToLoop(index)}
+                    className="overflow-hidden rounded-lg border border-gray-200 hover:border-red-500"
+                  >
+                    <img
+                      src={item.image_url}
+                      alt=""
+                      className="w-full h-20 object-cover"
+                    />
+                  </button>
+                ))}
               </div>
             )}
           </div>
@@ -624,14 +645,15 @@ export default function ProductDetailsPage() {
             </div>
 
             {/* ─── PRICE & CART ──────────────────────────────── */}
-            <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-5 flex flex-wrap items-center justify-between gap-4">
+            <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-4 flex flex-wrap items-center justify-between gap-4">
               <div>
                 <p className="text-sm text-gray-500 uppercase tracking-wide">
                   Price
                 </p>
-                <span className="text-4xl font-bold text-red-600">
+                <span className="text-3xl font-bold text-red-600">
                   {productPrice}
                 </span>
+                
                 {/* {isInStock && (
                   <p className="text-sm text-gray-500 mt-1">
                     {available_stock} available
@@ -641,7 +663,7 @@ export default function ProductDetailsPage() {
               <button
                 onClick={handleAddToCart}
                 disabled={!isInStock || adding}
-                className={`flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-white transition-all ${
+                className={`flex items-center gap-2 px-8 py-2.5 rounded-xl font-bold text-white transition-all ${
                   isInStock
                     ? "bg-red-600 hover:bg-red-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     : "bg-gray-300 cursor-not-allowed"
@@ -676,10 +698,9 @@ export default function ProductDetailsPage() {
                   <Car size={16} className="inline mr-1" /> Compatibility
                 </button>
 
-                
                 {reviewsLoad ? (
                   <button
-                   disabled
+                    disabled
                     className={`pb-3 transition flex items-center gap-2 ${
                       activeTab === "reviews"
                         ? "border-b-2 border-red-500 text-red-600"
@@ -688,9 +709,8 @@ export default function ProductDetailsPage() {
                   >
                     <MessageCircle size={16} className="inline mr-1" /> Reviews
                     <div className="w-6 h-6 border-4 border-brand-red border-t-transparent rounded-full animate-spin mx-auto"></div>
-
                   </button>
-                ) : (!reviewsLoad && reviews.length > 0)? (
+                ) : !reviewsLoad && reviews.length > 0 ? (
                   <button
                     onClick={() => setActiveTab("reviews")}
                     className={`pb-3 transition ${
@@ -702,7 +722,7 @@ export default function ProductDetailsPage() {
                     <MessageCircle size={16} className="inline mr-1" /> Reviews
                     ({reviews.length})
                   </button>
-                ): null}
+                ) : null}
               </div>
             </div>
 
@@ -770,75 +790,76 @@ export default function ProductDetailsPage() {
                   </div>
                 </div>
               )}
-{activeTab === "compatibility" && (
-  <div>
-    {is_universal === 1 ? (
-      <div className="bg-green-50 border border-green-200 rounded-xl p-6 flex items-start gap-4">
-        <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-          <Car className="text-green-600" size={24} />
-        </div>
+              {activeTab === "compatibility" && (
+                <div>
+                  {is_universal === 1 ? (
+                    <div className="bg-green-50 border border-green-200 rounded-xl p-6 flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                        <Car className="text-green-600" size={24} />
+                      </div>
 
-        <div>
-          <h3 className="text-lg font-semibold text-green-700">
-            Universal Product
-          </h3>
+                      <div>
+                        <h3 className="text-lg font-semibold text-green-700">
+                          Universal Product
+                        </h3>
 
-          <p className="text-gray-600 mt-1">
-            This product is universal and is not limited to any specific
-            vehicle make or model. It can be used with all compatible vehicles.
-          </p>
-        </div>
-      </div>
-    ) : vehicleLoad ? (
-      <div className="flex justify-center py-8">
-        <Loader className="animate-spin text-red-500" size={30} />
-      </div>
-    ) : vehiclecompat?.length === 0 ? (
-      <p className="text-gray-500">
-        No compatible vehicles found.
-      </p>
-    ) : (
-      <div className="space-y-4">
-        {vehiclecompat.map((v) => (
-          <div
-            key={v.id}
-            className="bg-white border border-gray-200 rounded-xl p-4 flex gap-4 items-center shadow-sm"
-          >
-            <img
-              src={v.make_logo_url}
-              alt={v.make_name}
-              className="w-14 h-14 rounded-full object-cover bg-gray-100"
-            />
+                        <p className="text-gray-600 mt-1">
+                          This product is universal and is not limited to any
+                          specific vehicle make or model. It can be used with
+                          all compatible vehicles.
+                        </p>
+                      </div>
+                    </div>
+                  ) : vehicleLoad ? (
+                    <div className="flex justify-center py-8">
+                      <Loader className="animate-spin text-red-500" size={30} />
+                    </div>
+                  ) : vehiclecompat?.length === 0 ? (
+                    <p className="text-gray-500">
+                      No compatible vehicles found.
+                    </p>
+                  ) : (
+                    <div className="space-y-4">
+                      {vehiclecompat.map((v) => (
+                        <div
+                          key={v.id}
+                          className="bg-white border border-gray-200 rounded-xl p-4 flex gap-4 items-center shadow-sm"
+                        >
+                          <img
+                            src={v.make_logo_url}
+                            alt={v.make_name}
+                            className="w-14 h-14 rounded-full object-cover bg-gray-100"
+                          />
 
-            {v.model_image_url && (
-              <img
-                src={v.model_image_url}
-                alt={v.model_name}
-                className="w-24 h-16 rounded-lg object-cover"
-              />
-            )}
+                          {v.model_image_url && (
+                            <img
+                              src={v.model_image_url}
+                              alt={v.model_name}
+                              className="w-24 h-16 rounded-lg object-cover"
+                            />
+                          )}
 
-            <div className="flex-1">
-              <h4 className="text-lg font-semibold">
-                {v.make_name} {v.model_name}
-              </h4>
+                          <div className="flex-1">
+                            <h4 className="text-lg font-semibold">
+                              {v.make_name} {v.model_name}
+                            </h4>
 
-              <p className="text-gray-500">{v.generation_name}</p>
+                            <p className="text-gray-500">{v.generation_name}</p>
 
-              <p className="text-sm text-gray-400">
-                {v.year_from} - {v.year_to ?? "Present"}
-              </p>
+                            <p className="text-sm text-gray-400">
+                              {v.year_from} - {v.year_to ?? "Present"}
+                            </p>
 
-              <p className="text-sm text-red-500">
+                            {/* <p className="text-sm text-red-500">
                 Country: {v.make_country}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-)}
+              </p> */}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* ─── REVIEWS TAB ──────────────────────────────── */}
               {activeTab === "reviews" && (

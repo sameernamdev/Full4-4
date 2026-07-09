@@ -18,6 +18,7 @@ import ProfilePage from "../pages/ProfilePage";
 import MyReviewsPage from "../pages/MyReviewsPage";
 import WarrantyPage from "../pages/WarrantyPage";
 import ForgotPasswordPage from "../pages/login/ForgotPasswordPage";
+import Coupons from "../pages/Coupons";
 
 function AppRoutes() {
   return (
@@ -43,6 +44,8 @@ function AppRoutes() {
         <Route path="/profile" element={<ProfilePage/>}/>
         <Route path="/my-reviews" element={<MyReviewsPage/>}/>
         <Route path="/my-warranties" element={<WarrantyPage/>}/>
+ 
+            <Route path="/coupons" element={<Coupons />} />
 
         {/* orders */}
         <Route

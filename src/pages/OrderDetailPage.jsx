@@ -937,6 +937,8 @@ export default function OrderDetailsPage() {
                     </h3>
                     {sku && <p className="text-sm text-gray-500 mt-1">SKU : {sku}</p>}
                     <p className="text-sm text-gray-500 mt-1">Quantity : {item.quantity}</p>
+                    <p className="text-sm text-gray-500 mt-1">Tax : {item.tax_amount}</p>
+                  
                   </div>
                   <div className="text-left sm:text-right">
                     <p className="text-xl font-bold text-red-600">

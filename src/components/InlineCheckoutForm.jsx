@@ -8,7 +8,7 @@ import { api, createOrder } from "../config/axios";
 import Swal from 'sweetalert2'
 
 
-const openRazorpay = async (data, setSuccess,onOrderPlaced, setLoading, fetchCart,onBack) => {
+const openRazorpay = async (data, setSuccess,onOrderPlaced, setLoading, fetchCart,onBack,setError) => {
   console.log(data);
   
 console.log("Inside OpenRazoprPay");
@@ -54,6 +54,7 @@ console.log("Inside OpenRazoprPay");
       } catch (error) {
         console.log(error);
         
+        
       }finally{
         setLoading(false)
       }
@@ -78,7 +79,9 @@ export default function InlineCheckoutForm({
   onBack,
   onOrderPlaced,
   couponDiscount = 0,   // discount amount
-  couponCode = null     // coupon code
+  couponCode = null,    // coupon code
+    taxAmount = 0,
+  finalTotal = 0,
 }) {
   const { isAuthenticated } = useAuth();
   const { cart, totalPrice,fetchCart } = useCart();
@@ -247,7 +250,7 @@ export default function InlineCheckoutForm({
       const response = await createOrder(orderPayload);
       // console.log(response)
 
-      openRazorpay(response.data, setSuccess,onOrderPlaced, setLoading, fetchCart,onBack)
+      openRazorpay(response.data, setSuccess,onOrderPlaced, setLoading, fetchCart,onBack,setError)
       
       // if (response.success) {
       //   setSuccess(true);
@@ -313,6 +316,7 @@ export default function InlineCheckoutForm({
               // const itemId = item.product_item_id || item.id;  pehle product item id ja rahi thi ab product_id kar diya hai
 
               const itemId = item.product_id || item.id;
+              
               return (
                 <>
               
@@ -325,11 +329,12 @@ export default function InlineCheckoutForm({
                    {/* <div>
                     <img src={item.primary_image} alt="" />
                   </div> */}
+                  
                 </>
               );
             })}
           </div>
-          <div className="border-t border-gray-200 mt-3 pt-3 flex justify-between text-gray-800 font-bold">
+          {/* <div className="border-t border-gray-200 mt-3 pt-3 flex justify-between text-gray-800 font-bold">
             <span>Total</span>
             <span>₹{totalPrice.toFixed(2)}</span>
           </div>
@@ -344,7 +349,31 @@ export default function InlineCheckoutForm({
                 <span>₹{(totalPrice - couponDiscount).toFixed(2)}</span>
               </div>
             </>
-          )}
+          )} */}
+
+
+
+          <div className="flex justify-between">
+  <span>Subtotal</span>
+  <span>₹{totalPrice.toFixed(2)}</span>
+</div>
+
+<div className="flex justify-between">
+  <span>TAX</span>
+  <span>₹{taxAmount.toFixed(2)}</span>
+</div>
+
+{couponDiscount > 0 && (
+  <div className="flex justify-between text-green-600">
+    <span>Discount</span>
+    <span>- ₹{couponDiscount.toFixed(2)}</span>
+  </div>
+)}
+
+<div className="border-t border-gray-200 pt-2 flex justify-between text-gray-900 font-bold">
+  <span>Total</span>
+  <span>₹{finalTotal.toFixed(2)}</span>
+</div>
         </div>
 
         {/* Address Selection */}
@@ -465,7 +494,7 @@ export default function InlineCheckoutForm({
           <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 space-y-4">
             <h4 className="text-gray-800 font-medium">New Address</h4>
             <div className="grid grid-cols-2 gap-3">
-              <div>
+              <div className="col-span-2">
                 <label className="block text-sm text-gray-600 mb-1">Full Name *</label>
                 <input
                   type="text"
@@ -476,7 +505,7 @@ export default function InlineCheckoutForm({
                   placeholder="John Doe"
                 />
               </div>
-              <div>
+              <div className="col-span-2">
                 <label className="block text-sm text-gray-600 mb-1">Phone *</label>
                 <input
                   type="tel"
