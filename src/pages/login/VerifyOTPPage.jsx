@@ -397,17 +397,33 @@ export default function VerifyOTPPage() {
   const [success, setSuccess] = useState(false);
   const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
-  const [showEmailInput, setShowEmailInput] = useState(true);
+
+  // adding this for direct go from register to otp boxes and not goes from email input box
+  // Both verify-otp and resend are keyed by EMAIL per the API spec.
+  const storedEmail =location.state?.email  ||"";
+  const [showEmailInput, setShowEmailInput] = useState(!storedEmail);
+
+  // const [showEmailInput, setShowEmailInput] = useState(true);
+
+  // for temporary ui otp
+  const [serverOtp, setServerOtp] = useState(location.state?.otp || "");
 
   const inputRefs = useRef([]);
   const emailInputRef = useRef(null);
 
   // Both verify-otp and resend are keyed by EMAIL per the API spec.
-  const storedEmail = location.state?.email || sessionStorage.getItem("registerEmail") || "";
+  // const storedEmail = location.state?.email || sessionStorage.getItem("registerEmail") || "";
 
-  useEffect(() => {
-    if (storedEmail) setEmail(storedEmail);
-  }, [storedEmail]);
+  // useEffect(() => {
+  //   if (storedEmail) setEmail(storedEmail);
+  // }, [storedEmail]);
+
+    useEffect(() => {
+  if (storedEmail) {
+    setEmail(storedEmail);
+    setShowEmailInput(false);
+  }
+}, [storedEmail]);
 
   useEffect(() => {
     if (emailInputRef.current) {
@@ -539,6 +555,11 @@ export default function VerifyOTPPage() {
       const result = await resendOTP(email);
 
       if (result.success) {
+        // for temporaryui
+          //  NEW OTP UI update
+        setServerOtp(result.data?.otp || "");
+        
+
         setTimer(60);
         setCanResend(false);
         setError("");
@@ -662,7 +683,24 @@ export default function VerifyOTPPage() {
                   ))}
                 </div>
                 {error && <p className="text-red-500 text-sm mt-2 text-center">{error}</p>}
+
+
+                  {/* for temporary */}
+                  {serverOtp && (
+  <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-center mt-4">
+    <p className="text-xs text-gray-400">
+      Development OTP
+    </p>
+
+    <p className="text-3xl font-bold tracking-[0.4em] text-green-400">
+      {serverOtp}
+    </p>
+  </div>
+)}
+
               </div>
+
+                  
 
               <button
                 type="button"

@@ -258,6 +258,10 @@ export default function RegisterPage() {
   const { register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // for temporary generate otp
+  const [generatedOtp, setGeneratedOtp] = useState("");
+
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -327,14 +331,28 @@ export default function RegisterPage() {
         profile_image: profileImage, // optional File, may be null
       });
 
-      if (result.success) {
-        navigate("/verify-otp", {
-          state: {
-            email: formData.email,
-            phone: formData.phone,
-          },
-        });
-      } else {
+      // if (result.success) {
+      //   navigate("/verify-otp", {
+      //     state: {
+      //       email: formData.email,
+      //       phone: formData.phone,
+      //     },
+      //   });
+      // }
+
+        if (result.success) {
+  setGeneratedOtp(result.otp || result.data?.otp || "");
+
+  navigate("/verify-otp", {
+    state: {
+      email: formData.email,
+      phone: formData.phone,
+      otp: result.otp || result.data?.otp,
+    },
+  });
+}
+      
+      else {
         setErrors({ submit: result.error });
       }
     } catch (error) {
@@ -346,7 +364,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080808] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#080808] flex items-center justify-center  py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -362,21 +380,34 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Profile Image (optional) */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2 text-center">
                 Profile Photo (optional)
               </label>
-              <label className="flex items-center gap-3 bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-gray-400 cursor-pointer hover:border-red-500 transition">
-                <ImagePlus size={18} />
-                <span className="truncate">
-                  {profileImage ? profileImage.name : "Choose an image"}
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
-              </label>
+             <div className="flex justify-center">
+  <label className="relative w-32 h-32 rounded-full border-2 border-dashed border-white/20 bg-white/5 overflow-hidden cursor-pointer hover:border-red-500 transition flex items-center justify-center group">
+    {profileImage ? (
+      <img
+        src={URL.createObjectURL(profileImage)}
+        alt="Profile Preview"
+        className="w-full h-full object-cover"
+      />
+    ) : (
+      <div className="flex flex-col items-center justify-center text-gray-400">
+        <ImagePlus size={28} />
+        <span className="text-xs mt-2 text-center px-2">
+          Choose Image
+        </span>
+      </div>
+    )}
+
+    <input
+      type="file"
+      accept="image/*"
+      onChange={handleImageChange}
+      className="hidden"
+    />
+  </label>
+</div>
             </div>
 
             {/* Full Name */}
@@ -503,6 +534,17 @@ export default function RegisterPage() {
               )}
             </button>
           </form>
+          {generatedOtp && (
+  <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-center">
+    <p className="text-xs text-gray-400 mb-1">
+      Development OTP
+    </p>
+
+    <p className="text-3xl font-bold tracking-[0.4em] text-green-400">
+      {generatedOtp}
+    </p>
+  </div>
+)}
 
           <p className="text-center text-gray-400 mt-6">
             Already have an account?{" "}

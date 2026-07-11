@@ -36,16 +36,20 @@
 import { useEffect, useState } from "react";
 import { getallbrands, getbrandsById } from "../config/axios";
 
-export const useBrands = () => {
+export const useBrands = ({page=1,limit=10}={}) => {
   const [brands, setBrands] = useState([]);
+
+  const[pagination,setPagination]=useState(null)
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchBrands = async () => {
     try {
       setLoading(true);
-      const data = await getallbrands();
+      const data = await getallbrands({page,limit});
       setBrands(data || []);
+      setPagination(data.pagination || null);
       setError(null);
     } catch (err) {
       setError(err);
@@ -69,7 +73,7 @@ export const useBrands = () => {
 
   useEffect(() => {
     fetchBrands();
-  }, []);
+  }, [page,limit]);
 
   return {
     brands,
@@ -77,5 +81,6 @@ export const useBrands = () => {
     error,
     fetchBrands,
     getBrandById,
+    pagination
   };
 };

@@ -1,34 +1,39 @@
 import { useEffect, useState } from "react";
-import {  getallvehiclemodels} from "../config/axios";
+import { getallvehiclemodels } from "../config/axios";
 
-export const useModels = () => {
-  const [model, setModel] = useState([]);
+export const useModels = (makeId) => {
+  const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchVehiclesModels = async () => {
+  const fetchVehicleModels = async () => {
+    if (!makeId) {
+      setModels([]);
+      return;
+    }
+
     try {
       setLoading(true);
       setError("");
 
-      const data = await getallvehiclemodels();
-      setModel(data || []);
+      const data = await getallvehiclemodels(makeId);
+      setModels(data || []);
     } catch (err) {
-      console.error("Error fetching vehiclesmodels:", err);
-      setError(err.response?.data?.message || "Failed to fetch vehiclemodels");
+      console.error(err);
+      setError(err.response?.data?.message || "Failed to fetch models");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchVehiclesModels();
-  }, []);
+    fetchVehicleModels();
+  }, [makeId]);
 
   return {
-    model,
+    models,
     loading,
     error,
-    refetch: fetchVehiclesModels,
+    refetch: fetchVehicleModels,
   };
 };

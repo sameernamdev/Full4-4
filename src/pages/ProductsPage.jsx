@@ -551,7 +551,7 @@ export default function ProductsPage() {
     limit: 10,
     brand_id: brandIdFromUrl,
     category_id: searchParams.get("category_id") || "",
-    sub_category_id: null,
+    sub_category_id:  searchParams.get("subcategory_id") || "",
     search: "",
     sort_by: "",
   });
@@ -572,7 +572,7 @@ export default function ProductsPage() {
   useEffect(() => {
     const categoryId = searchParams.get("category_id") || undefined;
 
-    const subcategoryId = searchParams.get("subcategory");
+    const subcategoryId = searchParams.get("subcategory_id");
     const brandId = searchParams.get("brandId");
 
     setFilters((prev) => ({

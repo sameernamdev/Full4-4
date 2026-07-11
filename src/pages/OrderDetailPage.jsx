@@ -867,6 +867,24 @@ export default function OrderDetailsPage() {
             {getStatusIcon(order.order_status)}
             {order.order_status || "Pending"}
           </div>
+          
+
+
+          {order.order_status?.toLowerCase() === "delivered" && (
+  <div className="mt-4 border-t pt-3">
+    <p className="text-xs text-gray-500">Delivered On</p>
+
+    <p className="text-sm font-medium text-green-600">
+      {new Date(order.delivered_at).toLocaleString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })}
+    </p>
+  </div>
+)}
         </div>
 
         {/* Summary Cards */}
@@ -1039,40 +1057,48 @@ export default function OrderDetailsPage() {
             </div> */}
           </div>
 
-          {/* Tracking Timeline */}
-          {shipment.tracking_history?.length > 0 && (
-            <div className="mt-5 border-t pt-4">
-              <p className="font-semibold mb-3">
-                Tracking History
-              </p>
+          
+       {/* Tracking Timeline */}
+{shipment.tracking_history?.length > 0 && (
+  <div className="mt-5 border-t pt-4">
+    <p className="font-semibold mb-3">Tracking History</p>
 
-              <div className="space-y-3">
-                {shipment.tracking_history.flatMap((history) => {
-                  try {
-                    return JSON.parse(history);
-                  } catch {
-                    return [];
-                  }
-                }).map((track, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-3"
-                  >
-                    <div className="mt-1 h-2.5 w-2.5 rounded-full bg-red-600" />
+    <div className="space-y-4">
+      {shipment.tracking_history.map((track, index) => (
+        <div
+          key={index}
+          className="flex items-start gap-3"
+        >
+          {/* Timeline Dot */}
+          <div className="relative flex flex-col items-center">
+            <div className="h-3 w-3 rounded-full bg-red-600" />
 
-                    <div>
-                      <p className="font-medium">
-                        {track.event}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {track.timestamp}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+            {index !== shipment.tracking_history.length - 1 && (
+              <div className="w-[2px] flex-1 bg-gray-300 mt-1 min-h-8" />
+            )}
+          </div>
+
+          {/* Tracking Details */}
+          <div className="pb-4">
+            <p className="font-medium text-gray-900">
+              {track.event}
+            </p>
+
+            <p className="text-sm text-gray-500">
+              {new Date(track.date).toLocaleString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
         </div>
       ))}
     </div>

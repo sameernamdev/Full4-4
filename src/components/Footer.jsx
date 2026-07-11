@@ -50,7 +50,7 @@ export default function Footer({ setPage }) {
               DRIVE <span className="text-brand-red">RANGER</span>
             </div>
             <div className="font-label text-[10px] tracking-[0.3em] uppercase text-black font-extrabold mb-5">
-              Car Parts & Accessories
+              AutoFocus
             </div>
             <p className="font-body text-sm text-black leading-relaxed mb-6 max-w-xs">
               {/* India's most trusted online platform for genuine OEM and performance

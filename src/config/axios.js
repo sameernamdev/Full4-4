@@ -266,13 +266,28 @@ export const getallSubcategories=async(params)=>{
 
 
 //brands
-export const getallbrands=async()=>{
-    try {
+// export const getallbrands=async()=>{
+//     try {
 
-        const res=await api.get("/brands/get_all_brands?status=active")
-        return res.data?.data
+//         const res=await api.get("/brands/get_all_brands?status=active")
+//         return res.data?.data
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
+export const getallbrands=async(params={})=>{
+    try {
+      const res=await api.get("/brands/get_all_brands",{
+        params:{
+          status:"active",
+          page: params.page || 1,
+          limit: params.limit || 10
+        },
+      })
+      return res.data?.data;
     } catch (error) {
-        console.log(error)
+      console.log(error);
+      throw error;
     }
 }
 
@@ -738,27 +753,59 @@ export const applycoupon=async(data)=>{
 
 
 
-// get all vehicle models
-export const getallvehiclemodels=async()=>{
+// Get all vehicle makes
+export const getAllVehicleMakes = async () => {
   try {
-    const res=await api.get("/vehicle-models/get_all_models")
-    return res.data?.data
+    const res = await api.get("/vehicle-makes/get_all_makes", {
+      params: {
+        status: "active",
+        page: 1,
+        limit: 1000,
+      },
+    });
+
+    return res.data?.data;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
+
+// get all vehicle models
+export const getallvehiclemodels = async (makeId) => {
+  try {
+    const res = await api.get("/vehicle-models/get_all_models", {
+      params: {
+        make_id: makeId,
+        status: "active",
+        page: 1,
+        limit: 1000,
+      },
+    });
+
+    return res.data?.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 
 // get all generations of vehicle
-export const getvehiclesGenerations=async()=>{
+export const getvehiclesGenerations = async (modelId) => {
   try {
-    const res=await api.get("/vehicle-generations/get_all_generations")
-    return res.data?.data
-  } catch (error) {
-    console.log(error)
-  }
-}
+    const res = await api.get("/vehicle-generations/get_all_generations", {
+      params: {
+        model_id: modelId,
+        status: "active",
+        page: 1,
+        limit: 1000,
+      },
+    });
 
+    return res.data?.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 //get vehicle compatibility
 export const getVehicleCompatibility=async(productId)=>{

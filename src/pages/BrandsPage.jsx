@@ -3,20 +3,22 @@ import { BRANDS } from "../data/data";
 import { useReveal } from "../hooks/useReveal";
 import { useBrands } from "../hooks/useBrands.js";
 import { Link, useNavigate } from "react-router-dom";
-import { useVehicles } from "../hooks/useVehicle.js";
+import { useVehicleGenerations } from "../hooks/useVehicleGenerations.js";
 import { useModels } from "../hooks/useModels.js";
+import { useState } from "react";
 
 export default function BrandsPage({ setPage }) {
   useReveal();
 
   const{model}=useModels()
   console.log(model)
-  const{vehicles}=useVehicles()
+  const{vehicles}=useVehicleGenerations()
   console.log(vehicles)
 
   const navigate=useNavigate()
 
-  const{brands,loading,error}=useBrands()
+  const{brands,loading,error,pagination}=useBrands()
+  const [page, setPageNo] = useState(1);
   
 
    // Loading state
@@ -85,13 +87,36 @@ export default function BrandsPage({ setPage }) {
               <h3 className="font-display text-xl font-black text-black mb-1 group-hover:text-brand-red transition-colors">{brand.name}</h3>
               {/* <div className="font-body text-xs text-white/50 mb-1">{brand.origin}</div> */}
               {/* <div className="font-body text-xs text-brand-red">{brand.specialty}</div> */}
-              <div className="mt-4 font-body text-xs text-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+              {/* <div className="mt-4 font-body text-xs text-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
                <Link to="/products" > View Parts <ChevronRight size={12} /></Link>
-              </div>
+              </div> */}
             </button>
           ))}
         </div>
 
+            {pagination && pagination.totalPages > 1 && (
+              <div className="flex items-center justify-center gap-4 mt-12">
+               <button
+               disabled={page === 1}
+               onClick={() => setPageNo((p) => p - 1)}
+               className="px-5 py-2 rounded-lg border border-gray-300 disabled:opacity-40"
+               >
+               Previous
+              </button>
+
+              <span className="font-semibold text-gray-700">
+                Page {pagination.page} of {pagination.totalPages}
+              </span>
+
+                <button
+                  disabled={page === pagination.totalPages}
+                  onClick={() => setPageNo((p) => p + 1)}
+                  className="px-5 py-2 rounded-lg bg-brand-red text-white disabled:opacity-40"
+                >
+                   Next
+                </button>
+             </div>
+            )}
       </div>
       </section>
 
@@ -101,9 +126,13 @@ export default function BrandsPage({ setPage }) {
         <h2 className="font-display text-3xl font-black text-white mb-8 reveal">ALL BRANDS A-Z</h2>
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8 reveal">
           <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
-            {['ACDelco','Aisin','ATE','Bando','Behr','Bilstein','Bosch','Brembo','Continental','Dayco','Denso','Delphi',
-              'Exide','Febi','Gates','Hella','Herth+Buss','KW','K&N','Lemförder','LuK','Mann+Hummel',
-              'Meyle','Monroe','NGK','OZ Racing','Philips','Sachs','SKF','TRW','Valeo','ZF'].map(b => (
+            {
+             [
+              "Hammar","Aozoom","Iron Man","Profender","BMC Filters","K&N","Lightforce","ComeUp Winch","TJM",
+              "SmartTop","Hella","Coleman","Blaupunkt","ORM","GFX","Galio","Woscher","Brembo","Hypersonic",
+              "Continental",
+              ]
+              .map(b => (
               <button key={b} onClick={() => setPage('products')} className="text-left font-body text-white/50 hover:text-brand-red transition-colors text-sm py-1">
                 {b}
               </button>

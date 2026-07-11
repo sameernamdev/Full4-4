@@ -294,7 +294,7 @@ export default function HomePage() {
           >
             <motion.button
               // onClick={() => setPage("products")}
-              // onClick={() => navigate("products")}
+              onClick={() => navigate("products")}
               className="btn-clip btn-shine bg-brand-red text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.18em] uppercase px-7 sm:px-10 py-3.5 sm:py-4 inline-flex items-center justify-center gap-3 w-auto min-w-[170px] hover:bg-brand-red2 transition-colors"
               whileHover={{ scale: 1.05, x: 5 }}
               whileTap={{ scale: 0.96 }}
@@ -304,7 +304,7 @@ export default function HomePage() {
 
             <motion.button
               // onClick={() => setPage("about")}
-              //  onClick={() => navigate("about")}
+               onClick={() => navigate("about")}
               className="btn-clip border border-white/40 bg-white/10 backdrop-blur-sm text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.15em] uppercase px-7 sm:px-10 py-3.5 sm:py-4 inline-flex items-center justify-center w-auto min-w-[170px] hover:border-brand-red hover:text-brand-red transition-all"
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.96 }}

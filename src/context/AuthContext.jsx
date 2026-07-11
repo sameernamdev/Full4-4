@@ -320,7 +320,11 @@ export function AuthProvider({ children }) {
     try {
       const response = await resendOTP({ email });
       if (response.success) {
-        return { success: true, message: response.message || "OTP resent successfully" };
+        return { 
+          success: true,
+           message: response.message || "OTP resent successfully",
+          data: response.data,
+          };
       }
       return { success: false, error: response.message || "Failed to resend OTP" };
     } catch (error) {

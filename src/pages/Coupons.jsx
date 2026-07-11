@@ -97,19 +97,26 @@ export default function Coupons() {
                     {coupon.min_order_amount && (
                       <div className="flex items-center gap-2">
                         <Tag size={16} />
-                        <span>Min. order: {parseFloat(coupon.min_order_amount).toFixed(2)}</span>
+                        <span>Min. order: ₹{parseFloat(coupon.min_order_amount).toFixed(2)}</span>
                       </div>
                     )}
                     {coupon.max_discount_amount && (
                       <div className="flex items-center gap-2">
                         <Percent size={16} />
-                        <span>Max discount: {parseFloat(coupon.max_discount_amount).toFixed(2)}</span>
+                        <span>Max discount: ₹{parseFloat(coupon.max_discount_amount).toFixed(2)}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-2">
                       <Calendar size={16} />
                       <span>
-                        Valid: {new Date(coupon.valid_from).toLocaleDateString()} – {new Date(coupon.valid_to).toLocaleDateString()}
+                        {/* Valid:
+                         {new Date(coupon.valid_from).toLocaleDateString("en-IN"),{}} –  */}
+                         Valid till:
+                         {new Date(coupon.valid_to).toLocaleDateString("en-IN", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+})}
                       </span>
                     </div>
                     {/* <div className="flex items-center gap-2">

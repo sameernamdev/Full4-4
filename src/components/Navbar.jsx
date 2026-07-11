@@ -109,8 +109,10 @@ export default function Navbar() {
     setIsProductsOpen(false);
     setHoveredCategoryId(null);
     const query = subcategoryId
-      ? `?category=${categoryId}&subcategory=${subcategoryId}`
-      : `?category=${categoryId}`;
+      ? `?category_id=${categoryId}&subcategory_id=${subcategoryId}`
+      // to={`/products?category=${item.slug}&category_id=${item.id}`}
+      : `?category_id=${categoryId}`;
+    // navigate(`/products${query}`);
     navigate(`/products${query}`);
   };
 
@@ -126,6 +128,7 @@ export default function Navbar() {
               <h1 className="text-white font-bold tracking-[0.12em] text-lg sm:text-md lg:text-[20px]">
                 DRIVE <span className="text-brand-red">RANGER</span>
               </h1>
+              <h3 className="text-white">Auto Focus</h3>
             </div>
           </Link>
 
@@ -147,7 +150,7 @@ export default function Navbar() {
                     setIsProductsOpen(false);
                     setHoveredCategoryId(null);
                   }
-                }, 150);
+                }, 250);
               }}
             >
               <button
@@ -155,7 +158,7 @@ export default function Navbar() {
                   setIsProductsOpen(false);
                   navigate('/products');
                 }}
-                className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300 flex items-center gap-1"
+                className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300 flex items-center gap-1 mt-1"
               >
                 Products
                 <ChevronDown size={14} className={`transition-transform ${isProductsOpen ? 'rotate-180' : ''}`} />
@@ -191,7 +194,7 @@ export default function Navbar() {
 
                         {hoveredCategoryId === cat.id && (
                           <div
-                            className="absolute left-full top-0 ml-1 w-56 bg-[#0b0b0b] border border-white/10 rounded-lg shadow-2xl py-2 z-50"
+                            className="absolute left-full top-0 ml-0 w-56 bg-[#0b0b0b] border border-white/10 rounded-lg shadow-2xl py-2 z-50"
                             onMouseEnter={() => setHoveredCategoryId(cat.id)}
                           >
                             {subLoading ? (
@@ -223,6 +226,11 @@ export default function Navbar() {
                 Brands
               </Link>
             </li>
+            {/* <li>
+              <Link to="find-vehicle" className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300">
+                Get vehicle
+              </Link>
+            </li> */}
             <li>
               <Link to="/about" className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300">
                 About
@@ -262,9 +270,14 @@ export default function Navbar() {
               )}
             </button>
 
-            <Link to="/contact" className="hidden lg:flex btn-clip btn-shine bg-brand-red text-white px-6 py-3 uppercase tracking-[0.18em] text-[13px]">
-              Get Quote
-            </Link>
+          {!isAuthenticated && (
+  <Link
+    to="/login"
+    className="hidden lg:flex btn-clip btn-shine bg-brand-red text-white px-6 py-3 uppercase tracking-[0.18em] text-[13px]"
+  >
+    Login
+  </Link>
+)}
 
             {/* Hamburger */}
             <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition">
@@ -365,9 +378,15 @@ export default function Navbar() {
             </Link>
 
             <div className="mt-auto space-y-4 pt-8">
-              <Link to="/contact" onClick={() => setMenuOpen(false)} className="block w-full text-center bg-brand-red text-white uppercase tracking-[0.18em] py-4 rounded-lg font-semibold hover:bg-red-700 transition">
-                Get Quote
-              </Link>
+              {!isAuthenticated && (
+  <Link
+    to="/login"
+    onClick={() => setMenuOpen(false)}
+    className="block w-full text-center bg-brand-red text-white uppercase tracking-[0.18em] py-4 rounded-lg font-semibold hover:bg-red-700 transition"
+  >
+    Login
+  </Link>
+)}
               <Link to="/cart" onClick={() => setMenuOpen(false)} className="block w-full text-center border border-white/20 text-white py-4 rounded-lg hover:bg-white/10 transition">
                 View Cart ({totalItems})
               </Link>
