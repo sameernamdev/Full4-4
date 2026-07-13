@@ -216,16 +216,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
 // import { Link, Navigate, useParams } from "react-router-dom";
 // import {
 //   ArrowLeft,
@@ -667,19 +657,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { Link, Navigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -697,12 +674,16 @@ import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import ReviewModal from "../components/reviews/ReviewModal";
 import { useReviews } from "../hooks/useReviews";
+import { useAddresses } from "../hooks/useAddresses";
+import { useEffect } from "react";
+import { api, updateOrderAddress } from "../config/axios";
+// import { updateAddress } from "../config/axios";
 
 // ----- New component to handle the review button per item -----
 function OrderItemReviewButton({ item, orderStatus, onOpenReview }) {
   // Fetch reviews for this product
   const { reviews, loading } = useReviews(item.product_id);
-  
+
   // Check if a review already exists for this order item
   const existingReview = reviews?.find((r) => r.order_item_id === item.id);
 
@@ -740,10 +721,49 @@ function OrderItemReviewButton({ item, orderStatus, onOpenReview }) {
 export default function OrderDetailsPage() {
   const { id } = useParams();
   const { isAuthenticated } = useAuth();
-  const { order, loading, error } = useOrderDetails(id);
+  const { order, loading, error,refetch } = useOrderDetails(id);
+
+  const { fetchAddressById,addresses,fetchAddresses,createAddress} = useAddresses(false);
+  const [shippingAddress, setShippingAddress] = useState(null);
 
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+
+  const [addressErrors, setAddressErrors] = useState({});
+
+//new states
+const [showAddressModal, setShowAddressModal] = useState(false);
+const [selectedAddressId, setSelectedAddressId] = useState(null);
+
+const [showAddAddress, setShowAddAddress] = useState(false);
+
+const [newAddress, setNewAddress] = useState({
+    full_name: "",
+    phone: "",
+    line1: "",
+    line2: "",
+    landmark: "",
+    city: "",
+    state: "",
+    postal_code: "",
+    country: "India",
+    address_type: "shipping",
+});
+const handleNewAddressChange = (e) => {
+  const { name, value } = e.target;
+
+  setNewAddress((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+
+
+  setAddressErrors((prev) => ({
+    ...prev,
+    [name]: "",
+    general: "",
+  }));
+};
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -795,6 +815,74 @@ export default function OrderDetailsPage() {
     setShowReviewModal(false);
   };
 
+
+  const handleCreateAddress = async () => {
+    try {
+
+       const created = await createAddress(newAddress);
+
+await fetchAddresses();
+
+setSelectedAddressId(created.id);
+
+// form reset
+setNewAddress({
+  full_name: "",
+  phone: "",
+  line1: "",
+  line2: "",
+  landmark: "",
+  city: "",
+  state: "",
+  postal_code: "",
+  country: "India",
+  address_type: "shipping",
+});
+
+setShowAddAddress(false);
+
+    } catch (err) {
+  console.log(err);
+
+  if (err?.errors) {
+    setAddressErrors(err.errors);
+  } else if (err?.message) {
+    setAddressErrors({
+      general: err.message,
+    });
+  }
+}
+};
+
+  useEffect(() => {
+    const loadShippingAddress = async () => {
+      if (!order?.shipping_address_id) return;
+
+      const address = await fetchAddressById(order.shipping_address_id);
+
+      setShippingAddress(address);
+    };
+
+    loadShippingAddress();
+  }, [order]);
+
+
+
+  useEffect(() => {
+  if (showAddressModal) {
+    fetchAddresses();
+  }
+}, [showAddressModal]);
+
+useEffect(() => {
+  if (order?.shipping_address_id) {
+    setSelectedAddressId(order.shipping_address_id);
+  }
+}, [order]);
+
+
+
+
   if (loading) {
     return (
       <div className="fixed inset-0 bg-white flex items-center justify-center z-50">
@@ -810,7 +898,10 @@ export default function OrderDetailsPage() {
     return (
       <div className="min-h-screen bg-gray-50 pt-24 sm:pt-28 lg:pt-32 flex items-center justify-center px-4">
         <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-10 text-center max-w-md w-full">
-          <Package size={70} className="mx-auto mb-6 text-red-600 bg-red-100 rounded-full p-4" />
+          <Package
+            size={70}
+            className="mx-auto mb-6 text-red-600 bg-red-100 rounded-full p-4"
+          />
           <h2 className="text-2xl font-bold text-gray-900">Order Not Found</h2>
           <p className="text-gray-600 mt-3">
             {error || "The order you're looking for doesn't exist."}
@@ -842,7 +933,6 @@ export default function OrderDetailsPage() {
           <ArrowLeft size={18} />
           Back to Orders
         </Link>
-
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-8">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
@@ -861,32 +951,29 @@ export default function OrderDetailsPage() {
           </div>
           <div
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium ${getStatusColor(
-              order.order_status
+              order.order_status,
             )}`}
           >
             {getStatusIcon(order.order_status)}
             {order.order_status || "Pending"}
           </div>
-          
-
 
           {order.order_status?.toLowerCase() === "delivered" && (
-  <div className="mt-4 border-t pt-3">
-    <p className="text-xs text-gray-500">Delivered On</p>
+            <div className="mt-4 border-t pt-3">
+              <p className="text-xs text-gray-500">Delivered On</p>
 
-    <p className="text-sm font-medium text-green-600">
-      {new Date(order.delivered_at).toLocaleString("en-IN", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })}
-    </p>
-  </div>
-)}
+              <p className="text-sm font-medium text-green-600">
+                {new Date(order.delivered_at).toLocaleString("en-IN", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+            </div>
+          )}
         </div>
-
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
@@ -921,7 +1008,6 @@ export default function OrderDetailsPage() {
             </p>
           </div>
         </div>
-
         {/* Order Items */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Items</h2>
@@ -930,8 +1016,6 @@ export default function OrderDetailsPage() {
               let productName = item.product_name || "Product";
               let sku = item.sku || "";
               let unitPrice = parseFloat(item.unit_price) || 0;
-
-            
 
               if (item.product_data_snapshot) {
                 try {
@@ -953,20 +1037,23 @@ export default function OrderDetailsPage() {
                     <h3 className="font-semibold text-lg text-gray-900">
                       {productName}
                     </h3>
-                    {sku && <p className="text-sm text-gray-500 mt-1">SKU : {sku}</p>}
-                    <p className="text-sm text-gray-500 mt-1">Quantity : {item.quantity}</p>
-                    <p className="text-sm text-gray-500 mt-1">Tax : {item.tax_amount}</p>
-                  
+                    {sku && (
+                      <p className="text-sm text-gray-500 mt-1">SKU : {sku}</p>
+                    )}
+                    <p className="text-sm text-gray-500 mt-1">
+                      Quantity : {item.quantity}
+                    </p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Tax : {item.tax_amount}
+                    </p>
                   </div>
                   <div className="text-left sm:text-right">
                     <p className="text-xl font-bold text-red-600">
                       ₹{(unitPrice * item.quantity).toFixed(2)}
                     </p>
-                    <p className="text-sm text-gray-500">₹{unitPrice.toFixed(2)} each</p>
-
-
-
-                    
+                    <p className="text-sm text-gray-500">
+                      ₹{unitPrice.toFixed(2)} each
+                    </p>
 
                     {/* --- Use the new component here --- */}
                     <OrderItemReviewButton
@@ -1011,111 +1098,405 @@ export default function OrderDetailsPage() {
               </span>
             </div>
           </div>
-        </div>
 
-        {/* Shipments */}
-{order.shipments?.length > 0 && (
-  <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-8">
-    <h2 className="text-2xl font-bold text-gray-900 mb-6">
-      Shipments
-    </h2>
+          {shippingAddress && (
+            <div className="mt-8 border-t border-gray-200 pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <MapPin className="text-red-600" size={20} />
+                  <h3 className="text-lg font-bold text-gray-900">
+                    Shipping Address
+                  </h3>
+                </div>
 
-    <div className="flex gap-5 overflow-x-auto pb-2">
-      {order.shipments.map((shipment) => (
-        <div
-          key={shipment.id}
-          className="min-w-[340px] flex-shrink-0 rounded-xl border border-gray-200 p-5 bg-gray-50"
+                {["pending", "confirmed", "processing"].includes(
+                  order.order_status?.toLowerCase(),
+                ) && (
+                 <button
+  onClick={() => setShowAddressModal(true)}
+  className="rounded-lg border border-red-600 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white transition"
+>
+  Change Address
+</button>
+                )}
+
+                {showAddressModal && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pt-20">
+
+    <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">
+          Change Shipping Address
+        </h2>
+
+        <button
+          onClick={() => setShowAddressModal(false)}
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-lg">
-              Shipment #{shipment.id}
-            </h3>
+          ✕
+        </button>
+      </div>
 
-            <span className="rounded-full bg-blue-100 text-blue-700 px-3 py-1 text-xs font-medium capitalize">
-              {shipment.current_status}
-            </span>
-          </div>
+      <div className="space-y-4">
 
-          <div className="space-y-2 text-sm">
-            {/* <div>
+        {addresses.map((address) => (
+
+          <label
+            key={address.id}
+            className="flex items-start gap-4 border rounded-xl p-4 cursor-pointer hover:border-red-500"
+          >
+
+            <input
+              type="radio"
+              checked={selectedAddressId === address.id}
+              onChange={() => setSelectedAddressId(address.id)}
+            />
+
+            <div className="flex-1">
+
+              <p className="font-semibold">
+                {address.full_name}
+              </p>
+
+              <p className="text-sm text-gray-600">
+                {address.line1}
+              </p>
+
+              {address.line2 && (
+                <p className="text-sm text-gray-600">
+                  {address.line2}
+                </p>
+              )}
+
+              <p className="text-sm text-gray-600">
+                {address.city}, {address.state}
+              </p>
+
+              <p className="text-sm text-gray-600">
+                {address.postal_code}
+              </p>
+
+              <p className="text-sm text-gray-600">
+                {address.phone}
+              </p>
+
+            </div>
+
+           
+
+          </label>
+
+        ))}
+
+      </div>
+
+      <button
+  onClick={() => setShowAddAddress(true)}
+>
+  + Add New Address
+</button>
+{showAddAddress && (
+  <div className="mt-6 border rounded-xl p-5 space-y-4 bg-gray-50">
+      {addressErrors.general && (
+    <div className="mb-4 rounded-lg bg-red-100 border border-red-300 p-3 text-red-700">
+        {addressErrors.general}
+    </div>
+)}
+    <input
+      name="full_name"
+      value={newAddress.full_name}
+      onChange={handleNewAddressChange}
+      placeholder="Full Name"
+      className="w-full border rounded-lg p-3"
+    />
+    {addressErrors.full_name && (
+    <p className="mt-1 text-sm text-red-600">
+        {addressErrors.full_name}
+    </p>
+)}
+
+    <input
+      name="phone"
+      value={newAddress.phone}
+      onChange={handleNewAddressChange}
+      placeholder="Phone"
+      className="w-full border rounded-lg p-3"
+    />
+    {addressErrors.phone && (
+    <p className="mt-1 text-sm text-red-600">
+        {addressErrors.phone}
+    </p>
+)}
+
+    <input
+      name="line1"
+      value={newAddress.line1}
+      onChange={handleNewAddressChange}
+      placeholder="Address Line 1"
+      className="w-full border rounded-lg p-3"
+    />
+    {addressErrors.line1 && (
+    <p className="mt-1 text-sm text-red-600">
+        {addressErrors.line1}
+    </p>
+)}
+
+    <input
+      name="line2"
+      value={newAddress.line2}
+      onChange={handleNewAddressChange}
+      placeholder="Address Line 2"
+      className="w-full border rounded-lg p-3"
+    />
+
+    <input
+      name="landmark"
+      value={newAddress.landmark}
+      onChange={handleNewAddressChange}
+      placeholder="Landmark"
+      className="w-full border rounded-lg p-3"
+    />
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <input
+        name="city"
+        value={newAddress.city}
+        onChange={handleNewAddressChange}
+        placeholder="City"
+        className="border rounded-lg p-3"
+      />
+      {addressErrors.city && (
+    <p className="mt-1 text-sm text-red-600">
+        {addressErrors.city}
+    </p>
+)}
+
+      <input
+        name="state"
+        value={newAddress.state}
+        onChange={handleNewAddressChange}
+        placeholder="State"
+        className="border rounded-lg p-3"
+      />
+      {addressErrors.state && (
+    <p className="mt-1 text-sm text-red-600">
+        {addressErrors.state}
+    </p>
+)}
+
+      <input
+        name="postal_code"
+        value={newAddress.postal_code}
+        onChange={handleNewAddressChange}
+        placeholder="Postal Code"
+        className="border rounded-lg p-3"
+      />
+      {addressErrors.postal_code && (
+    <p className="mt-1 text-sm text-red-600">
+        {addressErrors.postal_code}
+    </p>
+)}
+
+      <input
+        name="country"
+        value={newAddress.country}
+        onChange={handleNewAddressChange}
+        placeholder="Country"
+        className="border rounded-lg p-3"
+      />
+      {addressErrors.country && (
+    <p className="mt-1 text-sm text-red-600">
+        {addressErrors.country}
+    </p>
+)}
+
+    </div>
+
+    <div className="flex justify-end gap-3">
+
+      <button
+        onClick={() => setShowAddAddress(false)}
+        className="border rounded-lg px-5 py-2"
+      >
+        Cancel
+      </button>
+
+      <button
+        onClick={handleCreateAddress}
+        className="bg-red-600 text-white rounded-lg px-5 py-2"
+      >
+        Save Address
+      </button>
+
+    </div>
+
+  </div>
+)}
+
+      <div className="flex justify-end gap-3 mt-6">
+
+        <button
+          onClick={() => setShowAddressModal(false)}
+          className="border rounded-lg px-5 py-2"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={async () => {
+
+            await updateOrderAddress(order.id,{
+              shipping_address_id:selectedAddressId
+            });
+
+            await refetch();
+            const address = await fetchAddressById(selectedAddressId);
+
+setShippingAddress(address);
+
+            setShowAddressModal(false);
+
+          }}
+          className="bg-red-600 text-white rounded-lg px-5 py-2"
+        >
+          Use Address
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+)}
+              </div>
+
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-1">
+                <p className="font-semibold">{shippingAddress.full_name}</p>
+
+                <p>{shippingAddress.line1}</p>
+
+                {shippingAddress.line2 && <p>{shippingAddress.line2}</p>}
+
+                {shippingAddress.landmark && <p>{shippingAddress.landmark}</p>}
+
+                <p>
+                  {shippingAddress.city}, {shippingAddress.state} -{" "}
+                  {shippingAddress.postal_code}
+                </p>
+
+                <p>{shippingAddress.country}</p>
+
+                <p>Phone : {shippingAddress.phone}</p>
+              </div>
+            </div>
+          )}
+
+         
+        </div>
+        {/* Shipments */}
+        {order.shipments?.length > 0 && (
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Shipments</h2>
+
+            <div className="flex gap-5 overflow-x-auto pb-2">
+              {order.shipments.map((shipment) => (
+                <div
+                  key={shipment.id}
+                  className="min-w-[340px] flex-shrink-0 rounded-xl border border-gray-200 p-5 bg-gray-50"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-lg">
+                      Shipment #{shipment.id}
+                    </h3>
+
+                    <span className="rounded-full bg-blue-100 text-blue-700 px-3 py-1 text-xs font-medium capitalize">
+                      {shipment.current_status}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2 text-sm">
+                    {/* <div>
               <p className="text-gray-500">Carrier</p>
               <p className="font-medium">
                 {shipment.carrier || "Not Assigned"}
               </p>
             </div> */}
 
-            <div>
-              <p className="text-gray-500">Delivery Address</p>
-              <p>{shipment.recipient_address}</p>
-            </div>
+                    <div>
+                      <p className="text-gray-500">Delivery Address</p>
+                      <p>{shipment.recipient_address}</p>
+                    </div>
 
-            {/* <div>
+                    {/* <div>
               <p className="text-gray-500">Created</p>
               <p>
                 {new Date(shipment.created_at).toLocaleDateString("en-IN")}
               </p>
             </div> */}
+                  </div>
+
+                  {/* Tracking Timeline */}
+                  {shipment.tracking_history?.length > 0 && (
+                    <div className="mt-5 border-t pt-4">
+                      <p className="font-semibold mb-3">Tracking History</p>
+
+                      <div className="space-y-4">
+                        {shipment.tracking_history.map((track, index) => (
+                          <div key={index} className="flex items-start gap-3">
+                            {/* Timeline Dot */}
+                            <div className="relative flex flex-col items-center">
+                              <div className="h-3 w-3 rounded-full bg-red-600" />
+
+                              {index !==
+                                shipment.tracking_history.length - 1 && (
+                                <div className="w-[2px] flex-1 bg-gray-300 mt-1 min-h-8" />
+                              )}
+                            </div>
+
+                            {/* Tracking Details */}
+                            <div className="pb-4">
+                              <p className="font-medium text-gray-900">
+                                {track.event}
+                              </p>
+
+                              <p className="text-sm text-gray-500">
+                                {new Date(track.date).toLocaleString("en-IN", {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-
-          
-       {/* Tracking Timeline */}
-{shipment.tracking_history?.length > 0 && (
-  <div className="mt-5 border-t pt-4">
-    <p className="font-semibold mb-3">Tracking History</p>
-
-    <div className="space-y-4">
-      {shipment.tracking_history.map((track, index) => (
-        <div
-          key={index}
-          className="flex items-start gap-3"
-        >
-          {/* Timeline Dot */}
-          <div className="relative flex flex-col items-center">
-            <div className="h-3 w-3 rounded-full bg-red-600" />
-
-            {index !== shipment.tracking_history.length - 1 && (
-              <div className="w-[2px] flex-1 bg-gray-300 mt-1 min-h-8" />
-            )}
-          </div>
-
-          {/* Tracking Details */}
-          <div className="pb-4">
-            <p className="font-medium text-gray-900">
-              {track.event}
-            </p>
-
-            <p className="text-sm text-gray-500">
-              {new Date(track.date).toLocaleString("en-IN", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
-        </div>
-      ))}
-    </div>
-  </div>
-)}
-
-        {/* Shipping Address */}
+        )}
+        {/* Shipping Address
         {order.shipping_address && (
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-8">
             <div className="flex items-center gap-3 mb-5">
               <MapPin className="text-red-600" size={22} />
-              <h2 className="text-2xl font-bold text-gray-900">Shipping Address</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Shipping Address
+              </h2>
             </div>
             <div className="space-y-2 text-gray-700 leading-7">
-              <p className="font-semibold">{order.shipping_address.full_name}</p>
+              <p className="font-semibold">
+                {order.shipping_address.full_name}
+              </p>
               <p>{order.shipping_address.line1}</p>
-              {order.shipping_address.line2 && <p>{order.shipping_address.line2}</p>}
+              {order.shipping_address.line2 && (
+                <p>{order.shipping_address.line2}</p>
+              )}
               <p>
                 {order.shipping_address.city}, {order.shipping_address.state}{" "}
                 {order.shipping_address.postal_code}
@@ -1124,15 +1505,16 @@ export default function OrderDetailsPage() {
               <p>Phone : {order.shipping_address.phone}</p>
             </div>
           </div>
-        )}
-
+        )} */}
         {/* Customer Notes */}
-        {order.customer_notes && (
+        {/* {order.customer_notes && (
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">Customer Notes</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-3">
+              Customer Notes
+            </h2>
             <p className="text-gray-600 leading-7">{order.customer_notes}</p>
           </div>
-        )}
+        )} */}
       </div>
 
       <ReviewModal

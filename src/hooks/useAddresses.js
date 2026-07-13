@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAddresses, createAddress as createAddressAPI, deleteAddressAPI } from "../config/axios";
+import { getAddresses, createAddress as createAddressAPI, deleteAddressAPI, updateAddress as updateAddressAPI,getAddressById, } from "../config/axios";
 
 export function useAddresses(initialFetch = true) {
   const [addresses, setAddresses] = useState([]);
@@ -24,6 +24,27 @@ export function useAddresses(initialFetch = true) {
     }
   };
 
+   // Get Address By ID
+  // ========================
+  const fetchAddressById = async (id) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const data = await getAddressById(id);
+
+      console.log(" Address By Id:", data);
+
+      return data;
+    } catch (err) {
+      setError(err.message || "Failed to fetch address");
+      console.error("❌ Fetch address by id error:", err);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const createAddress = async (addressData) => {
     try {
       setLoading(true);
@@ -36,6 +57,26 @@ export function useAddresses(initialFetch = true) {
       }
     } catch (err) {
       setError(err.message || "Failed to create address");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+ // Update Address
+
+  const updateAddress = async (id, addressData) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const updatedAddress = await updateAddressAPI(id, addressData);
+
+      await fetchAddresses();
+
+      return updatedAddress;
+    } catch (err) {
+      setError(err.message || "Failed to update address");
       throw err;
     } finally {
       setLoading(false);
@@ -63,5 +104,5 @@ export function useAddresses(initialFetch = true) {
     }
   }, [initialFetch]);
 
-  return { addresses, loading, error, fetchAddresses, createAddress, deleteAddress };
+  return { addresses, loading, error, fetchAddresses, createAddress, deleteAddress,fetchAddressById,updateAddress };
 }

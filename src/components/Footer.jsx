@@ -48,10 +48,10 @@ export default function Footer({ setPage }) {
           <div>
             <div className=" font-display text-3xl tracking-[0.08em] text-black mb-1">
               DRIVE <span className="text-brand-red">RANGER</span>
+              <img src="/auto focus.png" alt="" className="w-28 sm:w-15 lg:w-28"/>
+
             </div>
-            <div className="font-label text-[10px] tracking-[0.3em] uppercase text-black font-extrabold mb-5">
-              AutoFocus
-            </div>
+            
             <p className="font-body text-sm text-black leading-relaxed mb-6 max-w-xs">
               {/* India's most trusted online platform for genuine OEM and performance
               car parts. Quality you can count on, delivery you can trust. */}

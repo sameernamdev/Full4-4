@@ -123,12 +123,12 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <img src="/newLogoDR.png" alt="Drive Ranger" className="w-8 sm:w-9 lg:w-10" />
+            <img src="/newLogoDR.png" alt="Drive Ranger" className="w-10 sm:w-9 lg:w-12" />
             <div className="leading-none">
               <h1 className="text-white font-bold tracking-[0.12em] text-lg sm:text-md lg:text-[20px]">
                 DRIVE <span className="text-brand-red">RANGER</span>
               </h1>
-              <h3 className="text-white">Auto Focus</h3>
+              <img src="/auto focus.png" alt="" className="w-24 sm:w-15 lg:w-24"/>
             </div>
           </Link>
 

@@ -715,6 +715,26 @@ export const getOrderById = async (id) => {
 
 
 
+export const updateOrderAddress = async (orderId, addressData) => {
+  try {
+    const res = await api.put(
+      `/orders/update-address/${orderId}`,
+      addressData
+    );
+
+    return res.data;
+  } catch (error) {
+    console.error("Update Order Address:", error.response?.data || error);
+
+    throw (
+      error.response?.data || {
+        message: "Failed to update order address",
+      }
+    );
+  }
+};
+
+
 
 // get products images
 export const getProductImages = async (id) => {
