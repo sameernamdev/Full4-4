@@ -721,9 +721,10 @@ function OrderItemReviewButton({ item, orderStatus, onOpenReview }) {
 export default function OrderDetailsPage() {
   const { id } = useParams();
   const { isAuthenticated } = useAuth();
-  const { order, loading, error,refetch } = useOrderDetails(id);
+  const { order, loading, error, refetch } = useOrderDetails(id);
 
-  const { fetchAddressById,addresses,fetchAddresses,createAddress} = useAddresses(false);
+  const { fetchAddressById, addresses, fetchAddresses, createAddress } =
+    useAddresses(false);
   const [shippingAddress, setShippingAddress] = useState(null);
 
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -731,13 +732,13 @@ export default function OrderDetailsPage() {
 
   const [addressErrors, setAddressErrors] = useState({});
 
-//new states
-const [showAddressModal, setShowAddressModal] = useState(false);
-const [selectedAddressId, setSelectedAddressId] = useState(null);
+  //new states
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
 
-const [showAddAddress, setShowAddAddress] = useState(false);
+  const [showAddAddress, setShowAddAddress] = useState(false);
 
-const [newAddress, setNewAddress] = useState({
+  const [newAddress, setNewAddress] = useState({
     full_name: "",
     phone: "",
     line1: "",
@@ -748,22 +749,21 @@ const [newAddress, setNewAddress] = useState({
     postal_code: "",
     country: "India",
     address_type: "shipping",
-});
-const handleNewAddressChange = (e) => {
-  const { name, value } = e.target;
+  });
+  const handleNewAddressChange = (e) => {
+    const { name, value } = e.target;
 
-  setNewAddress((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
+    setNewAddress((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-
-  setAddressErrors((prev) => ({
-    ...prev,
-    [name]: "",
-    general: "",
-  }));
-};
+    setAddressErrors((prev) => ({
+      ...prev,
+      [name]: "",
+      general: "",
+    }));
+  };
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -815,44 +815,41 @@ const handleNewAddressChange = (e) => {
     setShowReviewModal(false);
   };
 
-
   const handleCreateAddress = async () => {
     try {
+      const created = await createAddress(newAddress);
 
-       const created = await createAddress(newAddress);
+      await fetchAddresses();
 
-await fetchAddresses();
+      setSelectedAddressId(created.id);
 
-setSelectedAddressId(created.id);
+      // form reset
+      setNewAddress({
+        full_name: "",
+        phone: "",
+        line1: "",
+        line2: "",
+        landmark: "",
+        city: "",
+        state: "",
+        postal_code: "",
+        country: "India",
+        address_type: "shipping",
+      });
 
-// form reset
-setNewAddress({
-  full_name: "",
-  phone: "",
-  line1: "",
-  line2: "",
-  landmark: "",
-  city: "",
-  state: "",
-  postal_code: "",
-  country: "India",
-  address_type: "shipping",
-});
-
-setShowAddAddress(false);
-
+      setShowAddAddress(false);
     } catch (err) {
-  console.log(err);
+      console.log(err);
 
-  if (err?.errors) {
-    setAddressErrors(err.errors);
-  } else if (err?.message) {
-    setAddressErrors({
-      general: err.message,
-    });
-  }
-}
-};
+      if (err?.errors) {
+        setAddressErrors(err.errors);
+      } else if (err?.message) {
+        setAddressErrors({
+          general: err.message,
+        });
+      }
+    }
+  };
 
   useEffect(() => {
     const loadShippingAddress = async () => {
@@ -866,22 +863,17 @@ setShowAddAddress(false);
     loadShippingAddress();
   }, [order]);
 
-
+  useEffect(() => {
+    if (showAddressModal) {
+      fetchAddresses();
+    }
+  }, [showAddressModal]);
 
   useEffect(() => {
-  if (showAddressModal) {
-    fetchAddresses();
-  }
-}, [showAddressModal]);
-
-useEffect(() => {
-  if (order?.shipping_address_id) {
-    setSelectedAddressId(order.shipping_address_id);
-  }
-}, [order]);
-
-
-
+    if (order?.shipping_address_id) {
+      setSelectedAddressId(order.shipping_address_id);
+    }
+  }, [order]);
 
   if (loading) {
     return (
@@ -1112,263 +1104,259 @@ useEffect(() => {
                 {["pending", "confirmed", "processing"].includes(
                   order.order_status?.toLowerCase(),
                 ) && (
-                 <button
-  onClick={() => setShowAddressModal(true)}
-  className="rounded-lg border border-red-600 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white transition"
->
-  Change Address
-</button>
+                  <button
+                    onClick={() => setShowAddressModal(true)}
+                    className="rounded-lg border border-red-600 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white transition"
+                  >
+                    Change Address
+                  </button>
                 )}
 
                 {showAddressModal && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pt-20">
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pt-20">
+                    <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+                      <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-2xl font-bold">
+                          Change Shipping Address
+                        </h2>
 
-    <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+                        <button onClick={() => setShowAddressModal(false)}>
+                          ✕
+                        </button>
+                      </div>
 
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">
-          Change Shipping Address
-        </h2>
+                  {!showAddAddress?(
+                    <>
+                    <div className="space-y-4">
+                        {addresses.map((address) => (
+                          <label
+                            key={address.id}
+                            className="flex items-start gap-4 border rounded-xl p-4 cursor-pointer hover:border-red-500"
+                          >
+                            <input
+                              type="radio"
+                              checked={selectedAddressId === address.id}
+                              onChange={() => setSelectedAddressId(address.id)}
+                            />
 
-        <button
-          onClick={() => setShowAddressModal(false)}
-        >
-          ✕
-        </button>
-      </div>
+                            <div className="flex-1">
+                              <p className="font-semibold">
+                                {address.full_name}
+                              </p>
 
-      <div className="space-y-4">
+                              <p className="text-sm text-gray-600">
+                                {address.line1}
+                              </p>
 
-        {addresses.map((address) => (
+                              {address.line2 && (
+                                <p className="text-sm text-gray-600">
+                                  {address.line2}
+                                </p>
+                              )}
 
-          <label
-            key={address.id}
-            className="flex items-start gap-4 border rounded-xl p-4 cursor-pointer hover:border-red-500"
-          >
+                              <p className="text-sm text-gray-600">
+                                {address.city}, {address.state}
+                              </p>
 
-            <input
-              type="radio"
-              checked={selectedAddressId === address.id}
-              onChange={() => setSelectedAddressId(address.id)}
-            />
+                              <p className="text-sm text-gray-600">
+                                {address.postal_code}
+                              </p>
 
-            <div className="flex-1">
+                              <p className="text-sm text-gray-600">
+                                {address.phone}
+                              </p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
 
-              <p className="font-semibold">
-                {address.full_name}
-              </p>
+                      <button onClick={() => setShowAddAddress(true)}>
+                        + Add New Address
+                      </button>
 
-              <p className="text-sm text-gray-600">
-                {address.line1}
-              </p>
 
-              {address.line2 && (
-                <p className="text-sm text-gray-600">
-                  {address.line2}
-                </p>
-              )}
 
-              <p className="text-sm text-gray-600">
-                {address.city}, {address.state}
-              </p>
 
-              <p className="text-sm text-gray-600">
-                {address.postal_code}
-              </p>
-
-              <p className="text-sm text-gray-600">
-                {address.phone}
-              </p>
-
-            </div>
-
-           
-
-          </label>
-
-        ))}
-
-      </div>
-
+    <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
       <button
-  onClick={() => setShowAddAddress(true)}
->
-  + Add New Address
-</button>
-{showAddAddress && (
-  <div className="mt-6 border rounded-xl p-5 space-y-4 bg-gray-50">
-      {addressErrors.general && (
-    <div className="mb-4 rounded-lg bg-red-100 border border-red-300 p-3 text-red-700">
-        {addressErrors.general}
-    </div>
-)}
-    <input
-      name="full_name"
-      value={newAddress.full_name}
-      onChange={handleNewAddressChange}
-      placeholder="Full Name"
-      className="w-full border rounded-lg p-3"
-    />
-    {addressErrors.full_name && (
-    <p className="mt-1 text-sm text-red-600">
-        {addressErrors.full_name}
-    </p>
-)}
-
-    <input
-      name="phone"
-      value={newAddress.phone}
-      onChange={handleNewAddressChange}
-      placeholder="Phone"
-      className="w-full border rounded-lg p-3"
-    />
-    {addressErrors.phone && (
-    <p className="mt-1 text-sm text-red-600">
-        {addressErrors.phone}
-    </p>
-)}
-
-    <input
-      name="line1"
-      value={newAddress.line1}
-      onChange={handleNewAddressChange}
-      placeholder="Address Line 1"
-      className="w-full border rounded-lg p-3"
-    />
-    {addressErrors.line1 && (
-    <p className="mt-1 text-sm text-red-600">
-        {addressErrors.line1}
-    </p>
-)}
-
-    <input
-      name="line2"
-      value={newAddress.line2}
-      onChange={handleNewAddressChange}
-      placeholder="Address Line 2"
-      className="w-full border rounded-lg p-3"
-    />
-
-    <input
-      name="landmark"
-      value={newAddress.landmark}
-      onChange={handleNewAddressChange}
-      placeholder="Landmark"
-      className="w-full border rounded-lg p-3"
-    />
-
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-      <input
-        name="city"
-        value={newAddress.city}
-        onChange={handleNewAddressChange}
-        placeholder="City"
-        className="border rounded-lg p-3"
-      />
-      {addressErrors.city && (
-    <p className="mt-1 text-sm text-red-600">
-        {addressErrors.city}
-    </p>
-)}
-
-      <input
-        name="state"
-        value={newAddress.state}
-        onChange={handleNewAddressChange}
-        placeholder="State"
-        className="border rounded-lg p-3"
-      />
-      {addressErrors.state && (
-    <p className="mt-1 text-sm text-red-600">
-        {addressErrors.state}
-    </p>
-)}
-
-      <input
-        name="postal_code"
-        value={newAddress.postal_code}
-        onChange={handleNewAddressChange}
-        placeholder="Postal Code"
-        className="border rounded-lg p-3"
-      />
-      {addressErrors.postal_code && (
-    <p className="mt-1 text-sm text-red-600">
-        {addressErrors.postal_code}
-    </p>
-)}
-
-      <input
-        name="country"
-        value={newAddress.country}
-        onChange={handleNewAddressChange}
-        placeholder="Country"
-        className="border rounded-lg p-3"
-      />
-      {addressErrors.country && (
-    <p className="mt-1 text-sm text-red-600">
-        {addressErrors.country}
-    </p>
-)}
-
-    </div>
-
-    <div className="flex justify-end gap-3">
-
-      <button
-        onClick={() => setShowAddAddress(false)}
+        onClick={() => setShowAddressModal(false)}
         className="border rounded-lg px-5 py-2"
       >
         Cancel
       </button>
 
       <button
-        onClick={handleCreateAddress}
+        onClick={async () => {
+            
+          await updateOrderAddress(order.id, {
+            
+            shipping_address_id: selectedAddressId,
+          });
+
+          await refetch();
+
+          const address = await fetchAddressById(selectedAddressId);
+
+          setShippingAddress(address);
+
+          setShowAddressModal(false);
+        }}
         className="bg-red-600 text-white rounded-lg px-5 py-2"
       >
-        Save Address
+        Use Address
       </button>
-
     </div>
+                    </>
+                  ):(
+                    <>
+                     {showAddAddress && (
+                        <div className="mt-6 border rounded-xl p-5 space-y-4 bg-gray-50">
+                            <button
+    onClick={() => setShowAddAddress(false)}
+    className="mb-4 text-sm font-medium text-red-600 hover:underline"
+  >
+    ← Back to Saved Addresses
+  </button>
+                          {addressErrors.general && (
+                            <div className="mb-4 rounded-lg bg-red-100 border border-red-300 p-3 text-red-700">
+                              {addressErrors.general}
+                            </div>
+                          )}
+                          <input
+                            name="full_name"
+                            value={newAddress.full_name}
+                            onChange={handleNewAddressChange}
+                            placeholder="Full Name"
+                            className="w-full border rounded-lg p-3"
+                          />
+                          {addressErrors.full_name && (
+                            <p className="mt-1 text-sm text-red-600">
+                              {addressErrors.full_name}
+                            </p>
+                          )}
 
-  </div>
-)}
+                          <input
+                            name="phone"
+                            value={newAddress.phone}
+                            onChange={handleNewAddressChange}
+                            placeholder="Phone"
+                            className="w-full border rounded-lg p-3"
+                          />
+                          {addressErrors.phone && (
+                            <p className="mt-1 text-sm text-red-600">
+                              {addressErrors.phone}
+                            </p>
+                          )}
 
-      <div className="flex justify-end gap-3 mt-6">
+                          <input
+                            name="line1"
+                            value={newAddress.line1}
+                            onChange={handleNewAddressChange}
+                            placeholder="Address Line 1"
+                            className="w-full border rounded-lg p-3"
+                          />
+                          {addressErrors.line1 && (
+                            <p className="mt-1 text-sm text-red-600">
+                              {addressErrors.line1}
+                            </p>
+                          )}
 
-        <button
-          onClick={() => setShowAddressModal(false)}
-          className="border rounded-lg px-5 py-2"
-        >
-          Cancel
-        </button>
+                          <input
+                            name="line2"
+                            value={newAddress.line2}
+                            onChange={handleNewAddressChange}
+                            placeholder="Address Line 2"
+                            className="w-full border rounded-lg p-3"
+                          />
 
-        <button
-          onClick={async () => {
+                          <input
+                            name="landmark"
+                            value={newAddress.landmark}
+                            onChange={handleNewAddressChange}
+                            placeholder="Landmark"
+                            className="w-full border rounded-lg p-3"
+                          />
 
-            await updateOrderAddress(order.id,{
-              shipping_address_id:selectedAddressId
-            });
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input
+                              name="city"
+                              value={newAddress.city}
+                              onChange={handleNewAddressChange}
+                              placeholder="City"
+                              className="border rounded-lg p-3"
+                            />
+                            {addressErrors.city && (
+                              <p className="mt-1 text-sm text-red-600">
+                                {addressErrors.city}
+                              </p>
+                            )}
 
-            await refetch();
-            const address = await fetchAddressById(selectedAddressId);
+                            <input
+                              name="state"
+                              value={newAddress.state}
+                              onChange={handleNewAddressChange}
+                              placeholder="State"
+                              className="border rounded-lg p-3"
+                            />
+                            {addressErrors.state && (
+                              <p className="mt-1 text-sm text-red-600">
+                                {addressErrors.state}
+                              </p>
+                            )}
 
-setShippingAddress(address);
+                            <input
+                              name="postal_code"
+                              value={newAddress.postal_code}
+                              onChange={handleNewAddressChange}
+                              placeholder="Postal Code"
+                              className="border rounded-lg p-3"
+                            />
+                            {addressErrors.postal_code && (
+                              <p className="mt-1 text-sm text-red-600">
+                                {addressErrors.postal_code}
+                              </p>
+                            )}
 
-            setShowAddressModal(false);
+                            <input
+                              name="country"
+                              value={newAddress.country}
+                              onChange={handleNewAddressChange}
+                              placeholder="Country"
+                              className="border rounded-lg p-3"
+                            />
+                            {addressErrors.country && (
+                              <p className="mt-1 text-sm text-red-600">
+                                {addressErrors.country}
+                              </p>
+                            )}
+                          </div>
 
-          }}
-          className="bg-red-600 text-white rounded-lg px-5 py-2"
-        >
-          Use Address
-        </button>
+                          <div className="flex justify-end gap-3">
+                            <button
+                              onClick={() => setShowAddAddress(false)}
+                              className="border rounded-lg px-5 py-2"
+                            >
+                              Cancel
+                            </button>
 
-      </div>
+                            <button
+                              onClick={handleCreateAddress}
+                              className="bg-red-600 text-white rounded-lg px-5 py-2"
+                            >
+                              Save Address
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                      
+                     
 
-    </div>
-
-  </div>
-)}
+                    
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-1">
@@ -1391,8 +1379,6 @@ setShippingAddress(address);
               </div>
             </div>
           )}
-
-         
         </div>
         {/* Shipments */}
         {order.shipments?.length > 0 && (

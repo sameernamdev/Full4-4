@@ -420,7 +420,7 @@ export default function HomePage() {
                            to={`/products?category=${item.slug}&category_id=${item.id}`}
                             key={item.id}
                           >
-                            {console.log(item.id)}
+                            {/* {console.log(item.id)} */}
                             <motion.div
                               onClick={() => handleCategoryClick(item.slug)}
                               // whileHover={{ scale: 1.02 }}

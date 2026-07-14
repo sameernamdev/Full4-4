@@ -247,7 +247,7 @@ export const useReviews = (productId, page = 1, limit = 10) => {
         setFeaturedLoading(true);
 
         const res = await getFeaturedReviews(page, limit);
-        console.log(res.data);
+        // console.log(res.data);
 
         setFeaturedReviews(res.data || []);
         setPagination(res.data?.pagination || null);

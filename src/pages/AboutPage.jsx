@@ -117,7 +117,13 @@ export default function AboutPage() {
           <div className="reveal">
             <div className="font-body text-brand-red text-xs tracking-[0.3em] uppercase mb-3">/ Who We Are</div>
             <h2 className="font-display text-5xl font-black text-brand-ink mb-8">POWERING INDIA'S<br /><span className="text-gradient">CAR CULTURE</span><br />SINCE 2017</h2>
-            <p className="font-body text-brand-ink/60 leading-relaxed mb-6">Drive Ranger was born from a simple frustration: finding genuine car parts in India was a nightmare. Counterfeit products, sky-high prices, and zero technical support. We decided to change that.</p>
+            {/* <p className="font-body text-brand-ink/60 leading-relaxed mb-6">Drive Ranger was born from a simple frustration: finding genuine car parts in India was a nightmare. Counterfeit products, sky-high prices, and zero technical support. We decided to change that.</p> */}
+            <p className="font-body text-brand-ink/60 leading-relaxed mb-6">
+  Drive Ranger was founded with a simple vision—to make premium, genuine
+  automotive parts easily accessible to vehicle owners across India. We saw the
+  challenges customers faced in finding authentic products, fair pricing, and
+  reliable support, and set out to create a platform they could trust.
+</p>
             <p className="font-body text-brand-ink/60 leading-relaxed mb-6">we've grown into India's most trusted auto parts platform, stocking over 20,000 SKUs from 20+ global brands, serving customers from Kashmir to Kanyakumari.</p>
             <p className="font-body text-brand-ink/60 leading-relaxed">Our team of 150+ automotive enthusiasts and certified engineers work tirelessly to ensure every part we sell is 100% genuine, competitively priced, and backed by expert support.</p>
           </div>

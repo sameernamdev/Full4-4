@@ -540,7 +540,8 @@ import { useSubCategories } from "../hooks/useSubCategories";
 
 export default function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const brandIdFromUrl = searchParams.get("brandId") || null;
+ const brandIdFromUrl = searchParams.get("brand_id") || null;
+const brandSlugFromUrl = searchParams.get("brand") || null;
 
   // ─── Mobile drawer state ──────────────────────────────
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -550,6 +551,7 @@ export default function ProductsPage() {
     page: 1,
     limit: 10,
     brand_id: brandIdFromUrl,
+      brand: brandSlugFromUrl,
     category_id: searchParams.get("category_id") || "",
     sub_category_id:  searchParams.get("subcategory_id") || "",
     search: "",
@@ -573,13 +575,15 @@ export default function ProductsPage() {
     const categoryId = searchParams.get("category_id") || undefined;
 
     const subcategoryId = searchParams.get("subcategory_id");
-    const brandId = searchParams.get("brandId");
+    const brandId = searchParams.get("brand_id");
+const brandSlug = searchParams.get("brand");
 
     setFilters((prev) => ({
       ...prev,
       category_id: categoryId ? Number(categoryId) : null,
       sub_category_id: subcategoryId ? Number(subcategoryId) : null,
-      brand_id: brandId || null,
+       brand_id: brandId || null,
+        brand: brandSlug || null,
       page: 1,
     }));
   }, [searchParams]);
@@ -608,8 +612,18 @@ export default function ProductsPage() {
       search: "",
       sort_by: "",
     });
-    searchParams.delete("brandId");
-    setSearchParams(searchParams);
+  //   searchParams.delete("brand_id");
+  //   searchParams.delete("brand");
+
+  //   params.delete("category");
+  // params.delete("category_id");
+
+  // params.delete("subcategory");
+  // params.delete("subcategory_id");
+
+    // setSearchParams(searchParams); 
+     //iske alawa niche ye bhi kar sakte hai taaki sabhi searchparams khali ho jaye
+    setSearchParams({})
   };
 
   // ─── Derived state ────────────────────────────────────

@@ -73,7 +73,8 @@ export default function BrandsPage({ setPage }) {
           {brands.map((brand, i) => (
             <button key={brand.id} onClick={() => {
               // setPage('products')
-              navigate(`/products?brandId=${brand.id}`)
+              // navigate(`/products?brandId=${brand.id}`)
+               navigate(`/products?brand=${brand.slug}&brand_id=${brand.id}`);
               // navigate(`/products?brandId=${brand.id}&brand_name=${brand.name}`)
             }}
             // onClick={() => navigate(`/products?brandId=${brand.id}`)}

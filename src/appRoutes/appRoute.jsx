@@ -20,6 +20,7 @@ import WarrantyPage from "../pages/WarrantyPage";
 import ForgotPasswordPage from "../pages/login/ForgotPasswordPage";
 import Coupons from "../pages/Coupons";
 import FindVehiclePage from "../pages/FindVehiclePage";
+import MyAddresses from "../pages/MyAddresses";
 
 function AppRoutes() {
   return (
@@ -34,7 +35,8 @@ function AppRoutes() {
         <Route path="/cart" element={<CartPage />} />
         {/* <Route path="find-vehicle" element={<FindVehiclePage/>}/> */}
 
-        <Route path="/category/:categoryId" element={<CategoryPage/>}/>
+        {/* <Route path="/category/:categoryId" element={<CategoryPage/>}/> */}
+
 
         {/* login */}
         <Route path="/register" element={<RegisterPage />} />
@@ -48,6 +50,7 @@ function AppRoutes() {
         <Route path="/my-warranties" element={<WarrantyPage/>}/>
  
             <Route path="/coupons" element={<Coupons />} />
+            <Route path="/my-addresses" element={<MyAddresses/>}/>
 
         {/* orders */}
         <Route

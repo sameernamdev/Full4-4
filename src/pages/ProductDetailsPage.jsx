@@ -414,6 +414,7 @@ export default function ProductDetailsPage() {
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [adding, setAdding] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -501,7 +502,7 @@ export default function ProductDetailsPage() {
   if (loading) {
     return (
       <div className="pt-24 min-h-screen bg-gray-50 flex items-center justify-center text-gray-700">
-        <div className="animate-pulse text-xl">Loading…</div>
+        <div className="animate-pulse text-xl">Loading product…</div>
       </div>
     );
   }

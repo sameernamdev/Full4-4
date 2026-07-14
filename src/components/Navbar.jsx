@@ -3,7 +3,8 @@ import {
   Menu, X, ShoppingCart, User, LogOut, Settings,
   UserCircle, ChevronRight, ShoppingBag, Star, Shield,
   ChevronDown, ChevronUp,
-  Ticket
+  Ticket,
+  MapPin
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -102,16 +103,20 @@ export default function Navbar() {
   };
 
   // Navigation helper for products
-  const navigateToProducts = (categoryId, subcategoryId = null) => {
+  const navigateToProducts = (cat, sub = null) => {
+  //    console.log("Category:", cat);
+  // console.log("Subcategory:", sub);
     setMenuOpen(false);
     setMobileProductsOpen(false);
     setMobileExpandedCategory(null);
     setIsProductsOpen(false);
     setHoveredCategoryId(null);
-    const query = subcategoryId
-      ? `?category_id=${categoryId}&subcategory_id=${subcategoryId}`
-      // to={`/products?category=${item.slug}&category_id=${item.id}`}
-      : `?category_id=${categoryId}`;
+    const query = sub
+      // ? `?category_id=${categoryId}&subcategory_id=${subcategoryId}`
+      // : `?category_id=${categoryId}`;
+  ? `?category=${cat.slug}&category_id=${cat.id}&subcategory=${sub.slug}&subcategory_id=${sub.id}`
+    : `?category=${cat.slug}&category_id=${cat.id}`;
+
     // navigate(`/products${query}`);
     navigate(`/products${query}`);
   };
@@ -186,7 +191,7 @@ export default function Navbar() {
                       >
                         <div
                           className="flex items-center justify-between px-4 py-2 hover:bg-white/5 cursor-pointer text-white transition"
-                          onClick={() => navigateToProducts(cat.id)}
+                          onClick={() => navigateToProducts(cat)}
                         >
                           <span>{cat.name}</span>
                           <ChevronRight size={16} className="text-gray-400" />
@@ -204,7 +209,7 @@ export default function Navbar() {
                                 <div
                                   key={sub.id}
                                   className="px-4 py-2 hover:bg-white/5 cursor-pointer text-gray-200 transition"
-                                  onClick={() => navigateToProducts(cat.id, sub.id)}
+                                  onClick={() => navigateToProducts(cat, sub)}
                                 >
                                   {sub.name}
                                 </div>
@@ -349,9 +354,11 @@ export default function Navbar() {
                                 <div
                                   key={sub.id}
                                   className="py-2 text-sm text-gray-300 hover:text-brand-red cursor-pointer transition"
-                                  onClick={() => navigateToProducts(cat.id, sub.id)}
+                                  onClick={() => navigateToProducts(cat, sub)}
+                                  
                                 >
                                   {sub.name}
+                                  
                                 </div>
                               ))
                             ) : (
@@ -447,6 +454,14 @@ export default function Navbar() {
                 <button onClick={() => { setProfileOpen(false); navigate("/coupons"); }} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white">
       <Ticket size={22} /> <span className="flex-1 text-left">My Coupons</span> <ChevronRight size={18} />
     </button>
+    <button 
+  onClick={() => { setProfileOpen(false); navigate("/my-addresses"); }} 
+  className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white"
+>
+  <MapPin size={22} /> 
+  <span className="flex-1 text-left">My Addresses</span> 
+  <ChevronRight size={18} />
+</button>
 
               <div className="border-t border-white/10 my-4" />
               <button onClick={handleLogout} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-red-500/10 transition text-red-400">
