@@ -248,7 +248,7 @@ export default function HomePage() {
     transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
   />
 </picture>
-          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/20 to-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-black/10 to-black/10" />
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto w-full min-h-[92vh] md:min-h-screen flex flex-col justify-center lg:justify-end px-5 sm:px-8 lg:px-10 pt-16 sm:pt-24 lg:pt-28 pb-6 sm:pb-14 lg:pb-20">

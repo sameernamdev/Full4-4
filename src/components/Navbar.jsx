@@ -133,7 +133,18 @@ export default function Navbar() {
               <h1 className="text-white font-bold tracking-[0.12em] text-lg sm:text-md lg:text-[20px]">
                 DRIVE <span className="text-brand-red">RANGER</span>
               </h1>
-              <img src="/auto focus.png" alt="" className="w-24 sm:w-15 lg:w-24"/>
+               <div className="flex items-center gap-1 mt-1">
+    <span className="text-[10px] uppercase tracking-[0.2em] text-white font-bold">
+      powered by
+    </span>
+
+    <img
+      src="/auto focus.png"
+      alt="AutoFocus"
+      className="h-3 w-auto opacity-90"
+    />
+  </div>
+              {/* <img src="/auto focus.png" alt="" className="w-24 sm:w-15 lg:w-24"/> */}
             </div>
           </Link>
 
