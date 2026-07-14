@@ -525,11 +525,11 @@ export default function InlineCheckoutForm({
 
                             <p className="text-gray-600">Phone: {addr.phone}</p>
 
-                            {addr.is_default && (
+                            {/* {addr.is_default && (
                               <span className="inline-block mt-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
                                 Default
                               </span>
-                            )}
+                            )} */}
                           </div>
 
                           <button
