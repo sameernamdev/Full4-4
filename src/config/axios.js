@@ -913,3 +913,23 @@ export const getMyWarranties = async () => {
 };
 
 
+
+
+// contact us post api
+export const sendContactMessage = async (data) => {
+  try {
+    const res = await api.post("/messages", data);
+
+    return res.data;
+  } catch (error) {
+    console.error(
+      "Send Contact Message Error:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+
+
+

@@ -164,6 +164,7 @@ export default function HomePage() {
   const statsRef = useRef(null);
   // const { products, loading, error } = useProducts({ is_front: true });
   const { products, loading, error } = useProducts({ is_featured: true });
+  // const { products, loading, error } = useProducts();
   const { brands } = useBrands();
   const { categories, loading: categoriesLoading } = useCategories({
     is_front: true,
@@ -225,24 +226,32 @@ export default function HomePage() {
 
   return (
     <div className="bg-brand-off">
-      <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-screen">
+      <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-[92vh] md:min-h-screen">
         <div className="absolute inset-0">
-          <motion.img
-            src="/newhero.png"
-            alt="Sports Car"
-            fetchPriority="high"
-            decoding="async"
-            onError={imageFallback}
-            className="absolute inset-0 w-full h-full object-cover object-[80%_center] md:object-center opacity-95 brightness-[1.08] contrast-105 saturate-110"
-            initial={{ scale: 1.08 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-          />
+     <picture>
+  {/* Mobile Image */}
+  <source
+    // media="(max-width: 768px)"
+    media="(max-width:1024px)"
+    srcSet="/mobilecar.png"
+  />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-black/12 to-black/10" />
+  <motion.img
+    src="/newhero.png"
+    alt="Sports Car"
+    fetchPriority="high"
+    decoding="async"
+    onError={imageFallback}
+    className="absolute inset-0 w-full h-full object-cover object-center opacity-95 brightness-[1.08] contrast-105 saturate-110"
+    initial={{ scale: 1.08 }}
+    animate={{ scale: 1 }}
+    transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+  />
+</picture>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/20 to-black/10" />
         </div>
 
-        <div className="relative z-20 max-w-7xl mx-auto w-full min-h-screen flex flex-col justify-center lg:justify-end px-5 sm:px-8 lg:px-10 pt-[75px] sm:pt-24 lg:pt-28 pb-8 sm:pb-14 lg:pb-20">
+        <div className="relative z-20 max-w-7xl mx-auto w-full min-h-[92vh] md:min-h-screen flex flex-col justify-center lg:justify-end px-5 sm:px-8 lg:px-10 pt-16 sm:pt-24 lg:pt-28 pb-6 sm:pb-14 lg:pb-20">
           <motion.div
             data-anime-hero
             className="inline-flex w-fit items-center gap-3 border border-brand-red/45 px-4 sm:px-5 py-2.5 mb-5 sm:mb-8 bg-black/25 backdrop-blur-sm"

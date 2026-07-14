@@ -135,20 +135,61 @@
 import { useState } from "react";
 import { Phone, Mail, MapPin, Clock, CheckCircle, ArrowRight } from "lucide-react";
 import { useReveal } from "../hooks/useReveal";
+import { sendContactMessage } from "../config/axios";
 
 export default function ContactPage() {
   useReveal();
-  const [form, setForm] = useState({ name: '', email: '', phone: '', car: '', message: '' });
+  // const [form, setForm] = useState({ name: '', email: '', phone: '', car: '', message: '' });
+  const [form, setForm] = useState({
+  name: "",
+  email: "",
+  phone: "",
+  car_model: "",
+  car_year: "",
+  message: "",
+});
   const [sent, setSent] = useState(false);
 
-  const handleSubmit = () => {
-    if (form.name && form.email) {
-      setSent(true);
-      setTimeout(() => setSent(false), 4000);
-      setForm({ name: '', email: '', phone: '', car: '', message: '' });
-    }
-  };
+  // const handleSubmit = () => {
+  //   if (form.name && form.email) {
+  //     setSent(true);
+  //     setTimeout(() => setSent(false), 4000);
+  //     setForm({ name: '', email: '', phone: '', car: '', message: '' });
+  //   }
+  // };
 
+const handleSubmit = async () => {
+  if (!form.name || !form.email || !form.message) return;
+
+  try {
+    await sendContactMessage({
+      full_name: form.name,
+      email: form.email,
+      phone: form.phone,
+       car_model: form.car_model,
+  car_year: form.car_year,
+      message: form.message,
+    });
+
+    setSent(true);
+
+    setTimeout(() => {
+      setSent(false);
+    }, 4000);
+
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      car_model: "",
+      car_year:"",
+      message: "",
+
+    });
+  } catch (error) {
+    alert(error.response?.data?.message || "Failed to send message");
+  }
+};
   return (
     <div className="pt-24 min-h-screen bg-[#080808]">
       {/* Hero – light variant */}
@@ -214,7 +255,19 @@ export default function ContactPage() {
                 { key: 'name', label: 'Your Name *', placeholder: 'Rahul Sharma', type: 'text' },
                 { key: 'email', label: 'Email Address *', placeholder: 'rahul@example.com', type: 'email' },
                 { key: 'phone', label: 'Phone / WhatsApp', placeholder: '+91 98765 43210', type: 'tel' },
-                { key: 'car', label: 'Your Car (Model & Year)', placeholder: 'e.g. Honda City 2021', type: 'text' },
+                  {
+    key: "car_model",
+    label: "Car Model",
+    placeholder: "e.g. Honda City",
+    type: "text",
+  },
+    {
+    key: "car_year",
+    label: "Year",
+    placeholder: "e.g. 2021",
+    type: "number",
+  },
+                // { key: 'car', label: 'Your Car (Model & Year)', placeholder: 'e.g. Honda City 2021', type: 'text' },
               ].map(({ key, label, placeholder, type }) => (
                 <div key={key}>
                   <label className="font-body text-xs text-gray-500 tracking-wide block mb-2">{label}</label>
