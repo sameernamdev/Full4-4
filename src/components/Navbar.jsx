@@ -147,11 +147,11 @@ export default function Navbar() {
               className="w-10 sm:w-9 lg:w-12"
             />
             <div className="leading-none">
-              <h1 className="text-white font-bold tracking-[0.09em] text-[22px] text-lg sm:text-[25px]  lg:text-[25px]">
+              <h1 className="text-white font-bold tracking-[0.09em] text-[23px] text-lg sm:text-[25px]  lg:text-[25px]">
                 DRIVE <span className="text-brand-red">RANGER</span>
               </h1>
 
-              <div className="flex items-center gap-1 mt-0 max-w-full overflow-hidden ">
+              <div className="flex items-center gap-0 mt-0 max-w-full overflow-hidden ">
                 <span className="text-[6px]  sm:text-[8px] uppercase tracking-[0.15em] text-white font-bold whitespace-nowrap">
                   Powered by
                 </span>
