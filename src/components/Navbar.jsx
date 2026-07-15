@@ -1,10 +1,20 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import {
-  Menu, X, ShoppingCart, User, LogOut, Settings,
-  UserCircle, ChevronRight, ShoppingBag, Star, Shield,
-  ChevronDown, ChevronUp,
+  Menu,
+  X,
+  ShoppingCart,
+  User,
+  LogOut,
+  Settings,
+  UserCircle,
+  ChevronRight,
+  ShoppingBag,
+  Star,
+  Shield,
+  ChevronDown,
+  ChevronUp,
   Ticket,
-  MapPin
+  MapPin,
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -39,7 +49,7 @@ export default function Navbar() {
   const subcategoryMap = useMemo(() => {
     const map = {};
     if (allSubcategories && allSubcategories.length) {
-      allSubcategories.forEach(sub => {
+      allSubcategories.forEach((sub) => {
         const catId = sub.category_id || sub.category;
         if (catId) {
           if (!map[catId]) map[catId] = [];
@@ -51,7 +61,9 @@ export default function Navbar() {
   }, [allSubcategories]);
 
   // For desktop hover
-  const hoveredSubs = hoveredCategoryId ? subcategoryMap[hoveredCategoryId] || [] : [];
+  const hoveredSubs = hoveredCategoryId
+    ? subcategoryMap[hoveredCategoryId] || []
+    : [];
 
   // Close profile on outside click
   useEffect(() => {
@@ -67,7 +79,9 @@ export default function Navbar() {
   // Prevent scrolling
   useEffect(() => {
     document.body.style.overflow = menuOpen || profileOpen ? "hidden" : "unset";
-    return () => { document.body.style.overflow = "unset"; };
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [menuOpen, profileOpen]);
 
   // Close drawers on route change
@@ -104,18 +118,18 @@ export default function Navbar() {
 
   // Navigation helper for products
   const navigateToProducts = (cat, sub = null) => {
-  //    console.log("Category:", cat);
-  // console.log("Subcategory:", sub);
+    //    console.log("Category:", cat);
+    // console.log("Subcategory:", sub);
     setMenuOpen(false);
     setMobileProductsOpen(false);
     setMobileExpandedCategory(null);
     setIsProductsOpen(false);
     setHoveredCategoryId(null);
     const query = sub
-      // ? `?category_id=${categoryId}&subcategory_id=${subcategoryId}`
-      // : `?category_id=${categoryId}`;
-  ? `?category=${cat.slug}&category_id=${cat.id}&subcategory=${sub.slug}&subcategory_id=${sub.id}`
-    : `?category=${cat.slug}&category_id=${cat.id}`;
+      ? // ? `?category_id=${categoryId}&subcategory_id=${subcategoryId}`
+        // : `?category_id=${categoryId}`;
+        `?category=${cat.slug}&category_id=${cat.id}&subcategory=${sub.slug}&subcategory_id=${sub.id}`
+      : `?category=${cat.slug}&category_id=${cat.id}`;
 
     // navigate(`/products${query}`);
     navigate(`/products${query}`);
@@ -125,33 +139,39 @@ export default function Navbar() {
     <>
       <nav className="fixed top-0 left-0 right-0 z-[999] font-[Rajdhani,sans-serif] h-16 sm:h-[72px] lg:h-20 bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-lg">
         <div className="max-w-7xl h-full mx-auto px-3 sm:px-5 lg:px-8 flex items-center justify-between">
-          
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <img src="/newLogoDR.png" alt="Drive Ranger" className="w-10 sm:w-9 lg:w-12" />
+            <img
+              src="/newLogoDR.png"
+              alt="Drive Ranger"
+              className="w-10 sm:w-9 lg:w-12"
+            />
             <div className="leading-none">
-              <h1 className="text-white font-bold tracking-[0.12em] text-lg sm:text-md lg:text-[20px]">
+              <h1 className="text-white font-bold tracking-[0.09em] text-[22px] text-lg sm:text-[25px]  lg:text-[25px]">
                 DRIVE <span className="text-brand-red">RANGER</span>
               </h1>
-               <div className="flex items-center gap-1 mt-1">
-    <span className="text-[10px] uppercase tracking-[0.2em] text-white font-bold">
-      powered by
-    </span>
 
-    <img
-      src="/auto focus.png"
-      alt="AutoFocus"
-      className="h-3 w-auto opacity-90"
-    />
-  </div>
-              {/* <img src="/auto focus.png" alt="" className="w-24 sm:w-15 lg:w-24"/> */}
+              <div className="flex items-center gap-1 mt-0 max-w-full overflow-hidden ">
+                <span className="text-[6px]  sm:text-[8px] uppercase tracking-[0.15em] text-white font-bold whitespace-nowrap">
+                  Powered by
+                </span>
+
+                <img
+                  src="/autofocus logo PNG.png"
+                  alt="AutoFocus"
+                  className="h-[8px] sm:h-3 w-auto max-w-[55px] sm:max-w-none object-contain flex-shrink "
+                />
+              </div>
             </div>
           </Link>
 
           {/* ===== DESKTOP MENU ===== */}
           <ul className="hidden lg:flex items-center gap-8 text-white font-semibold">
             <li>
-              <Link to="/" className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300">
+              <Link
+                to="/"
+                className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300"
+              >
                 Home
               </Link>
             </li>
@@ -162,7 +182,7 @@ export default function Navbar() {
               onMouseEnter={() => setIsProductsOpen(true)}
               onMouseLeave={() => {
                 setTimeout(() => {
-                  if (!document.querySelector('.products-dropdown:hover')) {
+                  if (!document.querySelector(".products-dropdown:hover")) {
                     setIsProductsOpen(false);
                     setHoveredCategoryId(null);
                   }
@@ -172,12 +192,15 @@ export default function Navbar() {
               <button
                 onClick={() => {
                   setIsProductsOpen(false);
-                  navigate('/products');
+                  navigate("/products");
                 }}
                 className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300 flex items-center gap-1 mt-1"
               >
                 Products
-                <ChevronDown size={14} className={`transition-transform ${isProductsOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform ${isProductsOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
               {isProductsOpen && (
@@ -190,11 +213,15 @@ export default function Navbar() {
                   }}
                 >
                   {catLoading ? (
-                    <div className="text-center py-4 text-gray-400">Loading categories...</div>
+                    <div className="text-center py-4 text-gray-400">
+                      Loading categories...
+                    </div>
                   ) : categories.length === 0 ? (
-                    <div className="text-center py-4 text-gray-400">No categories</div>
+                    <div className="text-center py-4 text-gray-400">
+                      No categories
+                    </div>
                   ) : (
-                    categories.map(cat => (
+                    categories.map((cat) => (
                       <div
                         key={cat.id}
                         className="relative group"
@@ -214,9 +241,11 @@ export default function Navbar() {
                             onMouseEnter={() => setHoveredCategoryId(cat.id)}
                           >
                             {subLoading ? (
-                              <div className="text-center py-2 text-gray-400">Loading...</div>
+                              <div className="text-center py-2 text-gray-400">
+                                Loading...
+                              </div>
                             ) : hoveredSubs.length > 0 ? (
-                              hoveredSubs.map(sub => (
+                              hoveredSubs.map((sub) => (
                                 <div
                                   key={sub.id}
                                   className="px-4 py-2 hover:bg-white/5 cursor-pointer text-gray-200 transition"
@@ -226,7 +255,9 @@ export default function Navbar() {
                                 </div>
                               ))
                             ) : (
-                              <div className="px-4 py-2 text-gray-400">No subcategories</div>
+                              <div className="px-4 py-2 text-gray-400">
+                                No subcategories
+                              </div>
                             )}
                           </div>
                         )}
@@ -238,7 +269,10 @@ export default function Navbar() {
             </li>
 
             <li>
-              <Link to="/brands" className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300">
+              <Link
+                to="/brands"
+                className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300"
+              >
                 Brands
               </Link>
             </li>
@@ -248,17 +282,21 @@ export default function Navbar() {
               </Link>
             </li> */}
             <li>
-              <Link to="/about" className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300">
+              <Link
+                to="/about"
+                className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300"
+              >
                 About
               </Link>
             </li>
             <li>
-              <Link to="/contact" className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300">
+              <Link
+                to="/contact"
+                className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300"
+              >
                 Contact
               </Link>
             </li>
-
-            
           </ul>
 
           {/* Right Side */}
@@ -273,10 +311,17 @@ export default function Navbar() {
             </Link>
 
             {/* Profile */}
-            <button onClick={handleProfileClick} className="relative p-1 rounded-full hover:bg-white/10 transition">
+            <button
+              onClick={handleProfileClick}
+              className="relative p-1 rounded-full hover:bg-white/10 transition"
+            >
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border border-brand-red/40 bg-brand-red/10 flex items-center justify-center">
                 {isAuthenticated && user?.profile_image ? (
-                  <img src={user.profile_image} alt={user.full_name} className="w-full h-full object-cover" />
+                  <img
+                    src={user.profile_image}
+                    alt={user.full_name}
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <User size={15} className="text-white" />
                 )}
@@ -286,18 +331,25 @@ export default function Navbar() {
               )}
             </button>
 
-          {!isAuthenticated && (
-  <Link
-    to="/login"
-    className="hidden lg:flex btn-clip btn-shine bg-brand-red text-white px-6 py-3 uppercase tracking-[0.18em] text-[13px]"
-  >
-    Login
-  </Link>
-)}
+            {!isAuthenticated && (
+              <Link
+                to="/login"
+                className="hidden lg:flex btn-clip btn-shine bg-brand-red text-white px-6 py-3 uppercase tracking-[0.18em] text-[13px]"
+              >
+                Login
+              </Link>
+            )}
 
             {/* Hamburger */}
-            <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition">
-              {menuOpen ? <X size={28} className="text-white" /> : <Menu size={28} className="text-white" />}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition"
+            >
+              {menuOpen ? (
+                <X size={28} className="text-white" />
+              ) : (
+                <Menu size={28} className="text-white" />
+              )}
             </button>
           </div>
         </div>
@@ -305,12 +357,18 @@ export default function Navbar() {
         {/* ===== MOBILE MENU ===== */}
         <div
           className={`fixed top-16 sm:top-[72px] left-0 w-full h-[calc(100vh-64px)] sm:h-[calc(100vh-72px)] bg-[#080808]/95 backdrop-blur-xl transition-all duration-500 lg:hidden ${
-            menuOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+            menuOpen
+              ? "translate-x-0 opacity-100"
+              : "-translate-x-full opacity-0"
           }`}
         >
           <div className="flex flex-col px-6 py-8 h-full overflow-y-auto">
             {/* Home */}
-            <Link to="/" onClick={() => setMenuOpen(false)} className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition">
+            <Link
+              to="/"
+              onClick={() => setMenuOpen(false)}
+              className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition"
+            >
               Home
             </Link>
 
@@ -328,30 +386,41 @@ export default function Navbar() {
                   onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
                   className="p-2 hover:bg-white/10 rounded-lg transition"
                 >
-                  {mobileProductsOpen ? <ChevronUp size={20} className="text-white" /> : <ChevronDown size={20} className="text-white" />}
+                  {mobileProductsOpen ? (
+                    <ChevronUp size={20} className="text-white" />
+                  ) : (
+                    <ChevronDown size={20} className="text-white" />
+                  )}
                 </button>
               </div>
 
               {mobileProductsOpen && (
                 <div className="pl-4 pb-2 space-y-1">
                   {catLoading ? (
-                    <div className="py-2 text-gray-400">Loading categories...</div>
+                    <div className="py-2 text-gray-400">
+                      Loading categories...
+                    </div>
                   ) : categories.length === 0 ? (
                     <div className="py-2 text-gray-400">No categories</div>
                   ) : (
-                    categories.map(cat => (
-                      <div key={cat.id} className="border-b border-white/5 last:border-0">
+                    categories.map((cat) => (
+                      <div
+                        key={cat.id}
+                        className="border-b border-white/5 last:border-0"
+                      >
                         {/* Category button with chevron to toggle subcategories */}
                         <button
                           onClick={() => {
-                            setMobileExpandedCategory(mobileExpandedCategory === cat.id ? null : cat.id);
+                            setMobileExpandedCategory(
+                              mobileExpandedCategory === cat.id ? null : cat.id,
+                            );
                           }}
                           className="w-full flex items-center justify-between py-2 text-white hover:text-brand-red transition text-left"
                         >
                           <span>{cat.name}</span>
                           <ChevronRight
                             size={16}
-                            className={`transition-transform ${mobileExpandedCategory === cat.id ? 'rotate-90' : ''}`}
+                            className={`transition-transform ${mobileExpandedCategory === cat.id ? "rotate-90" : ""}`}
                           />
                         </button>
 
@@ -359,21 +428,23 @@ export default function Navbar() {
                         {mobileExpandedCategory === cat.id && (
                           <div className="pl-4 pb-2 space-y-1">
                             {subLoading ? (
-                              <div className="py-1 text-gray-400">Loading...</div>
+                              <div className="py-1 text-gray-400">
+                                Loading...
+                              </div>
                             ) : (subcategoryMap[cat.id] || []).length > 0 ? (
-                              subcategoryMap[cat.id].map(sub => (
+                              subcategoryMap[cat.id].map((sub) => (
                                 <div
                                   key={sub.id}
                                   className="py-2 text-sm text-gray-300 hover:text-brand-red cursor-pointer transition"
                                   onClick={() => navigateToProducts(cat, sub)}
-                                  
                                 >
                                   {sub.name}
-                                  
                                 </div>
                               ))
                             ) : (
-                              <div className="py-1 text-gray-500 text-sm">No subcategories</div>
+                              <div className="py-1 text-gray-500 text-sm">
+                                No subcategories
+                              </div>
                             )}
                           </div>
                         )}
@@ -385,27 +456,43 @@ export default function Navbar() {
             </div>
 
             {/* Brands */}
-            <Link to="/brands" onClick={() => setMenuOpen(false)} className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition">
+            <Link
+              to="/brands"
+              onClick={() => setMenuOpen(false)}
+              className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition"
+            >
               Brands
             </Link>
-            <Link to="/about" onClick={() => setMenuOpen(false)} className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition">
+            <Link
+              to="/about"
+              onClick={() => setMenuOpen(false)}
+              className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition"
+            >
               About
             </Link>
-            <Link to="/contact" onClick={() => setMenuOpen(false)} className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition">
+            <Link
+              to="/contact"
+              onClick={() => setMenuOpen(false)}
+              className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition"
+            >
               Contact
             </Link>
 
             <div className="mt-auto space-y-4 pt-8">
               {!isAuthenticated && (
-  <Link
-    to="/login"
-    onClick={() => setMenuOpen(false)}
-    className="block w-full text-center bg-brand-red text-white uppercase tracking-[0.18em] py-4 rounded-lg font-semibold hover:bg-red-700 transition"
-  >
-    Login
-  </Link>
-)}
-              <Link to="/cart" onClick={() => setMenuOpen(false)} className="block w-full text-center border border-white/20 text-white py-4 rounded-lg hover:bg-white/10 transition">
+                <Link
+                  to="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="block w-full text-center bg-brand-red text-white uppercase tracking-[0.18em] py-4 rounded-lg font-semibold hover:bg-red-700 transition"
+                >
+                  Login
+                </Link>
+              )}
+              <Link
+                to="/cart"
+                onClick={() => setMenuOpen(false)}
+                className="block w-full text-center border border-white/20 text-white py-4 rounded-lg hover:bg-white/10 transition"
+              >
                 View Cart ({totalItems})
               </Link>
             </div>
@@ -415,7 +502,10 @@ export default function Navbar() {
 
       {/* Mobile Overlay */}
       {menuOpen && (
-        <div onClick={() => setMenuOpen(false)} className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[998] lg:hidden" />
+        <div
+          onClick={() => setMenuOpen(false)}
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[998] lg:hidden"
+        />
       )}
 
       {/* ===== PROFILE DRAWER ===== */}
@@ -426,7 +516,10 @@ export default function Navbar() {
         }`}
       >
         <div className="flex-shrink-0 px-6 pt-5 pb-3 flex justify-end">
-          <button onClick={() => setProfileOpen(false)} className="p-2 rounded-lg hover:bg-white/10 transition">
+          <button
+            onClick={() => setProfileOpen(false)}
+            className="p-2 rounded-lg hover:bg-white/10 transition"
+          >
             <X className="text-white" size={24} />
           </button>
         </div>
@@ -434,7 +527,11 @@ export default function Navbar() {
           <div className="flex flex-col items-center">
             <div className="w-24 h-24 rounded-full border-2 border-brand-red overflow-hidden bg-brand-red/10 flex items-center justify-center">
               {isAuthenticated && user?.profile_image ? (
-                <img src={user.profile_image} alt={user.full_name} className="w-full h-full object-cover" />
+                <img
+                  src={user.profile_image}
+                  alt={user.full_name}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <User size={42} className="text-white" />
               )}
@@ -445,46 +542,100 @@ export default function Navbar() {
             <p className="text-gray-400 mt-2 text-sm">
               {isAuthenticated ? user?.email : "Not Logged In"}
             </p>
-            {user?.phone && <p className="text-gray-500 text-sm mt-1">{user.phone}</p>}
+            {user?.phone && (
+              <p className="text-gray-500 text-sm mt-1">{user.phone}</p>
+            )}
           </div>
 
           <div className="my-8 border-t border-white/10" />
 
           {isAuthenticated ? (
             <div className="space-y-2">
-              <button onClick={() => { setProfileOpen(false); navigate("/profile"); }} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white">
-                <UserCircle size={22} /> <span className="flex-1 text-left">My Profile</span> <ChevronRight size={18} />
+              <button
+                onClick={() => {
+                  setProfileOpen(false);
+                  navigate("/profile");
+                }}
+                className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white"
+              >
+                <UserCircle size={22} />{" "}
+                <span className="flex-1 text-left">My Profile</span>{" "}
+                <ChevronRight size={18} />
               </button>
-              <button onClick={() => { setProfileOpen(false); navigate("/orders"); }} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white">
-                <ShoppingBag size={22} /> <span className="flex-1 text-left">My Orders</span> <ChevronRight size={18} />
+              <button
+                onClick={() => {
+                  setProfileOpen(false);
+                  navigate("/orders");
+                }}
+                className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white"
+              >
+                <ShoppingBag size={22} />{" "}
+                <span className="flex-1 text-left">My Orders</span>{" "}
+                <ChevronRight size={18} />
               </button>
-              <button onClick={() => { setProfileOpen(false); navigate("/my-reviews"); }} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white">
-                <Star size={22} /> <span className="flex-1 text-left">My Reviews</span> <ChevronRight size={18} />
+              <button
+                onClick={() => {
+                  setProfileOpen(false);
+                  navigate("/my-reviews");
+                }}
+                className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white"
+              >
+                <Star size={22} />{" "}
+                <span className="flex-1 text-left">My Reviews</span>{" "}
+                <ChevronRight size={18} />
               </button>
 
-                <button onClick={() => { setProfileOpen(false); navigate("/coupons"); }} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white">
-      <Ticket size={22} /> <span className="flex-1 text-left">My Coupons</span> <ChevronRight size={18} />
-    </button>
-    <button 
-  onClick={() => { setProfileOpen(false); navigate("/my-addresses"); }} 
-  className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white"
->
-  <MapPin size={22} /> 
-  <span className="flex-1 text-left">My Addresses</span> 
-  <ChevronRight size={18} />
-</button>
+              <button
+                onClick={() => {
+                  setProfileOpen(false);
+                  navigate("/coupons");
+                }}
+                className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white"
+              >
+                <Ticket size={22} />{" "}
+                <span className="flex-1 text-left">My Coupons</span>{" "}
+                <ChevronRight size={18} />
+              </button>
+              <button
+                onClick={() => {
+                  setProfileOpen(false);
+                  navigate("/my-addresses");
+                }}
+                className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-white/5 transition text-white"
+              >
+                <MapPin size={22} />
+                <span className="flex-1 text-left">My Addresses</span>
+                <ChevronRight size={18} />
+              </button>
 
               <div className="border-t border-white/10 my-4" />
-              <button onClick={handleLogout} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-red-500/10 transition text-red-400">
-                <LogOut size={22} /> <span className="flex-1 text-left font-semibold">Logout</span> <ChevronRight size={18} />
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-4 px-5 py-4 rounded-xl hover:bg-red-500/10 transition text-red-400"
+              >
+                <LogOut size={22} />{" "}
+                <span className="flex-1 text-left font-semibold">Logout</span>{" "}
+                <ChevronRight size={18} />
               </button>
             </div>
           ) : (
             <div className="space-y-3">
-              <button onClick={() => { setProfileOpen(false); navigate("/login"); }} className="w-full py-4 rounded-xl bg-brand-red text-white font-semibold">
+              <button
+                onClick={() => {
+                  setProfileOpen(false);
+                  navigate("/login");
+                }}
+                className="w-full py-4 rounded-xl bg-brand-red text-white font-semibold"
+              >
                 Login
               </button>
-              <button onClick={() => { setProfileOpen(false); navigate("/register"); }} className="w-full py-4 rounded-xl border border-white/20 text-white">
+              <button
+                onClick={() => {
+                  setProfileOpen(false);
+                  navigate("/register");
+                }}
+                className="w-full py-4 rounded-xl border border-white/20 text-white"
+              >
                 Create Account
               </button>
             </div>
@@ -492,16 +643,23 @@ export default function Navbar() {
         </div>
         <div className="flex-shrink-0 border-t border-white/10 p-6 bg-[#0b0b0b]">
           {isAuthenticated ? (
-            <p className="text-center text-xs text-gray-500">Logged in as <span className="text-gray-300">{user?.email}</span></p>
+            <p className="text-center text-xs text-gray-500">
+              Logged in as <span className="text-gray-300">{user?.email}</span>
+            </p>
           ) : (
-            <p className="text-center text-xs text-gray-500">You are not logged in</p>
+            <p className="text-center text-xs text-gray-500">
+              You are not logged in
+            </p>
           )}
         </div>
       </div>
 
       {/* Profile Overlay */}
       {profileOpen && (
-        <div onClick={() => setProfileOpen(false)} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999]" />
+        <div
+          onClick={() => setProfileOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999]"
+        />
       )}
     </>
   );

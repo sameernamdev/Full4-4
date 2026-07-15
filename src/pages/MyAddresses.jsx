@@ -7,6 +7,8 @@ import { Plus, Edit, Trash2, X } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
+import { INDIAN_STATES } from "../data/states";
+
 
 export default function MyAddresses() {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -318,14 +320,21 @@ export default function MyAddresses() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
-                  <input
-                    type="text"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    required
-                    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red"
-                  />
+                  <select
+    name="state"
+    value={formData.state}
+    onChange={handleChange}
+    required
+    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red"
+  >
+    <option value="">Select State</option>
+
+    {INDIAN_STATES.map((state) => (
+      <option key={state} value={state}>
+        {state}
+      </option>
+    ))}
+  </select>
                 </div>
               </div>
               {/* Postal / Country */}
@@ -455,14 +464,21 @@ export default function MyAddresses() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
-                  <input
-                    type="text"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    required
-                    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red"
-                  />
+                   <select
+    name="state"
+    value={formData.state}
+    onChange={handleChange}
+    required
+    className="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-2.5 text-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-red/50 focus:border-brand-red"
+  >
+    <option value="">Select State</option>
+
+    {INDIAN_STATES.map((state) => (
+      <option key={state} value={state}>
+        {state}
+      </option>
+    ))}
+  </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">

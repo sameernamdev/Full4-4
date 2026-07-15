@@ -750,6 +750,19 @@ export default function OrderDetailsPage() {
     country: "India",
     address_type: "shipping",
   });
+
+const formatDate = (value) => {
+  if (!value) return "-";
+
+  return new Date(value.replace(" ", "T")).toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
   const handleNewAddressChange = (e) => {
     const { name, value } = e.target;
 
@@ -932,13 +945,10 @@ export default function OrderDetailsPage() {
             </h1>
             <p className="text-gray-500 mt-2">
               Placed on{" "}
-              {new Date(order.order_date).toLocaleDateString("en-IN", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+
+              {/* {formatISTDate(order.order_date)} */}
+{/* {             formatISTDate(order.order_date)} */}
+          {formatDate(order.order_date)}
             </p>
           </div>
           <div

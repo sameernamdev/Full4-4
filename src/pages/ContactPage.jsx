@@ -150,6 +150,43 @@ export default function ContactPage() {
 });
   const [sent, setSent] = useState(false);
 
+
+  const [errors, setErrors] = useState({});
+  const validateForm = () => {
+  const newErrors = {};
+
+  // Name
+  if (!form.name.trim()) {
+    newErrors.name = "Name is required";
+  }
+
+  // Email
+  if (!form.email.trim()) {
+    newErrors.email = "Email is required";
+  } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+    newErrors.email = "Enter a valid email";
+  }
+
+  // Phone
+  if (!form.phone.trim()) {
+    newErrors.phone = "Phone number is required";
+  } else if (!/^[6-9]\d{9}$/.test(form.phone)) {
+    newErrors.phone = "Enter a valid 10-digit phone number";
+  }
+
+  // Message
+
+if (!form.message.trim()) {
+  newErrors.message = "Message is required";
+} else if (form.message.trim().length < 10) {
+  newErrors.message = "Message must contain at least 10 characters";
+}
+
+  setErrors(newErrors);
+
+  return Object.keys(newErrors).length === 0;
+};
+
   // const handleSubmit = () => {
   //   if (form.name && form.email) {
   //     setSent(true);
@@ -159,7 +196,8 @@ export default function ContactPage() {
   // };
 
 const handleSubmit = async () => {
-  if (!form.name || !form.email || !form.message) return;
+  // if (!form.name || !form.email || !form.message) return;
+    if (!validateForm()) return;
 
   try {
     await sendContactMessage({
@@ -170,6 +208,8 @@ const handleSubmit = async () => {
   car_year: form.car_year,
       message: form.message,
     });
+
+    setErrors({});
 
     setSent(true);
 
@@ -184,6 +224,7 @@ const handleSubmit = async () => {
       car_model: "",
       car_year:"",
       message: "",
+      
 
     });
   } catch (error) {
@@ -246,7 +287,7 @@ const handleSubmit = async () => {
             {sent && (
               <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center gap-3">
                 <CheckCircle size={18} className="text-green-600" />
-                <span className="font-body text-green-700 text-sm">Message sent! We'll reply within 2 hours.</span>
+                <span className="font-body text-green-700 text-sm">Thank you for contacting Drive Ranger! Our team will get back to you soon.</span>
               </div>
             )}
 
@@ -254,7 +295,7 @@ const handleSubmit = async () => {
               {[
                 { key: 'name', label: 'Your Name *', placeholder: 'Rahul Sharma', type: 'text' },
                 { key: 'email', label: 'Email Address *', placeholder: 'rahul@example.com', type: 'email' },
-                { key: 'phone', label: 'Phone / WhatsApp', placeholder: '+91 98765 43210', type: 'tel' },
+                { key: 'phone', label: 'Phone / WhatsApp *', placeholder: '+91 98765 43210', type: 'tel' },
                   {
     key: "car_model",
     label: "Car Model",
@@ -275,20 +316,49 @@ const handleSubmit = async () => {
                     type={type}
                     placeholder={placeholder}
                     value={form[key]}
-                    onChange={e => setForm({ ...form, [key]: e.target.value })}
+                    onChange={(e) =>{ setForm({ ...form, [key]: e.target.value })
+                   if (errors[key]) {
+    setErrors((prev) => ({
+      ...prev,
+      [key]: "",
+    }));
+  }
+}
+                  }
+                  
+                    
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-gray-800 font-body text-sm shadow-sm focus:outline-none focus:border-red-400 focus:ring-4 focus:ring-red-100 placeholder-gray-400"
                   />
+                  {errors[key] && (
+  <p className="mt-1 text-sm text-red-500">
+    {errors[key]}
+  </p>
+)}
                 </div>
               ))}
               <div>
-                <label className="font-body text-xs text-gray-500 tracking-wide block mb-2">Your Message</label>
+                <label className="font-body text-xs text-gray-500 tracking-wide block mb-2">Your Message*</label>
                 <textarea
                   placeholder="Tell us what parts you need..."
                   value={form.message}
-                  onChange={e => setForm({ ...form, message: e.target.value })}
+                  onChange={(e) => {
+  setForm({ ...form, message: e.target.value });
+
+  if (errors.message) {
+    setErrors((prev) => ({
+      ...prev,
+      message: "",
+    }));
+  }
+}}
                   rows={4}
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-gray-800 font-body text-sm shadow-sm focus:outline-none focus:border-red-400 focus:ring-4 focus:ring-red-100 placeholder-gray-400 resize-none"
                 />
+                {errors.message && (
+  <p className="mt-1 text-sm text-red-500">
+    {errors.message}
+  </p>
+)}
               </div>
               <button
                 onClick={handleSubmit}

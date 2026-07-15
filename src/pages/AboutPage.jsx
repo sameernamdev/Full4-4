@@ -124,13 +124,13 @@ export default function AboutPage() {
   challenges customers faced in finding authentic products, fair pricing, and
   reliable support, and set out to create a platform they could trust.
 </p>
-            <p className="font-body text-brand-ink/60 leading-relaxed mb-6">we've grown into India's most trusted auto parts platform, stocking over 20,000 SKUs from 20+ global brands, serving customers from Kashmir to Kanyakumari.</p>
+            <p className="font-body text-brand-ink/60 leading-relaxed mb-6">we've grown into India's most trusted auto parts platform, stocking over 10,000 SKUs from 20+ global brands, serving customers from Kashmir to Kanyakumari.</p>
             <p className="font-body text-brand-ink/60 leading-relaxed">Our team of 150+ automotive enthusiasts and certified engineers work tirelessly to ensure every part we sell is 100% genuine, competitively priced, and backed by expert support.</p>
           </div>
           <div className="reveal">
             <div className="grid grid-cols-2 gap-4">
               {[
-                { year: '2017', event: 'Founded in Bhopal' },
+                { year: '2017', event: 'Founded in Bhopal,Madhya Pradesh' },
                 { year: '2023', event: '10,000 SKUs milestone' },
                 // { year: '2016', event: 'ISO 9001 Certification' },
                 { year: '2024', event: 'Pan-India expansion' },
@@ -156,12 +156,12 @@ export default function AboutPage() {
             {[
               { icon: Shield, title: 'Authenticity First', desc: 'We maintain a zero-tolerance policy for counterfeit parts. Every product is verified with the manufacturer before it hits our shelves.' },
               { icon: Users, title: 'Customer Obsessed', desc: 'Our team of certified engineers is available 6 days a week to help you find the right part and ensure perfect fitment.' },
-              { icon: Zap, title: 'Speed & Reliability', desc: 'From order to delivery, we move fast. 95% of our orders are dispatched within 24 hours, reaching you in 5-6 days.' },
+              { icon: Zap, title: 'Speed & Reliability', desc: 'From order to delivery, we move fast. 95% of our orders are dispatched within 24 hours, reaching you in 6-7 days.' },
             ].map(({ icon: Icon, title, desc }) => (
               <div key={title} className="reveal relative overflow-hidden  border border-brand-red rounded-2xl p-8 text-center text-black shadow-2xl shadow-brand-red/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-brand-red/35">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_35%)]" />
-                <div className="relative w-16 h-16 bg-black/15 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <Icon size={28} className="text-black" />
+                <div className="relative w-16 h-16 bg-brand-red rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Icon size={28} className=" text-white" />
                 </div>
                 <h3 className="relative font-display text-xl font-bold text-black mb-4">{title}</h3>
                 <p className="relative font-body text-white/78 text-sm leading-relaxed">{desc}</p>
@@ -175,7 +175,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             {[['15K+', 'Parts in Stock'], ['20+', 'Brand Partners'], ['9 Yrs', 'In Business'], ['16K+', 'Happy Customers']].map(([v, l]) => (
               <div key={l}>
-                <div className="font-display text-4xl font-black text-gradient mb-2">{v}</div>
+                <div className="font-display text-4xl font-black text-brand-red mb-2">{v}</div>
                 <div className="font-body text-brand-ink/55 text-sm">{l}</div>
               </div>
             ))}

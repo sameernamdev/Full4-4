@@ -692,10 +692,12 @@ export const createOrder = async (orderData) => {
 };
 
 // Get user's orders
-export const getOrders = async () => {
+export const getOrders = async (page = 1, limit = 10) => {
   try {
-    const res = await api.get("/orders/my-orders");
-    return res.data?.data;
+    const res = await api.get("/orders/my-orders",{
+      params:{page,limit}
+    });
+    return res.data;
   } catch (error) {
     console.error("Get orders error:", error);
     throw error.response?.data || error;

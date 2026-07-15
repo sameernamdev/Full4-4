@@ -843,10 +843,10 @@ const brandSlug = searchParams.get("brand");
                 </div>
                   
                 {/* Sort - hidden on mobile, visible from sm upwards */}
-                <div className="hidden sm:flex items-center gap-2 shrink-0">
-                  <label htmlFor="sortSelect" className="text-sm text-gray-500 whitespace-nowrap">
+                <div className=" sm:flex items-center gap-2 shrink-0">
+                  <label htmlFor="sortSelect" className="text-md text-gray-500 whitespace-nowrap ">
                     Sort
-                  </label>
+                  </label> &nbsp;
                   <select
                     id="sortSelect"
                     value={filters.sort_by}

@@ -227,34 +227,39 @@ export default function HomePage() {
   return (
     <div className="bg-brand-off">
       <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-[92vh] md:min-h-screen">
+        {/* Background */}
         <div className="absolute inset-0">
-     <picture>
-  {/* Mobile Image */}
-  <source
-    // media="(max-width: 768px)"
-    media="(max-width:1024px)"
-    srcSet="/mobilecar.png"
-  />
+          <picture>
+            {/* Mobile / Tablet */}
+            <source media="(max-width:1024px)" srcSet="/mobilecar.png" />
 
-  <motion.img
-    src="/newhero.png"
-    alt="Sports Car"
-    fetchPriority="high"
-    decoding="async"
-    onError={imageFallback}
-    className="absolute inset-0 w-full h-full object-cover object-center opacity-95 brightness-[1.08] contrast-105 saturate-110"
-    initial={{ scale: 1.08 }}
-    animate={{ scale: 1 }}
-    transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-  />
-</picture>
+            {/* Desktop */}
+            <motion.img
+              src="/newhero.png"
+              alt="Sports Car"
+              fetchPriority="high"
+              decoding="async"
+              onError={imageFallback}
+              className="absolute inset-0 w-full h-full object-cover object-[68%_center] lg:object-center opacity-95 brightness-[1.08] contrast-105 saturate-110"
+              initial={{ scale: 1.08 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+            />
+          </picture>
+
           <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-black/10 to-black/10" />
         </div>
 
-        <div className="relative z-20 max-w-7xl mx-auto w-full min-h-[92vh] md:min-h-screen flex flex-col justify-center lg:justify-end px-5 sm:px-8 lg:px-10 pt-16 sm:pt-24 lg:pt-28 pb-6 sm:pb-14 lg:pb-20">
+        {/* Content */}
+        <div
+          className=" relative z-20 max-w-7xl mx-auto w-full min-h-[92vh]
+           md:min-h-screen flex flex-col justify-start lg:justify-end px-5 sm:px-8 lg:px-10 
+           pt-20 md:pt-24 lg:pt-28 pb-5 sm:pb-14 lg:pb-2 "
+        >
+          {/* Badge */}
           <motion.div
             data-anime-hero
-            className="inline-flex w-fit items-center gap-3 border border-brand-red/45 px-4 sm:px-5 py-2.5 mb-5 sm:mb-8 bg-black/25 backdrop-blur-sm"
+            className="inline-flex w-fit items-center gap-2 border border-brand-red/45 px-3 sm:px-5 py-2 bg-black/25 backdrop-blur-sm mb-4 sm:mb-8"
             initial={{ opacity: 0, x: -42 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
@@ -266,10 +271,13 @@ export default function HomePage() {
             </span>
           </motion.div>
 
+          {/* Heading */}
           <motion.h1
             data-anime-hero
-            className="font-display leading-[0.88] mb-4"
-            style={{ fontSize: "clamp(46px,11vw,154px)" }}
+            className="font-display leading-[0.88] mb-3"
+            style={{
+              fontSize: "clamp(58px,13vw,154px)",
+            }}
             initial={{ opacity: 0, y: 55 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.12 }}
@@ -277,16 +285,13 @@ export default function HomePage() {
             <span className="block text-white">DRIVE</span>
 
             <span className="block text-brand-red">RANGER.</span>
-
-            {/* <span className="block text-white text-[0.36em] sm:text-[0.48em] lg:text-[0.36em] tracking-[0.08em]">
-        CAR ACCESSORIES AND CAMPING GEAR
-      </span> */}
           </motion.h1>
 
+          {/* Description */}
           <motion.p
             data-anime-hero
-            className="font-body font-semibold text-white text-[15px] sm:text-[16px] lg:text-[20px] leading-relaxed max-w-xs sm:max-w-md lg:max-w-lg mb-5 drop-shadow-lg"
-            // className="font-body font-semibold text-white text-[20px] sm:text-[12px] lg:text-[20px] leading-relaxed max-w-xs sm:max-w-md lg:max-w-lg mb-5 drop-shadow-lg"
+            className=" font-body font-semibold  text-white text-[15px] sm:text-[16px] 
+            lg:text-[20px] leading-relaxed max-w-[270px] sm:max-w-md  lg:max-w-lg  mb-4  drop-shadow-l "
             initial={{ opacity: 0, y: 34 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.72, delay: 0.26 }}
@@ -294,35 +299,35 @@ export default function HomePage() {
             Car Accessories and Camping Gears from 20+ global brands.
           </motion.p>
 
+          {/* Buttons */}
           <motion.div
             data-anime-hero
-            className="flex flex-col sm:flex-row items-start gap-3 sm:gap-5 mb-10"
+            className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 mb-6 sm:mb-10"
             initial={{ opacity: 0, y: 34 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.72, delay: 0.38 }}
           >
             <motion.button
-              // onClick={() => setPage("products")}
               onClick={() => navigate("products")}
-              className="btn-clip btn-shine bg-brand-red text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.18em] uppercase px-7 sm:px-10 py-3.5 sm:py-4 inline-flex items-center justify-center gap-3 w-auto min-w-[170px] hover:bg-brand-red2 transition-colors"
+              className="btn-clip btn-shine bg-brand-red text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.18em] uppercase px-7 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center gap-3 min-w-[170px] hover:bg-brand-red2 transition-colors"
               whileHover={{ scale: 1.05, x: 5 }}
               whileTap={{ scale: 0.96 }}
             >
-              Shop Parts <ArrowRight size={16} />
+              Products <ArrowRight size={16} />
             </motion.button>
 
             <motion.button
-              // onClick={() => setPage("about")}
-               onClick={() => navigate("about")}
-              className="btn-clip border border-white/40 bg-white/10 backdrop-blur-sm text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.15em] uppercase px-7 sm:px-10 py-3.5 sm:py-4 inline-flex items-center justify-center w-auto min-w-[170px] hover:border-brand-red hover:text-brand-red transition-all"
+              onClick={() => navigate("about")}
+              className="btn-clip border border-white/40 bg-white/10 backdrop-blur-sm text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.15em] uppercase px-7 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center min-w-[170px] hover:border-brand-red hover:text-brand-red transition-all"
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.96 }}
             >
               Our Story
             </motion.button>
           </motion.div>
+
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 sm:flex sm:flex-wrap sm:gap-10">
+          <div className="mt-20 md:mt-0 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-10 ">
             {[
               ["15K+", "Parts in Stock"],
               ["20+", "Global Brands"],
@@ -426,7 +431,7 @@ export default function HomePage() {
                             className={`col-span-12 ${spanClass} h-[320px] relative overflow-hidden group`}
                             // to={`/products?${item.slug}`}
                             // to={`/products?category=${item.id}`}
-                           to={`/products?category=${item.slug}&category_id=${item.id}`}
+                            to={`/products?category=${item.slug}&category_id=${item.id}`}
                             key={item.id}
                           >
                             {/* {console.log(item.id)} */}
@@ -529,9 +534,9 @@ export default function HomePage() {
             >
               PROFESSIONAL CAR
               <br />
-              PARTS SELLER SINCE
-              <br />
-              2017
+              ACCESSORIES SELLER SINCE 2017
+              {/* <br />
+              2017 */}
             </h2>
             <p className="font-body text-brand-ink/62 leading-relaxed mb-10">
               {/* With 9+ years serving car enthusiasts and professionals across
@@ -739,95 +744,111 @@ export default function HomePage() {
             ))}
           </div> */}
 
-          <div className="overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory scroll-smooth">
-            {featuredLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <span className="text-brand-red font-medium ">
-                  Loading reviews{" "}
-                </span>
-                &nbsp;
-                <div className="w-8 h-8 border-4 border-brand-red border-t-transparent rounded-full animate-spin"></div>
-              </div>
-            ) : featuredReviews.length === 0 ? (
-              <div className="py-16 text-center text-brand-ink/60">
-                No customer reviews yet.
-              </div>
-            ) : (
-              <div className="flex gap-6 w-max px-1">
-                {featuredReviews.map((review, i) => (
-                  <motion.div
-                    key={review.id}
-                    whileHover={{
-                      y: -8,
-                      rotate: i % 2 === 0 ? -1 : 1,
-                    }}
-                    transition={{ duration: 0.25 }}
-                    className="snap-start w-[320px] sm:w-[340px] lg:w-[360px] flex-shrink-0 rounded-3xl border border-brand-ink/10 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-2xl"
-                  >
-                    {/* Header */}
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-red text-xl font-bold uppercase text-white">
-                        {review.full_name?.charAt(0)}
-                      </div>
+          <div className="relative">
+            <div className="overflow-x-auto overflow-y-hidden pb-4 snap-x snap-mandatory scroll-smooth scrollbar-hide px-5">
+              {featuredLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <span className="text-brand-red font-medium">
+                    Loading reviews
+                  </span>
+                  &nbsp;
+                  <div className="w-8 h-8 border-4 border-brand-red border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : featuredReviews.length === 0 ? (
+                <div className="py-16 text-center text-brand-ink/60">
+                  No customer reviews yet.
+                </div>
+              ) : (
+                <div
+  className={`flex gap-4 ${
+    featuredReviews.length > 3
+      ? "w-max px-5 pr-10"
+      : "w-full justify-start md:justify-center px-5"
+  }`}
+>
+                  {/* {featuredReviews.map((review, i) => ( */}
+                  {[...featuredReviews]
+                    .sort((a, b) => b.rating - a.rating)
+                    .map((review, i) => (
+                      <motion.div
+                        key={review.id}
+                        whileHover={{
+                          y: -8,
+                          rotate: i % 2 === 0 ? -1 : 1,
+                        }}
+                        transition={{ duration: 0.25 }}
+                        className="snap-start w-[82vw] max-w-[300px] sm:w-[340px] lg:w-[360px] min-h-[340px] sm:h-[390px] flex-shrink-0 rounded-3xl border border-brand-ink/30 bg-white p-5 sm:p-8 shadow-lg transition-all duration-300 hover:shadow-2xl flex flex-col"
+                      >
+                        {/* Header */}
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-brand-red text-lg sm:text-xl font-bold uppercase text-white">
+                            {review.full_name?.charAt(0)}
+                          </div>
 
-                      <div className="flex-1">
-                        <h3 className="font-label text-lg font-bold text-brand-ink">
-                          {review.full_name}
-                        </h3>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-label text-lg font-bold text-brand-ink truncate">
+                              {review.full_name}
+                            </h3>
 
-                        <p className="mt-1 text-sm text-brand-ink/50">
-                          {review.product_name}
+                            <p className="mt-1 text-sm text-brand-ink/50 truncate">
+                              {review.product_name}
+                            </p>
+
+                            {review.is_verified_purchase === 1 && (
+                              <span className="mt-2 inline-flex rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-semibold text-green-700">
+                                ✓ Verified Purchase
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Rating */}
+                        <div className="mt-5 flex gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              size={16}
+                              className={
+                                star <= review.rating
+                                  ? "fill-brand-gold text-brand-gold"
+                                  : "text-gray-300"
+                              }
+                            />
+                          ))}
+                        </div>
+
+                        {/* Review */}
+                        <p className="mt-4 text-[14px] sm:text-[15px] leading-7 text-brand-ink/70">
+                          "{review.review}"
                         </p>
 
-                        {review.is_verified_purchase === 1 && (
-                          <span className="mt-2 inline-flex rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-semibold text-green-700">
-                            ✓ Verified Purchase
+                        {/* Footer */}
+                        <div className="mt-auto flex items-center justify-between border-t border-gray-100 pt-4">
+                          <span className="text-xs text-brand-ink/40">
+                            {new Date(review.created_at).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              },
+                            )}
                           </span>
-                        )}
-                      </div>
-                    </div>
 
-                    {/* Rating */}
-                    <div className="mt-6 flex gap-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          size={16}
-                          className={
-                            star <= review.rating
-                              ? "fill-brand-gold text-brand-gold"
-                              : "text-gray-300"
-                          }
-                        />
-                      ))}
-                    </div>
+                          <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-brand-red">
+                            {review.rating}.0 ★
+                          </span>
+                        </div>
+                      </motion.div>
+                    ))}
+                </div>
+              )}
+            </div>
 
-                    {/* Review */}
-                    <p className="mt-5 min-h-[80px] text-[15px] leading-7 text-brand-ink/70">
-                      "{review.review}"
-                    </p>
-
-                    {/* Footer */}
-                    <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
-                      <span className="text-xs text-brand-ink/40">
-                        {new Date(review.created_at).toLocaleDateString(
-                          "en-IN",
-                          {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          },
-                        )}
-                      </span>
-
-                      <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-bold text-brand-red">
-                        {review.rating}.0 ★
-                      </span>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+            {/* Right Fade */}
+            {featuredReviews.length > 3 && (
+  <div className="pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-[#ece7db] to-transparent"></div>
+)}
           </div>
         </div>
       </section>
@@ -851,22 +872,22 @@ export default function HomePage() {
               GLOBAL BRANDS
             </h2>
           </div>
-     <div className="overflow-hidden mb-8 reveal">
-  <div className="brands-track">
-    {brands.map((b) => (
-      <div
-        key={b.id}
-        className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl border border-white/10  p-4 hover:border-brand-red hover:bg-white/10 transition-all duration-300"
-      >
-        <img
-          src={b.logo_url}
-          alt={b.name}
-          className="max-h-16 w-auto object-contain  hover:grayscale-0 transition duration-300"
-        />
-      </div>
-    ))}
-  </div>
-</div>
+          <div className="overflow-hidden mb-8 reveal">
+            <div className="brands-track">
+              {[...brands, ...brands].map((b) => (
+                <div
+                  key={b.id}
+                  className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl border border-white/10  p-4 hover:border-brand-red  transition-all duration-300 bg-white"
+                >
+                  <img
+                    src={b.logo_url}
+                    alt={b.name}
+                    className="max-h-16 w-auto object-contain  hover:grayscale-0 transition duration-300 text-black"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 reveal">
             {BRAND_PHOTOS.map((photo, i) => (
               <div

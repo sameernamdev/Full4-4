@@ -164,7 +164,7 @@ import {
 import { useOrders } from "../hooks/useOrders";
 
 export default function MyOrdersPage() {
-  const { orders, loading, error } = useOrders();
+  const { orders, loading, error,pagination,refetch } = useOrders();
 
   const getStatusIcon = (status) => {
     switch (status?.toLowerCase()) {
@@ -410,6 +410,56 @@ export default function MyOrdersPage() {
             </motion.div>
           ))}
           </div>
+
+
+          {pagination.totalPages > 1 && (
+  <div className="flex items-center justify-center gap-3 mt-10">
+    <button
+      disabled={pagination.page === 1}
+      onClick={() => refetch(pagination.page - 1)}
+      className="px-4 py-2 rounded-lg border disabled:opacity-50 bg-brand-red text-white"
+    >
+      Previous
+    </button>
+
+    <div className="flex items-center gap-2">
+  {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+    .filter((page) => {
+      return (
+        page === 1 ||
+        page === pagination.totalPages ||
+        Math.abs(page - pagination.page) <= 1
+      );
+    })
+    .map((page, index, arr) => (
+      <div key={page} className="flex items-center gap-2">
+        {index > 0 && arr[index - 1] !== page - 1 && (
+          <span className="px-2 text-gray-500">...</span>
+        )}
+
+        <button
+          onClick={() => refetch(page)}
+          className={`h-10 w-10 rounded-lg border transition ${
+            pagination.page === page
+              ? "bg-red-600 text-white border-red-600"
+              : "bg-white hover:bg-red-50 border-gray-300"
+          }`}
+        >
+          {page}
+        </button>
+      </div>
+    ))}
+</div>
+
+    <button
+      disabled={pagination.page === pagination.totalPages}
+      onClick={() => refetch(pagination.page + 1)}
+      className="px-4 py-2 rounded-lg border disabled:opacity-50 bg-brand-red text-white"
+    >
+      Next
+    </button>
+  </div>
+)}
         </div>
 
       

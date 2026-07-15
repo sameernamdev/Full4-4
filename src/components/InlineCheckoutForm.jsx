@@ -14,6 +14,7 @@ import { useAuth } from "../context/AuthContext";
 import { useAddresses } from "../hooks/useAddresses";
 import { api, createOrder } from "../config/axios";
 import Swal from "sweetalert2";
+import { INDIAN_STATES } from "../data/states";
 
 const openRazorpay = async (
   data,
@@ -641,14 +642,21 @@ export default function InlineCheckoutForm({
                 <label className="block text-sm text-gray-600 mb-1">
                   State *
                 </label>
-                <input
-                  type="text"
-                  name="state"
-                  value={newAddress.state}
-                  onChange={handleNewAddressChange}
-                  className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
-                  placeholder="State"
-                />
+                 <select
+    name="state"
+    value={newAddress.state}
+    onChange={handleNewAddressChange}
+    required
+    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-gray-800 focus:outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition"
+  >
+    <option value="">Select State</option>
+
+    {INDIAN_STATES.map((state) => (
+      <option key={state} value={state}>
+        {state}
+      </option>
+    ))}
+  </select>
               </div>
               <div>
                 <label className="block text-sm text-gray-600 mb-1">

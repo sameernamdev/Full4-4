@@ -46,17 +46,37 @@ export default function Footer({ setPage }) {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
-            <div className=" font-display text-3xl tracking-[0.08em] text-black mb-1">
+            {/* <div className=" font-display text-3xl tracking-[0.08em] text-black mb-1">
               DRIVE <span className="text-brand-red">RANGER</span>
-              <img src="/auto focus.png" alt="" className="w-28 sm:w-15 lg:w-28"/>
+              <img src="/autofocus logo PNG.png" alt="" className="w-28 sm:w-15 lg:w-28"/>
 
-            </div>
+            </div> */}
+  <div className="mb-1">
+  <h2 className="font-display text-4xl tracking-[0.08em] text-black leading-none">
+    DRIVE <span className="text-brand-red">RANGER</span>
+  </h2>
+
+  <div className="flex items-center gap-1 mt-1">
+    <span className="text-[9px] uppercase tracking-[0.25em] text-gray-500 whitespace-nowrap">
+      POWERED BY
+    </span>
+
+    <img
+      src="/autofocus logo PNG.png"
+      alt="AutoFocus"
+      className="h-3 w-auto object-contain"
+    />
+  </div>
+</div>
             
             <p className="font-body text-sm text-black leading-relaxed mb-6 max-w-xs">
               {/* India's most trusted online platform for genuine OEM and performance
               car parts. Quality you can count on, delivery you can trust. */}
 
-              Among India's Leading Destinations for Genuine OEM & Performance Car Parts.
+              {/* Among India's Leading Destinations for Genuine OEM & Performance Car Parts.
+              Quality Assured. Nationwide Delivery. Trusted by Enthusiasts. */}
+
+              Among India's Top 10 Trusted Destinations for Genuine OEM & Performance Car accessories.
 Quality Assured. Nationwide Delivery. Trusted by Enthusiasts.
 
 
