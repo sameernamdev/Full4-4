@@ -677,6 +677,7 @@ import { useReviews } from "../hooks/useReviews";
 import { useAddresses } from "../hooks/useAddresses";
 import { useEffect } from "react";
 import { api, updateOrderAddress } from "../config/axios";
+import { INDIAN_STATES } from "../data/states";
 // import { updateAddress } from "../config/axios";
 
 // ----- New component to handle the review button per item -----
@@ -723,8 +724,13 @@ export default function OrderDetailsPage() {
   const { isAuthenticated } = useAuth();
   const { order, loading, error, refetch } = useOrderDetails(id);
 
-  const { fetchAddressById, addresses, fetchAddresses, createAddress } =
-    useAddresses(false);
+  const {
+    fetchAddressById,
+    addresses,
+    fetchAddresses,
+    createAddress,
+    updateAddress,
+  } = useAddresses(false);
   const [shippingAddress, setShippingAddress] = useState(null);
 
   const [showReviewModal, setShowReviewModal] = useState(false);
@@ -751,18 +757,39 @@ export default function OrderDetailsPage() {
     address_type: "shipping",
   });
 
-const formatDate = (value) => {
-  if (!value) return "-";
+  // for handling the loading
+  const [creatingAddress, setCreatingAddress] = useState(false);
+  const [updatingAddress, setUpdatingAddress] = useState(false);
+  const [changingOrderAddress, setChangingOrderAddress] = useState(false);
 
-  return new Date(value.replace(" ", "T")).toLocaleString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
+  // for editing address
+  const [editingAddressId, setEditingAddressId] = useState(null);
+
+  const [editAddress, setEditAddress] = useState({
+    full_name: "",
+    phone: "",
+    line1: "",
+    line2: "",
+    landmark: "",
+    city: "",
+    state: "",
+    postal_code: "",
+    country: "India",
+    address_type: "shipping",
   });
-};
+
+  const formatDate = (value) => {
+    if (!value) return "-";
+
+    return new Date(value.replace(" ", "T")).toLocaleString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
   const handleNewAddressChange = (e) => {
     const { name, value } = e.target;
 
@@ -830,6 +857,7 @@ const formatDate = (value) => {
 
   const handleCreateAddress = async () => {
     try {
+      setCreatingAddress(true);
       const created = await createAddress(newAddress);
 
       await fetchAddresses();
@@ -861,6 +889,8 @@ const formatDate = (value) => {
           general: err.message,
         });
       }
+    } finally {
+      setCreatingAddress(false);
     }
   };
 
@@ -876,11 +906,11 @@ const formatDate = (value) => {
     loadShippingAddress();
   }, [order]);
 
-  useEffect(() => {
-    if (showAddressModal) {
-      fetchAddresses();
-    }
-  }, [showAddressModal]);
+  // useEffect(() => {
+  //   if (showAddressModal) {
+  //     fetchAddresses();
+  //   }
+  // }, [showAddressModal]);
 
   useEffect(() => {
     if (order?.shipping_address_id) {
@@ -944,11 +974,9 @@ const formatDate = (value) => {
               Order #{order.id}
             </h1>
             <p className="text-gray-500 mt-2">
-              Placed on{" "}
-
-              {/* {formatISTDate(order.order_date)} */}
-{/* {             formatISTDate(order.order_date)} */}
-          {formatDate(order.order_date)}
+              Placed on {/* {formatISTDate(order.order_date)} */}
+              {/* {             formatISTDate(order.order_date)} */}
+              {formatDate(order.order_date)}
             </p>
           </div>
           <div
@@ -1115,13 +1143,18 @@ const formatDate = (value) => {
                   order.order_status?.toLowerCase(),
                 ) && (
                   <button
-                    onClick={() => setShowAddressModal(true)}
+                    onClick={async() =>{ setShowAddressModal(true)
+                        await fetchAddresses();
+                    }
+                  }
+                    
                     className="rounded-lg border border-red-600 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white transition"
                   >
                     Change Address
                   </button>
                 )}
 
+                
                 {showAddressModal && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 pt-20">
                     <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
@@ -1135,235 +1168,496 @@ const formatDate = (value) => {
                         </button>
                       </div>
 
-                  {!showAddAddress?(
-                    <>
-                    <div className="space-y-4">
-                        {addresses.map((address) => (
-                          <label
-                            key={address.id}
-                            className="flex items-start gap-4 border rounded-xl p-4 cursor-pointer hover:border-red-500"
-                          >
-                            <input
-                              type="radio"
-                              checked={selectedAddressId === address.id}
-                              onChange={() => setSelectedAddressId(address.id)}
-                            />
+                      {!showAddAddress ? (
+                        <>
+                          <div className="space-y-4">
+                            {addresses.map((address) => (
+                              <div
+                                key={address.id}
+                                className="rounded-xl border border-gray-200 p-4"
+                              >
+                                <label className="flex items-start gap-3 cursor-pointer">
+                                  <input
+                                    type="radio"
+                                    className="mt-1"
+                                    checked={selectedAddressId === address.id}
+                                    onChange={() =>
+                                      setSelectedAddressId(address.id)
+                                    }
+                                  />
 
-                            <div className="flex-1">
-                              <p className="font-semibold">
-                                {address.full_name}
-                              </p>
+                                  <div className="flex-1">
+                                    <p className="font-semibold">
+                                      {address.full_name}
+                                    </p>
 
-                              <p className="text-sm text-gray-600">
-                                {address.line1}
-                              </p>
+                                    <p className="text-sm text-gray-600">
+                                      {address.line1}
+                                    </p>
 
-                              {address.line2 && (
-                                <p className="text-sm text-gray-600">
-                                  {address.line2}
-                                </p>
-                              )}
+                                    {address.line2 && (
+                                      <p className="text-sm text-gray-600">
+                                        {address.line2}
+                                      </p>
+                                    )}
 
-                              <p className="text-sm text-gray-600">
-                                {address.city}, {address.state}
-                              </p>
+                                    {address.landmark && (
+                                      <p className="text-sm text-gray-600">
+                                        {address.landmark}
+                                      </p>
+                                    )}
 
-                              <p className="text-sm text-gray-600">
-                                {address.postal_code}
-                              </p>
+                                    <p className="text-sm text-gray-600">
+                                      {address.city}, {address.state}
+                                    </p>
 
-                              <p className="text-sm text-gray-600">
-                                {address.phone}
-                              </p>
-                            </div>
-                          </label>
-                        ))}
-                      </div>
+                                    <p className="text-sm text-gray-600">
+                                      {address.postal_code}
+                                    </p>
 
-                      <button onClick={() => setShowAddAddress(true)}>
-                        + Add New Address
-                      </button>
+                                    <p className="text-sm text-gray-600">
+                                      {address.phone}
+                                    </p>
 
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.preventDefault();
 
+                                        setEditingAddressId(address.id);
 
+                                        setEditAddress({
+                                          full_name: address.full_name || "",
+                                          phone: address.phone || "",
+                                          line1: address.line1 || "",
+                                          line2: address.line2 || "",
+                                          landmark: address.landmark || "",
+                                          city: address.city || "",
+                                          state: address.state || "",
+                                          postal_code:
+                                            address.postal_code || "",
+                                          country: address.country || "India",
+                                          address_type:
+                                            address.address_type || "shipping",
+                                        });
+                                      }}
+                                      className="mt-3 text-sm font-semibold text-red-600 hover:underline"
+                                    >
+                                      Edit Address
+                                    </button>
 
-    <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
-      <button
-        onClick={() => setShowAddressModal(false)}
-        className="border rounded-lg px-5 py-2"
-      >
-        Cancel
-      </button>
+                                    {editingAddressId === address.id && (
+                                      <div className="mt-5 rounded-xl border bg-gray-50 p-4 sm:p-5">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                          <input
+                                            value={editAddress.full_name}
+                                            onChange={(e) =>
+                                              setEditAddress({
+                                                ...editAddress,
+                                                full_name: e.target.value,
+                                              })
+                                            }
+                                            placeholder="Full Name"
+                                            className="w-full rounded-lg border p-3"
+                                          />
 
-      <button
-        onClick={async () => {
-            
-          await updateOrderAddress(order.id, {
-            
-            shipping_address_id: selectedAddressId,
-          });
+                                          <input
+                                            value={editAddress.phone}
+                                            onChange={(e) =>
+                                              setEditAddress({
+                                                ...editAddress,
+                                                phone: e.target.value,
+                                              })
+                                            }
+                                            placeholder="Phone"
+                                            className="w-full rounded-lg border p-3"
+                                          />
 
-          await refetch();
+                                          <input
+                                            value={editAddress.line1}
+                                            onChange={(e) =>
+                                              setEditAddress({
+                                                ...editAddress,
+                                                line1: e.target.value,
+                                              })
+                                            }
+                                            placeholder="Address Line 1"
+                                            className="w-full rounded-lg border p-3 md:col-span-2"
+                                          />
 
-          const address = await fetchAddressById(selectedAddressId);
+                                          <input
+                                            value={editAddress.line2}
+                                            onChange={(e) =>
+                                              setEditAddress({
+                                                ...editAddress,
+                                                line2: e.target.value,
+                                              })
+                                            }
+                                            placeholder="Address Line 2"
+                                            className="w-full rounded-lg border p-3 md:col-span-2"
+                                          />
 
-          setShippingAddress(address);
+                                          <input
+                                            value={editAddress.landmark}
+                                            onChange={(e) =>
+                                              setEditAddress({
+                                                ...editAddress,
+                                                landmark: e.target.value,
+                                              })
+                                            }
+                                            placeholder="Landmark"
+                                            className="w-full rounded-lg border p-3 md:col-span-2"
+                                          />
 
-          setShowAddressModal(false);
-        }}
-        className="bg-red-600 text-white rounded-lg px-5 py-2"
-      >
-        Use Address
-      </button>
-    </div>
-                    </>
-                  ):(
-                    <>
-                     {showAddAddress && (
-                        <div className="mt-6 border rounded-xl p-5 space-y-4 bg-gray-50">
-                            <button
-    onClick={() => setShowAddAddress(false)}
-    className="mb-4 text-sm font-medium text-red-600 hover:underline"
-  >
-    ← Back to Saved Addresses
-  </button>
-                          {addressErrors.general && (
-                            <div className="mb-4 rounded-lg bg-red-100 border border-red-300 p-3 text-red-700">
-                              {addressErrors.general}
-                            </div>
-                          )}
-                          <input
-                            name="full_name"
-                            value={newAddress.full_name}
-                            onChange={handleNewAddressChange}
-                            placeholder="Full Name"
-                            className="w-full border rounded-lg p-3"
-                          />
-                          {addressErrors.full_name && (
-                            <p className="mt-1 text-sm text-red-600">
-                              {addressErrors.full_name}
-                            </p>
-                          )}
+                                          <input
+                                            value={editAddress.city}
+                                            onChange={(e) =>
+                                              setEditAddress({
+                                                ...editAddress,
+                                                city: e.target.value,
+                                              })
+                                            }
+                                            placeholder="City"
+                                            className="w-full rounded-lg border p-3"
+                                          />
 
-                          <input
-                            name="phone"
-                            value={newAddress.phone}
-                            onChange={handleNewAddressChange}
-                            placeholder="Phone"
-                            className="w-full border rounded-lg p-3"
-                          />
-                          {addressErrors.phone && (
-                            <p className="mt-1 text-sm text-red-600">
-                              {addressErrors.phone}
-                            </p>
-                          )}
+                                          <select
+                                            value={editAddress.state}
+                                            onChange={(e) =>
+                                              setEditAddress({
+                                                ...editAddress,
+                                                state: e.target.value,
+                                              })
+                                            }
+                                            className="w-full rounded-lg border border-gray-300 bg-white p-3 focus:border-red-500 focus:outline-none"
+                                          >
+                                            <option value="">
+                                              Select State
+                                            </option>
 
-                          <input
-                            name="line1"
-                            value={newAddress.line1}
-                            onChange={handleNewAddressChange}
-                            placeholder="Address Line 1"
-                            className="w-full border rounded-lg p-3"
-                          />
-                          {addressErrors.line1 && (
-                            <p className="mt-1 text-sm text-red-600">
-                              {addressErrors.line1}
-                            </p>
-                          )}
+                                            {INDIAN_STATES.map((state) => (
+                                              <option key={state} value={state}>
+                                                {state}
+                                              </option>
+                                            ))}
+                                          </select>
 
-                          <input
-                            name="line2"
-                            value={newAddress.line2}
-                            onChange={handleNewAddressChange}
-                            placeholder="Address Line 2"
-                            className="w-full border rounded-lg p-3"
-                          />
+                                          <input
+                                            value={editAddress.postal_code}
+                                            onChange={(e) =>
+                                              setEditAddress({
+                                                ...editAddress,
+                                                postal_code: e.target.value,
+                                              })
+                                            }
+                                            placeholder="Postal Code"
+                                            className="w-full rounded-lg border p-3"
+                                          />
 
-                          <input
-                            name="landmark"
-                            value={newAddress.landmark}
-                            onChange={handleNewAddressChange}
-                            placeholder="Landmark"
-                            className="w-full border rounded-lg p-3"
-                          />
+                                          <input
+                                            value={editAddress.country}
+                                            onChange={(e) =>
+                                              setEditAddress({
+                                                ...editAddress,
+                                                country: e.target.value,
+                                              })
+                                            }
+                                            placeholder="Country"
+                                            className="w-full rounded-lg border p-3"
+                                          />
+                                        </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input
-                              name="city"
-                              value={newAddress.city}
-                              onChange={handleNewAddressChange}
-                              placeholder="City"
-                              className="border rounded-lg p-3"
-                            />
-                            {addressErrors.city && (
-                              <p className="mt-1 text-sm text-red-600">
-                                {addressErrors.city}
-                              </p>
-                            )}
+                                        <div className="mt-5 flex flex-col-reverse sm:flex-row justify-end gap-3">
+                                          <button
+                                            type="button"
+                                            onClick={() =>
+                                              setEditingAddressId(null)
+                                            }
+                                            className="w-full sm:w-auto rounded-lg border px-5 py-3"
+                                          >
+                                            Cancel
+                                          </button>
 
-                            <input
-                              name="state"
-                              value={newAddress.state}
-                              onChange={handleNewAddressChange}
-                              placeholder="State"
-                              className="border rounded-lg p-3"
-                            />
-                            {addressErrors.state && (
-                              <p className="mt-1 text-sm text-red-600">
-                                {addressErrors.state}
-                              </p>
-                            )}
+                                          <button
+                                            type="button"
+                                            disabled={updatingAddress}
+                                            onClick={async () => {
+                                              try {
+                                                setUpdatingAddress(true);
 
-                            <input
-                              name="postal_code"
-                              value={newAddress.postal_code}
-                              onChange={handleNewAddressChange}
-                              placeholder="Postal Code"
-                              className="border rounded-lg p-3"
-                            />
-                            {addressErrors.postal_code && (
-                              <p className="mt-1 text-sm text-red-600">
-                                {addressErrors.postal_code}
-                              </p>
-                            )}
+                                                await updateAddress(
+                                                  editingAddressId,
+                                                  editAddress,
+                                                );
 
-                            <input
-                              name="country"
-                              value={newAddress.country}
-                              onChange={handleNewAddressChange}
-                              placeholder="Country"
-                              className="border rounded-lg p-3"
-                            />
-                            {addressErrors.country && (
-                              <p className="mt-1 text-sm text-red-600">
-                                {addressErrors.country}
-                              </p>
-                            )}
+                                                await fetchAddresses();
+
+                                                if (
+                                                  selectedAddressId ===
+                                                  editingAddressId
+                                                ) {
+                                                  const updated =
+                                                    await fetchAddressById(
+                                                      editingAddressId,
+                                                    );
+                                                  setShippingAddress(updated);
+                                                }
+
+                                                setEditingAddressId(null);
+                                              } finally {
+                                                setUpdatingAddress(false);
+                                              }
+                                            }}
+                                            className={`w-full sm:w-auto rounded-lg px-5 py-3 text-white transition ${
+                                              updatingAddress
+                                                ? "bg-gray-400 cursor-not-allowed"
+                                                : "bg-red-600 hover:bg-red-700"
+                                            }`}
+                                          >
+                                            {updatingAddress
+                                              ? "Updating..."
+                                              : "Update Address"}
+                                          </button>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </label>
+                              </div>
+                            ))}
                           </div>
 
-                          <div className="flex justify-end gap-3">
+                          <button
+                            onClick={() => setShowAddAddress(true)}
+                            className="mt-6 text-brand-red"
+                          >
+                            + Add New Address
+                          </button>
+
+                          <div className="mt-6 flex flex-col-reverse sm:flex-row justify-end gap-3">
                             <button
-                              onClick={() => setShowAddAddress(false)}
+                              onClick={() => setShowAddressModal(false)}
                               className="border rounded-lg px-5 py-2"
                             >
                               Cancel
                             </button>
 
                             <button
-                              onClick={handleCreateAddress}
-                              className="bg-red-600 text-white rounded-lg px-5 py-2"
+                              disabled={changingOrderAddress}
+                              onClick={async () => {
+                                try {
+                                  setChangingOrderAddress(true);
+
+                                  await updateOrderAddress(order.id, {
+                                    shipping_address_id: selectedAddressId,
+                                  });
+
+                                  // await refetch();
+
+                                  const address =
+                                    await fetchAddressById(selectedAddressId);
+
+                                  setShippingAddress(address);
+
+                                  setShowAddressModal(false);
+                                } catch (err) {
+                                  console.error(err);
+                                } finally {
+                                  setChangingOrderAddress(false);
+                                }
+                              }}
+                              className={`rounded-lg px-5 py-2 text-white transition ${
+                                changingOrderAddress
+                                  ? "cursor-not-allowed bg-gray-400"
+                                  : "bg-red-600 hover:bg-red-700"
+                              }`}
                             >
-                              Save Address
+                              {changingOrderAddress ? (
+                                <span className="flex items-center justify-center gap-2">
+                                  <svg
+                                    className="h-4 w-4 animate-spin"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    />
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                                    />
+                                  </svg>
+                                  Updating...
+                                </span>
+                              ) : (
+                                "Use Address"
+                              )}
                             </button>
                           </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                      
-                     
+                        </>
+                      ) : (
+                        <>
+                          {showAddAddress && (
+                            <div className="mt-6 border rounded-xl p-5 space-y-4 bg-gray-50">
+                              <button
+                                onClick={() => setShowAddAddress(false)}
+                                className="mb-4 text-sm font-medium text-red-600 hover:underline"
+                              >
+                                ← Back to Saved Addresses
+                              </button>
+                              {addressErrors.general && (
+                                <div className="mb-4 rounded-lg bg-red-100 border border-red-300 p-3 text-red-700">
+                                  {addressErrors.general}
+                                </div>
+                              )}
+                              <input
+                                name="full_name"
+                                value={newAddress.full_name}
+                                onChange={handleNewAddressChange}
+                                placeholder="Full Name"
+                                className="w-full border rounded-lg p-3"
+                              />
+                              {addressErrors.full_name && (
+                                <p className="mt-1 text-sm text-red-600">
+                                  {addressErrors.full_name}
+                                </p>
+                              )}
 
-                    
+                              <input
+                                name="phone"
+                                value={newAddress.phone}
+                                onChange={handleNewAddressChange}
+                                placeholder="Phone"
+                                className="w-full border rounded-lg p-3"
+                              />
+                              {addressErrors.phone && (
+                                <p className="mt-1 text-sm text-red-600">
+                                  {addressErrors.phone}
+                                </p>
+                              )}
+
+                              <input
+                                name="line1"
+                                value={newAddress.line1}
+                                onChange={handleNewAddressChange}
+                                placeholder="Address Line 1"
+                                className="w-full border rounded-lg p-3"
+                              />
+                              {addressErrors.line1 && (
+                                <p className="mt-1 text-sm text-red-600">
+                                  {addressErrors.line1}
+                                </p>
+                              )}
+
+                              <input
+                                name="line2"
+                                value={newAddress.line2}
+                                onChange={handleNewAddressChange}
+                                placeholder="Address Line 2"
+                                className="w-full border rounded-lg p-3"
+                              />
+
+                              <input
+                                name="landmark"
+                                value={newAddress.landmark}
+                                onChange={handleNewAddressChange}
+                                placeholder="Landmark"
+                                className="w-full border rounded-lg p-3"
+                              />
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input
+                                  name="city"
+                                  value={newAddress.city}
+                                  onChange={handleNewAddressChange}
+                                  placeholder="City"
+                                  className="border rounded-lg p-3"
+                                />
+                                {addressErrors.city && (
+                                  <p className="mt-1 text-sm text-red-600">
+                                    {addressErrors.city}
+                                  </p>
+                                )}
+                                <select
+                                  name="state"
+                                  value={newAddress.state}
+                                  onChange={handleNewAddressChange}
+                                  className="w-full rounded-lg border border-gray-300 bg-white p-3 focus:border-red-500 focus:outline-none"
+                                >
+                                  <option value="">Select State</option>
+
+                                  {INDIAN_STATES.map((state) => (
+                                    <option key={state} value={state}>
+                                      {state}
+                                    </option>
+                                  ))}
+                                </select>
+                                {addressErrors.state && (
+                                  <p className="mt-1 text-sm text-red-600">
+                                    {addressErrors.state}
+                                  </p>
+                                )}
+
+                                <input
+                                  name="postal_code"
+                                  value={newAddress.postal_code}
+                                  onChange={handleNewAddressChange}
+                                  placeholder="Postal Code"
+                                  className="border rounded-lg p-3"
+                                />
+                                {addressErrors.postal_code && (
+                                  <p className="mt-1 text-sm text-red-600">
+                                    {addressErrors.postal_code}
+                                  </p>
+                                )}
+
+                                <input
+                                  name="country"
+                                  value={newAddress.country}
+                                  onChange={handleNewAddressChange}
+                                  placeholder="Country"
+                                  className="border rounded-lg p-3"
+                                />
+                                {addressErrors.country && (
+                                  <p className="mt-1 text-sm text-red-600">
+                                    {addressErrors.country}
+                                  </p>
+                                )}
+                              </div>
+
+                              <div className="flex justify-end gap-3">
+                                <button
+                                  onClick={() => setShowAddAddress(false)}
+                                  className="border rounded-lg px-5 py-2"
+                                >
+                                  Cancel
+                                </button>
+
+                                <button
+                                  disabled={creatingAddress}
+                                  onClick={handleCreateAddress}
+                                  className={`rounded-lg px-5 py-2 text-white transition ${
+                                    creatingAddress
+                                      ? "bg-gray-400 cursor-not-allowed"
+                                      : "bg-red-600 hover:bg-red-700"
+                                  }`}
+                                >
+                                  {creatingAddress
+                                    ? "Saving..."
+                                    : "Save Address"}
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
@@ -1393,7 +1687,7 @@ const formatDate = (value) => {
         {/* Shipments */}
         {order.shipments?.length > 0 && (
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Shipments</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Tracking</h2>
 
             <div className="flex gap-5 overflow-x-auto pb-2">
               {order.shipments.map((shipment) => (
@@ -1401,7 +1695,7 @@ const formatDate = (value) => {
                   key={shipment.id}
                   className="min-w-[340px] flex-shrink-0 rounded-xl border border-gray-200 p-5 bg-gray-50"
                 >
-                  <div className="flex items-center justify-between mb-4">
+                  {/* <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-lg">
                       Shipment #{shipment.id}
                     </h3>
@@ -1409,32 +1703,32 @@ const formatDate = (value) => {
                     <span className="rounded-full bg-blue-100 text-blue-700 px-3 py-1 text-xs font-medium capitalize">
                       {shipment.current_status}
                     </span>
-                  </div>
+                  </div> */}
 
-                  <div className="space-y-2 text-sm">
-                    {/* <div>
-              <p className="text-gray-500">Carrier</p>
-              <p className="font-medium">
-                {shipment.carrier || "Not Assigned"}
-              </p>
-            </div> */}
+                  {/* <div className="space-y-2 text-sm"> */}
+                  {/* <div>
+                      <p className="text-gray-500">Carrier</p>
+                      <p className="font-medium">
+                       {shipment.carrier || "Not Assigned"}
+                       </p>
+                      </div> */}
 
-                    <div>
+                  {/* <div>
                       <p className="text-gray-500">Delivery Address</p>
                       <p>{shipment.recipient_address}</p>
-                    </div>
+                    </div> */}
 
-                    {/* <div>
+                  {/* <div>
               <p className="text-gray-500">Created</p>
               <p>
                 {new Date(shipment.created_at).toLocaleDateString("en-IN")}
               </p>
             </div> */}
-                  </div>
+                  {/* </div> */}
 
                   {/* Tracking Timeline */}
                   {shipment.tracking_history?.length > 0 && (
-                    <div className="mt-5 border-t pt-4">
+                    <div className="">
                       <p className="font-semibold mb-3">Tracking History</p>
 
                       <div className="space-y-4">
