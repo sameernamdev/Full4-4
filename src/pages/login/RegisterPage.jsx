@@ -260,7 +260,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
 
   // for temporary generate otp
-  const [generatedOtp, setGeneratedOtp] = useState("");
+  // const [generatedOtp, setGeneratedOtp] = useState("");
 
   const [formData, setFormData] = useState({
     full_name: "",
@@ -341,13 +341,13 @@ export default function RegisterPage() {
       // }
 
         if (result.success) {
-  setGeneratedOtp(result.otp || result.data?.otp || "");
+  // setGeneratedOtp(result.otp || result.data?.otp || "");
 
   navigate("/verify-otp", {
     state: {
       email: formData.email,
       phone: formData.phone,
-      otp: result.otp || result.data?.otp,
+      // otp: result.otp || result.data?.otp,
     },
   });
 }
@@ -534,7 +534,7 @@ export default function RegisterPage() {
               )}
             </button>
           </form>
-          {generatedOtp && (
+          {/* {generatedOtp && (
   <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-center">
     <p className="text-xs text-gray-400 mb-1">
       Development OTP
@@ -544,7 +544,7 @@ export default function RegisterPage() {
       {generatedOtp}
     </p>
   </div>
-)}
+)} */}
 
           <p className="text-center text-gray-400 mt-6">
             Already have an account?{" "}

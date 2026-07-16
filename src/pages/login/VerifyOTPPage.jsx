@@ -406,7 +406,7 @@ export default function VerifyOTPPage() {
   // const [showEmailInput, setShowEmailInput] = useState(true);
 
   // for temporary ui otp
-  const [serverOtp, setServerOtp] = useState(location.state?.otp || "");
+  // const [serverOtp, setServerOtp] = useState(location.state?.otp || "");
 
   const inputRefs = useRef([]);
   const emailInputRef = useRef(null);
@@ -557,7 +557,7 @@ export default function VerifyOTPPage() {
       if (result.success) {
         // for temporaryui
           //  NEW OTP UI update
-        setServerOtp(result.data?.otp || "");
+        // setServerOtp(result.data?.otp || "");
         
 
         setTimer(60);
@@ -686,7 +686,7 @@ export default function VerifyOTPPage() {
 
 
                   {/* for temporary */}
-                  {serverOtp && (
+                  {/* {serverOtp && (
   <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-center mt-4">
     <p className="text-xs text-gray-400">
       Development OTP
@@ -696,7 +696,7 @@ export default function VerifyOTPPage() {
       {serverOtp}
     </p>
   </div>
-)}
+)} */}
 
               </div>
 

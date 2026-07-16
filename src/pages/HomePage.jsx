@@ -168,6 +168,7 @@ export default function HomePage() {
   const { brands } = useBrands();
   const { categories, loading: categoriesLoading } = useCategories({
     is_front: true,
+    limit: 5
   });
   // taking load state for categories
   const [load, setLoad] = useState(false);
