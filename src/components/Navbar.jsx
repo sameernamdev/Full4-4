@@ -41,6 +41,8 @@ export default function Navbar() {
   const location = useLocation();
   const profileRef = useRef(null);
 
+const closeTimeout = useRef(null);
+
   // Fetch categories and subcategories (hooks unchanged)
   const { categories, loading: catLoading } = useCategories();
   const { sub: allSubcategories, loading: subLoading } = useSubCategories();
@@ -135,6 +137,21 @@ export default function Navbar() {
     navigate(`/products${query}`);
   };
 
+
+  const handleProductsMouseEnter = () => {
+  if (closeTimeout.current) {
+    clearTimeout(closeTimeout.current);
+  }
+  setIsProductsOpen(true);
+};
+
+const handleProductsMouseLeave = () => {
+  closeTimeout.current = setTimeout(() => {
+    setIsProductsOpen(false);
+    setHoveredCategoryId(null);
+  }, 200);
+};
+
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-[999] font-[Rajdhani,sans-serif] h-16 sm:h-[72px] lg:h-20 bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-lg">
@@ -144,14 +161,15 @@ export default function Navbar() {
             <img
               src="/newLogoDR.png"
               alt="Drive Ranger"
-              className="w-10 sm:w-9 lg:w-12"
+              // className="w-8 sm:w-9 lg:w-10"
+              className="h-8 sm:h-9 lg:h-10"
             />
-            <div className="leading-none">
-              <h1 className="text-white font-bold tracking-[0.09em] text-[23px] text-lg sm:text-[25px]  lg:text-[25px]">
+            <div className="lg:h-11 leading-none ">
+              <h1 className="text-white font-bold tracking-[0.05em] text-[25px] text-lg sm:text-[25px]  lg:text-[32px]">
                 DRIVE <span className="text-brand-red">RANGER</span>
               </h1>
 
-              <div className="flex items-center gap-0 mt-0 max-w-full overflow-hidden ">
+              <div className="flex items-center gap-0 md:mt-1 max-w-full overflow-hidden ">
                 <span className="text-[6px]  sm:text-[8px] uppercase tracking-[0.15em] text-white font-bold whitespace-nowrap">
                   Powered by
                 </span>
@@ -179,15 +197,8 @@ export default function Navbar() {
             {/* Products - Desktop */}
             <li
               className="relative"
-              onMouseEnter={() => setIsProductsOpen(true)}
-              onMouseLeave={() => {
-                setTimeout(() => {
-                  if (!document.querySelector(".products-dropdown:hover")) {
-                    setIsProductsOpen(false);
-                    setHoveredCategoryId(null);
-                  }
-                }, 250);
-              }}
+              onMouseEnter={handleProductsMouseEnter}
+      onMouseLeave={handleProductsMouseLeave}
             >
               <button
                 onClick={() => {
@@ -206,11 +217,13 @@ export default function Navbar() {
               {isProductsOpen && (
                 <div
                   className="products-dropdown absolute left-0 top-full mt-2 w-64 bg-[#0b0b0b] border border-white/10 rounded-lg shadow-2xl py-2 z-50"
-                  onMouseEnter={() => setIsProductsOpen(true)}
-                  onMouseLeave={() => {
-                    setIsProductsOpen(false);
-                    setHoveredCategoryId(null);
-                  }}
+                  // onMouseEnter={() => setIsProductsOpen(true)}
+                  // onMouseLeave={() => {
+                  //   setIsProductsOpen(false);
+                  //   setHoveredCategoryId(null);
+                  // }}
+                   onMouseEnter={handleProductsMouseEnter}
+      onMouseLeave={handleProductsMouseLeave}
                 >
                   {catLoading ? (
                     <div className="text-center py-4 text-gray-400">

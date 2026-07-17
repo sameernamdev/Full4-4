@@ -36,7 +36,7 @@
 import { useEffect, useState } from "react";
 import { getallbrands, getbrandsById } from "../config/axios";
 
-export const useBrands = ({page=1,limit=10}={}) => {
+export const useBrands = ({page=1,limit=20}={}) => {
   const [brands, setBrands] = useState([]);
 
   const[pagination,setPagination]=useState(null)

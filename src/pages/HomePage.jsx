@@ -227,150 +227,220 @@ export default function HomePage() {
 
   return (
     <div className="bg-brand-off">
-      <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-[92vh] md:min-h-screen">
-        {/* Background */}
-        <div className="absolute inset-0">
-          <picture>
-            {/* Mobile / Tablet */}
-            <source media="(max-width:1024px)" srcSet="/mobilecar.png" />
+     <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-[85vh] md:min-h-screen">
+  {/* Background */}
+  <div className="absolute inset-0">
+    <picture>
+      {/* Mobile */}
+      <source media="(max-width:1024px)" srcSet="/mobimg.png" />
 
-            {/* Desktop */}
-            <motion.img
-              src="/newhero.png"
-              alt="Sports Car"
-              fetchPriority="high"
-              decoding="async"
-              onError={imageFallback}
-              className="absolute inset-0 w-full h-full object-cover object-[68%_center] lg:object-center opacity-95 brightness-[1.08] contrast-105 saturate-110"
-              initial={{ scale: 1.08 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-            />
-          </picture>
+      {/* Desktop */}
+      <motion.img
+        src="/deskimg.png"
+        alt="Drive Ranger Hero"
+        fetchPriority="high"
+        decoding="async"
+        onError={imageFallback}
+        initial={{ scale: 1.05 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+        className="
+          absolute inset-0
+          w-full h-full
+          object-cover
+          object-[72%_center]
+          lg:object-center
+          opacity-95
+          brightness-[1.05]
+          contrast-105
+          saturate-110
+        "
+      />
+    </picture>
 
-          <div className="absolute inset-0 bg-gradient-to-r from-black/5 via-black/10 to-black/10" />
-        </div>
+    {/* Better overlay for mobile */}
+    <div
+      className="
+        absolute inset-0
 
-        {/* Content */}
-        <div
-          className=" relative z-20 max-w-7xl mx-auto w-full min-h-[92vh]
-           md:min-h-screen flex flex-col justify-start lg:justify-end px-5 sm:px-8 lg:px-10 
-           pt-20 md:pt-24 lg:pt-28 pb-5 sm:pb-14 lg:pb-2 "
+        bg-gradient-to-b
+        from-black/50
+        via-black/25
+        to-black/10
+
+        lg:bg-gradient-to-r
+        lg:from-black/5
+        lg:via-black/10
+        lg:to-black/15
+      "
+    />
+  </div>
+<div className="absolute inset-0 bg-black/20"></div>
+  {/* Content */}
+  <div
+    className="
+      relative z-20
+      max-w-7xl
+      mx-auto
+      w-full
+      min-h-[85vh]
+      md:min-h-screen
+
+      flex
+      flex-col
+
+      justify-start
+      lg:justify-center
+
+      px-5
+      sm:px-8
+      lg:px-10
+
+      pt-20
+      md:pt-28
+      lg:pt-20
+
+      pb-6
+      sm:pb-12
+      lg:pb-10
+    "
+  >
+    {/* Badge */}
+    <motion.div
+      data-anime-hero
+      className="inline-flex w-fit items-center gap-2 border border-brand-red/45 px-3 sm:px-10 py-2 bg-black/30 backdrop-blur-sm mb-4 mt-4 sm:mt-6 "
+      initial={{ opacity: 0, x: -42 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.7 }}
+    >
+      <span className="blink w-2 h-2 bg-brand-red rounded-full" />
+
+      <span className="font-label font-semibold text-[10px]  sm:text-[11px] tracking-[0.3em] uppercase text-white">
+        New Gear Arrived
+      </span>
+    </motion.div>
+
+    {/* Heading */}
+    <motion.h1
+      data-anime-hero
+      className="mt-4 sm:mt-0 font-display leading-[0.88] drop"
+      style={{
+        fontSize: "clamp(52px,11vw,145px)",
+      }}
+      initial={{ opacity: 0, y: 55 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.85, delay: 0.12 }}
+    >
+      <span className="block text-white">DRIVE</span>
+
+      <span className="block text-brand-red">RANGER.</span>
+    </motion.h1>
+
+    {/* Description */}
+    <div className="relative inline-block rounded-xl mt-3">
+     
+
+      <motion.p
+        data-anime-hero
+        className="
+          relative
+
+          font-body
+          font-semibold
+
+          text-white
+
+          text-[16px]
+          sm:text-[17px]
+          lg:text-[20px]
+
+          leading-7
+
+          max-w-[320px]
+          sm:max-w-md
+          lg:max-w-xl
+
+          drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]
+        "
+        initial={{ opacity: 0, y: 34 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.72, delay: 0.26 }}
+      >
+        Car Accessories and Camping <br /> Gears from <br /> 20+ global brands.
+      </motion.p>
+    </div>
+
+    {/* Buttons (Hidden on Mobile) */}
+    <motion.div
+      data-anime-hero
+      className="hidden md:flex flex-col sm:flex-row items-start gap-3 sm:gap-5 mt-5 mb-6 sm:mb-10"
+      initial={{ opacity: 0, y: 34 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.72, delay: 0.38 }}
+    >
+      <motion.button
+        onClick={() => navigate("products")}
+        className="btn-clip btn-shine bg-brand-red text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.18em] uppercase px-6 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center gap-3 min-w-[160px] hover:bg-brand-red2 transition-colors"
+        whileHover={{ scale: 1.05, x: 5 }}
+        whileTap={{ scale: 0.96 }}
+      >
+        Products <ArrowRight size={16} />
+      </motion.button>
+
+      <motion.button
+        onClick={() => navigate("about")}
+        className="btn-clip border border-white/40 bg-white/10 backdrop-blur-sm text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.15em] uppercase px-6 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center min-w-[160px] hover:border-brand-red hover:text-brand-red transition-all"
+        whileHover={{ scale: 1.05, y: -3 }}
+        whileTap={{ scale: 0.96 }}
+      >
+        Our Story
+      </motion.button>
+    </motion.div>
+
+    {/* Stats */}
+    <div className="mt-32 md:mt-0 pt-3 md:pt-8 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-10">
+      {[
+        ["15K+", "Parts in Stock"],
+        ["20+", "Global Brands"],
+        ["9Yr", "Experience"],
+      ].map(([val, lbl], i) => (
+        <motion.div
+          key={lbl}
+          className={`text-center sm:text-left ${
+            i > 0 ? "sm:pl-10 sm:border-l sm:border-white/30" : ""
+          }`}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, delay: 0.55 + i * 0.08 }}
         >
-          {/* Badge */}
-          <motion.div
-            data-anime-hero
-            className="inline-flex w-fit items-center gap-2 border border-brand-red/45 px-3 sm:px-5 py-2 bg-black/25 backdrop-blur-sm mb-4 sm:mb-8"
-            initial={{ opacity: 0, x: -42 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <span className="blink w-2 h-2 bg-brand-red rounded-full" />
-
-            <span className="font-label font-semibold text-[10px] sm:text-[11px] tracking-[0.3em] uppercase text-white">
-              New Gear Arrived
-            </span>
-          </motion.div>
-
-          {/* Heading */}
-          <motion.h1
-            data-anime-hero
-            className="font-display leading-[0.88] mb-3"
-            style={{
-              fontSize: "clamp(58px,13vw,154px)",
-            }}
-            initial={{ opacity: 0, y: 55 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.85, delay: 0.12 }}
-          >
-            <span className="block text-white">DRIVE</span>
-
-            <span className="block text-brand-red">RANGER.</span>
-          </motion.h1>
-
-          {/* Description */}
-          <motion.p
-            data-anime-hero
-            className=" font-body font-semibold  text-white text-[15px] sm:text-[16px] 
-            lg:text-[20px] leading-relaxed max-w-[270px] sm:max-w-md  lg:max-w-lg  mb-4  drop-shadow-l "
-            initial={{ opacity: 0, y: 34 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.72, delay: 0.26 }}
-          >
-            Car Accessories and Camping Gears from 20+ global brands.
-          </motion.p>
-
-          {/* Buttons */}
-          <motion.div
-            data-anime-hero
-            className="flex flex-col sm:flex-row items-start gap-2 sm:gap-5 mb-6 sm:mb-10"
-            initial={{ opacity: 0, y: 34 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.72, delay: 0.38 }}
-          >
-            <motion.button
-              onClick={() => navigate("products")}
-              className="btn-clip btn-shine bg-brand-red text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.18em] uppercase px-7 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center gap-3 min-w-[170px] hover:bg-brand-red2 transition-colors"
-              whileHover={{ scale: 1.05, x: 5 }}
-              whileTap={{ scale: 0.96 }}
-            >
-              Products <ArrowRight size={16} />
-            </motion.button>
-
-            <motion.button
-              onClick={() => navigate("about")}
-              className="btn-clip border border-white/40 bg-white/10 backdrop-blur-sm text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.15em] uppercase px-7 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center min-w-[170px] hover:border-brand-red hover:text-brand-red transition-all"
-              whileHover={{ scale: 1.05, y: -3 }}
-              whileTap={{ scale: 0.96 }}
-            >
-              Our Story
-            </motion.button>
-          </motion.div>
-
-          {/* Stats */}
-          <div className="mt-20 md:mt-0 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-10 ">
-            {[
-              ["15K+", "Parts in Stock"],
-              ["20+", "Global Brands"],
-              ["9Yr", "Experience"],
-            ].map(([val, lbl], i) => (
-              <motion.div
-                key={lbl}
-                className={`text-center sm:text-left ${
-                  i > 0 ? "sm:pl-10 sm:border-l sm:border-white/30" : ""
-                }`}
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.55 + i * 0.08 }}
-              >
-                <div className="font-display text-2xl sm:text-3xl lg:text-4xl text-white leading-none">
-                  {val}
-                </div>
-
-                <div className="font-label font-semibold text-[9px] sm:text-[11px] tracking-[0.22em] uppercase text-white/80 mt-2">
-                  {lbl}
-                </div>
-              </motion.div>
-            ))}
+          <div className="font-display text-2xl sm:text-3xl lg:text-4xl text-brand-red leading-none">
+            {val}
           </div>
-        </div>
-      </section>
+
+          <div className="font-label font-semibold text-[11px] sm:text-[11px] tracking-[0.22em] uppercase text-white mt-2">
+            {lbl}
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</section>
 
       <div className="bg-brand-red overflow-hidden py-4">
         <div className="marquee-track">
           {marqueeDouble.map((item, i) => (
             <span
               key={i}
-              className="font-display text-[18px] tracking-[0.12em] text-white px-10 whitespace-nowrap flex items-center gap-4"
+              className="font-display text-[18px] tracking-[0.12em] text-white px-10 whitespace-nowrap flex items-center gap-4 "
             >
               {item}
-              <span className="w-1.5 h-1.5 bg-white/40 rounded-full inline-block" />
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span className="w-1.5 h-1.5 bg-white/40 rounded-full inline-block " />
             </span>
           ))}
         </div>
       </div>
 
-      <section className="dark-panel  relative py-28 overflow-hidden ">
+      <section className="dark-panel  relative py-14 sm:py-28 overflow-hidden ">
         {/* <div className="absolute inset-0 bg-[#0c2237]/88" /> */}
         <div className="absolute inset-0 bg-white " />
 
@@ -855,7 +925,7 @@ export default function HomePage() {
       </section>
 
       <section className="dark-panel bg-[#080808] py-28">
-        <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto sm:px-4">
           <div className="reveal text-center mb-16">
             <div className="flex items-center justify-center gap-3 mb-4">
               <span className="w-8 h-0.5 bg-brand-red" />
@@ -878,12 +948,13 @@ export default function HomePage() {
               {[...brands, ...brands].map((b) => (
                 <div
                   key={b.id}
-                  className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl border border-white/10  p-4 hover:border-brand-red  transition-all duration-300 bg-white"
+                  // className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl border border-white/10  p-4 hover:border-brand-red  transition-all duration-300 "
+                  className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl  p-4 hover:border-brand-red  transition-all duration-300 "
                 >
                   <img
                     src={b.logo_url}
                     alt={b.name}
-                    className="max-h-16 w-auto object-contain  hover:grayscale-0 transition duration-300 text-black"
+                    className="max-h- w-auto object-contain  hover:grayscale-0 transition duration-300 text-black"
                   />
                 </div>
               ))}

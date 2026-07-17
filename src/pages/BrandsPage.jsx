@@ -11,9 +11,9 @@ export default function BrandsPage({ setPage }) {
   useReveal();
 
   const{model}=useModels()
-  console.log(model)
+  // console.log(model)
   const{vehicles}=useVehicleGenerations()
-  console.log(vehicles)
+  // console.log(vehicles)
 
   const navigate=useNavigate()
 
@@ -74,18 +74,19 @@ export default function BrandsPage({ setPage }) {
             <button key={brand.id} onClick={() => {
               // setPage('products')
               // navigate(`/products?brandId=${brand.id}`)
-               navigate(`/products?brand=${brand.slug}&brand_id=${brand.id}`);
-              // navigate(`/products?brandId=${brand.id}&brand_name=${brand.name}`)
+
+              //  navigate(`/products?brand=${brand.slug}&brand_id=${brand.id}`);
+              
             }}
             // onClick={() => navigate(`/products?brandId=${brand.id}`)}
-              className="reveal  border border-white/10 rounded-2xl p-8 text-center group hover:border-brand-red/60  hover:shadow-xl hover:shadow-brand-red/15 transition-all duration-300"
+              className="reveal  border border-white/10 rounded-2xl p-8 text-center group  hover:border-brand-red/1  hover:shadow hover:shadow-brand-red/15 transition-all duration-300"
               style={{ transitionDelay: `${i * 0.1}s` }}>
               <div className="w-32 h-16 rounded-full flex items-center justify-center mx-auto mb-4 font-display text-2xl font-black text-black group-hover:scale-110 transition-transform" style={{ background: `${brand.color}55` }}>
                 
                 {brand?.logo_url ? (  <img src={brand.logo_url} alt="" />): (  brand.name[0] )}
 
               </div>
-              <h3 className="font-display text-xl font-black text-black mb-1 group-hover:text-brand-red transition-colors">{brand.name}</h3>
+              {/* <h3 className="font-display text-xl font-black text-black mb-1 group-hover:text-brand-red transition-colors">{brand.name}</h3> */}
               {/* <div className="font-body text-xs text-white/50 mb-1">{brand.origin}</div> */}
               {/* <div className="font-body text-xs text-brand-red">{brand.specialty}</div> */}
               {/* <div className="mt-4 font-body text-xs text-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">

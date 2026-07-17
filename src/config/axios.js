@@ -2,7 +2,9 @@ import axios from "axios";
 import { data } from "react-router-dom";
 
 export const api = axios.create({
-  baseURL:"http://localhost:3000/api"  || "https://ecom-drive-range.onrender.com/api",
+
+  baseURL:import.meta.env.VITE_BACKEND_URL ||"http://localhost:3000/api"  ||
+   "https://ecom-drive-range.onrender.com/api",
   // baseURL:"https://ecom-drive-range.onrender.com/api",
   withCredentials: true,
 });
@@ -221,6 +223,7 @@ export const getProductItemId=async()=>{
 export const getallcategories=async(params={})=>{
     try {
         const res=await api.get("/categories/get_all_categories",{
+          // params:{limit:12}
           params
         })
         
