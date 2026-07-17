@@ -164,8 +164,8 @@ const handleProductsMouseLeave = () => {
               // className="w-8 sm:w-9 lg:w-10"
               className="h-8 sm:h-9 lg:h-10"
             />
-            <div className="lg:h-11 leading-none ">
-              <h1 className="text-white font-bold tracking-[0.05em] text-[25px] text-lg sm:text-[25px]  lg:text-[32px]">
+            <div className="lg:h-11 leading-none  ">
+              <h1 className="text-white font-bold tracking-[0.05em] text-[26px] text-lg sm:text-[25px]  lg:text-[32px]">
                 DRIVE <span className="text-brand-red">RANGER</span>
               </h1>
 
