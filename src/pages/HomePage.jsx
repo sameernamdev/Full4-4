@@ -275,7 +275,7 @@ export default function HomePage() {
       "
     />
   </div>
-<div className="absolute inset-0 bg-black/20"></div>
+<div className="absolute inset-0 bg-black/10"></div>
   {/* Content */}
   <div
     className="
