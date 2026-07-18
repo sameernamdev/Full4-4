@@ -41,7 +41,7 @@ export default function Navbar() {
   const location = useLocation();
   const profileRef = useRef(null);
 
-const closeTimeout = useRef(null);
+  const closeTimeout = useRef(null);
 
   // Fetch categories and subcategories (hooks unchanged)
   const { categories, loading: catLoading } = useCategories();
@@ -137,51 +137,56 @@ const closeTimeout = useRef(null);
     navigate(`/products${query}`);
   };
 
-
   const handleProductsMouseEnter = () => {
-  if (closeTimeout.current) {
-    clearTimeout(closeTimeout.current);
-  }
-  setIsProductsOpen(true);
-};
+    if (closeTimeout.current) {
+      clearTimeout(closeTimeout.current);
+    }
+    setIsProductsOpen(true);
+  };
 
-const handleProductsMouseLeave = () => {
-  closeTimeout.current = setTimeout(() => {
-    setIsProductsOpen(false);
-    setHoveredCategoryId(null);
-  }, 200);
-};
+  const handleProductsMouseLeave = () => {
+    closeTimeout.current = setTimeout(() => {
+      setIsProductsOpen(false);
+      setHoveredCategoryId(null);
+    }, 200);
+  };
 
   return (
     <>
       <nav className="fixed top-0 left-0 right-0 z-[999] font-[Rajdhani,sans-serif] h-16 sm:h-[72px] lg:h-20 bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-lg">
         <div className="max-w-7xl h-full mx-auto px-3 sm:px-5 lg:px-8 flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <img
-              src="/newLogoDR.png"
-              alt="Drive Ranger"
-              // className="w-8 sm:w-9 lg:w-10"
-              className="h-8 sm:h-9 lg:h-10"
-            />
-            <div className="lg:h-11 leading-none  ">
-              <h1 className="text-white font-bold tracking-[0.05em] text-[26px] text-lg sm:text-[25px]  lg:text-[32px]">
-                DRIVE <span className="text-brand-red">RANGER</span>
-              </h1>
+<Link
+  to="/"
+  className="flex items-center gap-1.5 sm:gap-2.5 shrink-0"
+>
+  <img
+    src="/drivelogo.jpg"
+    alt="Drive Ranger"
+    className=" h-7  sm:h-10 lg:h-10 object-contain flex-shrink-0"
+  />
 
-              <div className="flex items-center gap-0 md:mt-1 max-w-full overflow-hidden ">
-                <span className="text-[6px]  sm:text-[8px] uppercase tracking-[0.15em] text-white font-bold whitespace-nowrap">
-                  Powered by
-                </span>
+  <h1
+    className="
 
-                <img
-                  src="/autofocus logo PNG.png"
-                  alt="AutoFocus"
-                  className="h-[8px] sm:h-3 w-auto max-w-[55px] sm:max-w-none object-contain flex-shrink "
-                />
-              </div>
-            </div>
-          </Link>
+      font-[Rajdhani]
+      font-bold
+      uppercase
+      leading-none
+      tracking-[0.02em]
+      text-white
+      text-[clamp(30px,7vw,40px)]
+      sm:text-[56px]
+      lg:text-[48px]
+      flex
+      items-center
+      whitespace-nowrap
+    "
+  >
+    DRIVE
+    <span className="text-brand-red ml-1">RANGER</span>
+  </h1>
+</Link>
 
           {/* ===== DESKTOP MENU ===== */}
           <ul className="hidden lg:flex items-center gap-8 text-white font-semibold">
@@ -198,7 +203,7 @@ const handleProductsMouseLeave = () => {
             <li
               className="relative"
               onMouseEnter={handleProductsMouseEnter}
-      onMouseLeave={handleProductsMouseLeave}
+              onMouseLeave={handleProductsMouseLeave}
             >
               <button
                 onClick={() => {
@@ -222,8 +227,8 @@ const handleProductsMouseLeave = () => {
                   //   setIsProductsOpen(false);
                   //   setHoveredCategoryId(null);
                   // }}
-                   onMouseEnter={handleProductsMouseEnter}
-      onMouseLeave={handleProductsMouseLeave}
+                  onMouseEnter={handleProductsMouseEnter}
+                  onMouseLeave={handleProductsMouseLeave}
                 >
                   {catLoading ? (
                     <div className="text-center py-4 text-gray-400">
@@ -289,11 +294,11 @@ const handleProductsMouseLeave = () => {
                 Brands
               </Link>
             </li>
-            {/* <li>
+            <li>
               <Link to="find-vehicle" className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300">
-                Get vehicle
+                vehicle
               </Link>
-            </li> */}
+            </li>
             <li>
               <Link
                 to="/about"
@@ -414,7 +419,7 @@ const handleProductsMouseLeave = () => {
                       Loading categories...
                     </div>
                   ) : categories.length === 0 ? (
-                    <div className="py-2 text-gray-400">No categories</div>
+                    <div className="py-2 text-white">No categories</div>
                   ) : (
                     categories.map((cat) => (
                       <div
@@ -448,14 +453,14 @@ const handleProductsMouseLeave = () => {
                               subcategoryMap[cat.id].map((sub) => (
                                 <div
                                   key={sub.id}
-                                  className="py-2 text-sm text-gray-300 hover:text-brand-red cursor-pointer transition"
+                                  className="py-2 text-sm text-white font-medium hover:text-brand-red cursor-pointer transition tracking-wide"
                                   onClick={() => navigateToProducts(cat, sub)}
                                 >
                                   {sub.name}
                                 </div>
                               ))
                             ) : (
-                              <div className="py-1 text-gray-500 text-sm">
+                              <div className="py-1 text-white text-sm">
                                 No subcategories
                               </div>
                             )}
@@ -475,6 +480,13 @@ const handleProductsMouseLeave = () => {
               className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition"
             >
               Brands
+            </Link>
+            <Link
+              to="/find-vehicle"
+              onClick={() => setMenuOpen(false)}
+              className="py-4 text-lg font-semibold text-white border-b border-white/10 hover:text-brand-red transition"
+            >
+              Vehicle
             </Link>
             <Link
               to="/about"

@@ -844,6 +844,15 @@ export const getVehicleCompatibility=async(productId)=>{
 }
 
 
+export const getAllVehicleProducts = async (params) => {
+  const response = await api.get("/products/get_all_vehicle_products", {
+    params,
+  });
+
+  return response.data;
+};
+
+
 
 
 // reviews

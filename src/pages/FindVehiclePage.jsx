@@ -10,9 +10,10 @@ import {
 import { useVehicleMakes } from "../hooks/useVehicleMakes";
 import { useModels } from "../hooks/useModels";
 import { useVehicleGenerations } from "../hooks/useVehicleGenerations";
-import { useProducts } from "../hooks/useProducts";
+// import { useProducts } from "../hooks/useProducts";
 
 import ProductCard from "../components/ProductCard";
+import { useVehicleProducts } from "../hooks/useVehicleProducts";
 
 export default function FindVehiclePage() {
   const [makeId, setMakeId] = useState("");
@@ -21,8 +22,11 @@ export default function FindVehiclePage() {
 
   const [params, setParams] = useState({
     page: 1,
-    limit: 12,
+    per_page: 12,
   });
+
+  // user ko batane ke liye ki isme products nahi hai
+  const [searched, setSearched] = useState(false);
 
   const { makes, loading: makesLoading } = useVehicleMakes();
 
@@ -32,20 +36,24 @@ export default function FindVehiclePage() {
   const { generations, loading: generationsLoading } =
     useVehicleGenerations(modelId);
 
-  const {
-    products,
-    loading: loadingProducts,
-  } = useProducts(params);
+ const {
+  products,
+  pagination,
+  loading: loadingProducts,
+} = useVehicleProducts(params);
 
-  const handleSearch = () => {
-    if (!generationId) return;
+const handleSearch = () => {
+  if (!makeId || !modelId || !generationId) return;
 
-    setParams((prev) => ({
-      ...prev,
-      generation_id: generationId,
-      page: 1,
-    }));
-  };
+   setSearched(true);
+  setParams({
+    make_id: makeId,
+    model_id: modelId,
+    generation_id: generationId,
+    page: 1,
+    per_page: 12,
+  });
+};
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -62,41 +70,37 @@ export default function FindVehiclePage() {
           }}
         />
 
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-[#080808]" />
 
-        <div className="relative max-w-7xl mx-auto px-6 py-24">
+        <div className="relative max-w-7xl mx-auto px-6 py-36 text-center">
 
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
           >
 
-            <div className="inline-flex items-center bg-red-600 text-white rounded-full px-5 py-2 mb-6">
+            {/* <div className="inline-flex items-center bg-red-600 text-white rounded-full px-5 py-2 mb-6">
 
               <CarFront className="mr-2" size={18} />
 
               Drive Ranger Vehicle Finder
 
-            </div>
+            </div> */}
 
-            <h1 className="text-5xl lg:text-7xl font-black text-white leading-tight max-w-4xl">
+            <h1 className="text-5xl lg:text-7xl font-black text-white leading-tight  font-display">
 
               Find Parts
 
-              <span className="text-red-500">
+              <span className="text-gradient">
                 {" "}
                 For Your Vehicle
               </span>
 
             </h1>
-
-            <p className="text-gray-200 text-lg mt-6 max-w-2xl">
-
-              Select your Make, Model and Generation to instantly
-              discover accessories perfectly compatible with
-              your vehicle.
-
-            </p>
+<p className="font-body text-white/55 text-lg mt-6 ">
+  Select your vehicle's Make, Model and Generation to browse <br />
+  products designed for your selected vehicle.
+</p>
 
           </motion.div>
 
@@ -119,18 +123,13 @@ export default function FindVehiclePage() {
 
             <div>
 
-              <h2 className="text-3xl font-bold">
-
-                Vehicle Selector
-
-              </h2>
+              <h2 className="font-display text-3xl font-black text-brand-red">
+  VEHICLE SELECTOR
+</h2>
 
               <p className="text-gray-500 mt-1">
-
-                Choose your vehicle to browse compatible
-                products.
-
-              </p>
+  Select your vehicle details to browse available products.
+</p>
 
             </div>
 
@@ -203,11 +202,13 @@ export default function FindVehiclePage() {
                 className="w-full h-14 rounded-xl border border-gray-300 px-5 disabled:bg-gray-100"
               >
 
-                <option value="">
-                  {modelsLoading
-                    ? "Loading..."
-                    : "Select Model"}
-                </option>
+             <option value="">
+  {!makeId
+    ? "Select Make First"
+    : modelsLoading
+    ? "Loading..."
+    : "Select Model"}
+</option>
 
                 {models.map((item) => (
 
@@ -242,12 +243,13 @@ export default function FindVehiclePage() {
                 }
                 className="w-full h-14 rounded-xl border border-gray-300 px-5 disabled:bg-gray-100"
               >
-
-                <option value="">
-                  {generationsLoading
-                    ? "Loading..."
-                    : "Select Generation"}
-                </option>
+<option value="">
+  {!modelId
+    ? "Select Model First"
+    : generationsLoading
+    ? "Loading..."
+    : "Select Generation"}
+</option>
 
                 {generations.map((item) => (
 
@@ -255,7 +257,7 @@ export default function FindVehiclePage() {
                     key={item.id}
                     value={item.id}
                   >
-                    {item.name}
+                    {item.year_from} - {item.year_to}
                   </option>
 
                 ))}
@@ -271,7 +273,7 @@ export default function FindVehiclePage() {
               <button
                 onClick={handleSearch}
                 disabled={!generationId}
-                className="w-full h-14 rounded-xl bg-red-600 hover:bg-red-700 transition text-white font-semibold flex items-center justify-center gap-2 disabled:bg-gray-300"
+                className="w-full h-14 rounded-xl bg-brand-red hover:bg-red-700 transition text-white font-semibold flex items-center justify-center gap-2 disabled:bg-gray-300"
               >
 
                 <Search size={20} />
@@ -294,9 +296,9 @@ export default function FindVehiclePage() {
 
         <div className="flex items-center justify-between mb-8">
 
-          <h2 className="text-3xl font-bold">
+          <h2 className="text-3xl font-display">
 
-            Compatible Products
+             Products for Your Vehicle
 
           </h2>
 
@@ -338,7 +340,28 @@ export default function FindVehiclePage() {
 
           </div>
 
-        ) : (          <div className="bg-white rounded-3xl border border-gray-200 shadow-sm py-20 px-6 text-center">
+        ) : searched ? (
+
+  <div className="bg-white rounded-3xl border border-black/10 shadow-xl py-20 px-6 text-center">
+
+    <CarFront
+      size={60}
+      className="mx-auto text-brand-red mb-5"
+    />
+
+    <h3 className="text-3xl font-bold text-gray-900">
+      No Products Found
+    </h3>
+
+    <p className="text-gray-500 mt-4 max-w-xl mx-auto">
+      We couldn't find any products for the selected vehicle.
+      Try choosing a different Make, Model or Generation.
+    </p>
+
+  </div>
+
+):(      
+              <div className="bg-white rounded-3xl border border-gray-200 shadow-sm py-20 px-6 text-center">
 
             <CarFront
               size={60}
@@ -346,17 +369,16 @@ export default function FindVehiclePage() {
             />
 
             <h3 className="text-3xl font-bold text-gray-900">
-              Find Compatible Products
+               Browse Products
             </h3>
 
-            <p className="text-gray-500 mt-4 max-w-xl mx-auto">
-              Select your Vehicle Make, Model and Generation
-              above, then click
-              <span className="font-semibold text-red-600">
-                {" "}Find Parts
-              </span>
-              {" "}to view products compatible with your vehicle.
-            </p>
+          <p className="text-gray-500 mt-4 max-w-xl mx-auto">
+  Select your Vehicle Make, Model and Generation above, then click
+  <span className="font-semibold text-red-600">
+    {" "}Find Parts
+  </span>
+  {" "}to browse products for your selected vehicle.
+</p>
 
           </div>
 
@@ -371,18 +393,18 @@ export default function FindVehiclePage() {
         <div className="grid md:grid-cols-3 gap-8">
 
           {[
-            {
-              title: "Perfect Fit",
-              text: "Only compatible accessories are displayed for your selected vehicle.",
-            },
+          {
+  title: "Vehicle-Specific Products",
+  text: "Browse products available for your selected make, model and generation.",
+},
             {
               title: "Premium Brands",
               text: "Browse trusted 4x4 aftermarket brands and genuine accessories.",
             },
-            {
-              title: "Fast Search",
-              text: "Find the right products within seconds using your vehicle details.",
-            },
+          {
+  title: "Quick Search",
+  text: "Find the products you need in seconds by selecting your vehicle details.",
+}
           ].map((item, index) => (
 
             <motion.div

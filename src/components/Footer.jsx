@@ -56,7 +56,7 @@ export default function Footer({ setPage }) {
     DRIVE <span className="text-brand-red">RANGER</span>
   </h2>
 
-  <div className="flex items-center gap-1 mt-1">
+  {/* <div className="flex items-center gap-1 mt-1">
     <span className="text-[9px] uppercase tracking-[0.25em] text-gray-500 whitespace-nowrap">
       POWERED BY
     </span>
@@ -66,7 +66,7 @@ export default function Footer({ setPage }) {
       alt="AutoFocus"
       className="h-3 w-auto object-contain"
     />
-  </div>
+  </div> */}
 </div>
             
             <p className="font-body text-sm text-black leading-relaxed mb-6 max-w-xs">

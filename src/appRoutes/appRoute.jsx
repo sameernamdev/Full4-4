@@ -22,6 +22,7 @@ import Coupons from "../pages/Coupons";
 import FindVehiclePage from "../pages/FindVehiclePage";
 import MyAddresses from "../pages/MyAddresses";
 
+
 function AppRoutes() {
   return (
     <>
@@ -33,7 +34,9 @@ function AppRoutes() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/products/:id" element={<ProductsDetails />} />
         <Route path="/cart" element={<CartPage />} />
-        {/* <Route path="find-vehicle" element={<FindVehiclePage/>}/> */}
+        <Route path="find-vehicle" element={<FindVehiclePage/>}/>
+
+       
 
         {/* <Route path="/category/:categoryId" element={<CategoryPage/>}/> */}
 

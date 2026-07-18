@@ -7,6 +7,7 @@ import { useCart } from "../hooks/useCart";
 export default function ProductCard({ product, light = true }) {
   const navigate = useNavigate();
   const { addToCart } = useCart();
+console.log(product);
 
   const [added, setAdded] = useState(false);
 

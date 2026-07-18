@@ -232,11 +232,11 @@ export default function HomePage() {
   <div className="absolute inset-0">
     <picture>
       {/* Mobile */}
-      <source media="(max-width:1024px)" srcSet="/mobimg.png" />
+      <source media="(max-width:1024px)" srcSet="/updatedmobimg.png" />
 
       {/* Desktop */}
       <motion.img
-        src="/deskimg.png"
+        src="/updated deskimg.png"
         alt="Drive Ranger Hero"
         fetchPriority="high"
         decoding="async"
@@ -413,7 +413,7 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, delay: 0.55 + i * 0.08 }}
         >
-          <div className="font-display text-2xl sm:text-3xl lg:text-4xl text-brand-red leading-none">
+          <div className="font-display text-2xl sm:text-3xl lg:text-4xl text-white leading-none">
             {val}
           </div>
 
