@@ -428,6 +428,9 @@ export default function ProductDetailsPage() {
     useVehicleCompatibility(product);
   const { reviews, loading: reviewsLoad } = useReviews(product?.id);
 
+  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showShortDescription, setShowShortDescription] = useState(false);
+
   // ─── ALL LOGIC UNCHANGED ──────────────────────────────
   const getImageUrl = (mediaItem) => {
     if (!mediaItem) return null;
@@ -732,15 +735,32 @@ export default function ProductDetailsPage() {
               {activeTab === "description" && (
                 <div className="space-y-4">
                   {short_description && (
-                    <p className="text-gray-600 text-sm leading-relaxed">
-                      {short_description}
-                    </p>
-                  )}
+  <div>
+    <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
+      {showShortDescription
+        ? short_description
+        : short_description.slice(0, 180)}
+
+      {!showShortDescription &&
+        short_description.length > 180 &&
+        "..."}
+    </p>
+
+    {short_description.length > 180 && (
+      <button
+        onClick={() => setShowShortDescription(!showShortDescription)}
+        className="mt-2 text-red-600 font-semibold hover:text-red-700 transition"
+      >
+        {showShortDescription ? "Read Less" : "Read More"}
+      </button>
+    )}
+  </div>
+)}
                   <div className="bg-gray-50 rounded-xl p-4 text-sm space-y-2">
-                    <div className="flex justify-between border-b border-gray-200 pb-2">
+                    {/* <div className="flex justify-between border-b border-gray-200 pb-2">
                       <span className="text-gray-500">SKU</span>
                       <span className="font-medium">{sku || "N/A"}</span>
-                    </div>
+                    </div> */}
                     <div className="flex justify-between border-b border-gray-200 pb-2">
                       <span className="text-gray-500">Weight</span>
                       <span className="font-medium">
@@ -760,9 +780,22 @@ export default function ProductDetailsPage() {
                     <h4 className="font-semibold text-gray-800 mb-1">
                       Full Description
                     </h4>
-                    <p className="text-gray-600 leading-relaxed">
-                      {long_description || "No description available."}
+                    <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                      {showFullDescription?
+                      (long_description||"No description available.")
+                      :
+                      (long_description||"No description available.").slice(0,250)
+                    }
+                    {!showFullDescription && long_description&& long_description.length>250 && "..."}
                     </p>
+                    {long_description && long_description.length > 250 && (
+    <button
+      onClick={() => setShowFullDescription(!showFullDescription)}
+      className="mt-3 text-red-600 font-semibold hover:text-red-700 transition"
+    >
+      {showFullDescription ? "Read Less" : "Read More"}
+    </button>
+  )}
                   </div>
                   <div className="grid grid-cols-3 gap-3 mt-4">
                     <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
