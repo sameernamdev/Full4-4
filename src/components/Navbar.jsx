@@ -44,8 +44,8 @@ export default function Navbar() {
   const closeTimeout = useRef(null);
 
   // Fetch categories and subcategories (hooks unchanged)
-  const { categories, loading: catLoading } = useCategories();
-  const { sub: allSubcategories, loading: subLoading } = useSubCategories();
+  const { categories, loading: catLoading } = useCategories({limit:50});
+  const { sub: allSubcategories, loading: subLoading } = useSubCategories({limit:100});
 
   // Build a map: categoryId -> array of subcategories
   const subcategoryMap = useMemo(() => {
