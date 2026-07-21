@@ -158,12 +158,12 @@ export default function Navbar() {
           {/* Logo */}
 <Link
   to="/"
-  className="flex items-center gap-1.5 sm:gap-2.5 shrink-0"
+  className="flex items-center gap-1.5 sm:gap-1.5 shrink-0"
 >
   <img
     src="/drivelogo.jpg"
     alt="Drive Ranger"
-    className=" h-7  sm:h-10 lg:h-10 object-contain flex-shrink-0"
+    className=" h-7 sm:h-10 lg:h-9  object-contain flex-shrink-0 "
   />
 
   <h1
@@ -172,12 +172,12 @@ export default function Navbar() {
       font-[Rajdhani]
       font-bold
       uppercase
-      leading-none
+      leading-10
       tracking-[0.02em]
       text-white
-      text-[clamp(30px,7vw,40px)]
-      sm:text-[56px]
-      lg:text-[48px]
+      text-[25px]
+      sm:text-[35px]
+      
       flex
       items-center
       whitespace-nowrap

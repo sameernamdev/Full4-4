@@ -223,7 +223,7 @@ export const getProductItemId=async()=>{
 export const getallcategories=async(params={})=>{
     try {
         const res=await api.get("/categories/get_all_categories",{
-          // params:{limit:12}
+          // params:{limit:20}
           params
         })
         

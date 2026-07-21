@@ -535,7 +535,8 @@ export default function ProductDetailsPage() {
     warranty_months,
     brand_name,
     is_universal,
-    tax_percentage
+    tax_percentage,
+    seo_description,
   } = product;
 
   const productName = name || "Product";
@@ -561,7 +562,7 @@ export default function ProductDetailsPage() {
           <ArrowLeft size={18} />
           Back to Products
         </Link>
-{/* grid lg:grid-cols-2 gap-8 lg:gap-12 */}
+        {/* grid lg:grid-cols-2 gap-8 lg:gap-12 */}
         <div className="grid lg:grid-cols-2 gap-10 grid-cols-1">
           {/* ─── LEFT: Image Gallery ─────────────────────────── */}
           <div className="w-full min-h-60">
@@ -657,7 +658,7 @@ export default function ProductDetailsPage() {
                 <span className="text-3xl font-bold text-red-600">
                   {productPrice}
                 </span>
-                
+
                 {/* {isInStock && (
                   <p className="text-sm text-gray-500 mt-1">
                     {available_stock} available
@@ -732,98 +733,138 @@ export default function ProductDetailsPage() {
 
             {/* ─── TAB CONTENT ────────────────────────────────── */}
             <div className="pt-2">
-              {activeTab === "description" && (
-                <div className="space-y-4">
-                  {short_description && (
-  <div>
-    <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
-      {showShortDescription
-        ? short_description
-        : short_description.slice(0, 180)}
-
-      {!showShortDescription &&
-        short_description.length > 180 &&
-        "..."}
-    </p>
-
-    {short_description.length > 180 && (
-      <button
-        onClick={() => setShowShortDescription(!showShortDescription)}
-        className="mt-2 text-red-600 font-semibold hover:text-red-700 transition"
-      >
-        {showShortDescription ? "Read Less" : "Read More"}
-      </button>
-    )}
-  </div>
-)}
-                  <div className="bg-gray-50 rounded-xl p-4 text-sm space-y-2">
-                    {/* <div className="flex justify-between border-b border-gray-200 pb-2">
+              <div className="bg-gray-50 rounded-xl p-2 text-sm space-y-2">
+                {/* <div className="flex justify-between border-b border-gray-200 pb-2">
                       <span className="text-gray-500">SKU</span>
                       <span className="font-medium">{sku || "N/A"}</span>
                     </div> */}
-                    <div className="flex justify-between border-b border-gray-200 pb-2">
-                      <span className="text-gray-500">Weight</span>
-                      <span className="font-medium">
-                        {weight ? `${weight} kg` : "N/A"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Dimensions</span>
-                      <span className="font-medium">
-                        {width && height && depth
-                          ? `${width} × ${height} × ${depth} cm`
-                          : "N/A"}
-                      </span>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-800 mb-1">
-                      Full Description
-                    </h4>
-                    <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                      {showFullDescription?
-                      (long_description||"No description available.")
-                      :
-                      (long_description||"No description available.").slice(0,250)
-                    }
-                    {!showFullDescription && long_description&& long_description.length>250 && "..."}
-                    </p>
-                    {long_description && long_description.length > 250 && (
-    <button
-      onClick={() => setShowFullDescription(!showFullDescription)}
-      className="mt-3 text-red-600 font-semibold hover:text-red-700 transition"
-    >
-      {showFullDescription ? "Read Less" : "Read More"}
-    </button>
-  )}
-                  </div>
-                  <div className="grid grid-cols-3 gap-3 mt-4">
-                    <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
-                      <Truck className="text-red-500 mx-auto mb-1" size={20} />
-                      <p className="text-xs text-gray-600">Free Shipping</p>
-                    </div>
-                    <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
-                      <ShieldCheck
-                        className="text-red-500 mx-auto mb-1"
-                        size={20}
-                      />
-                      <p className="text-xs text-gray-600">Genuine Product</p>
-                    </div>
-                    {warranty_months ? (
-                      <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
-                        <Star className="text-red-500 mx-auto mb-1" size={20} />
-                        <p className="text-xs text-gray-600">
-                          Premium quality{" "}
-                          {warranty_months &&
-                            `(${warranty_months}month warranty)`}
-                        </p>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                  </div>
+                <div className="flex justify-between border-b border-gray-200 pb-2">
+                  <span className="text-gray-500">Weight</span>
+                  <span className="font-medium">
+                    {weight ? `${weight} kg` : "N/A"}
+                  </span>
                 </div>
-              )}
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Dimensions</span>
+                  <span className="font-medium">
+                    {width && height && depth
+                      ? `${width} × ${height} × ${depth} cm`
+                      : "N/A"}
+                  </span>
+                </div>
+              </div>
+              {activeTab === "description" &&
+                (!short_description && !long_description && !seo_description ? (
+                  <div className="py-6 text-left text-gray-500">
+                    No description available.
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-4 pt-6">
+                      {short_description && (
+                        <div>
+                          <h3 className="font-semibold text-gray-800 ">
+                            {/* Full Description */}
+                            Details
+                          </h3>
+                          <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">
+                            {showShortDescription
+                              ? short_description
+                              : short_description.slice(0, 180)}
+
+                            {!showShortDescription &&
+                              short_description.length > 180 &&
+                              "..."}
+                          </p>
+
+                          {short_description.length > 180 && (
+                            <button
+                              onClick={() =>
+                                setShowShortDescription(!showShortDescription)
+                              }
+                              className="mt-2 text-red-600 font-semibold hover:text-red-700 transition"
+                            >
+                              {showShortDescription ? "Read Less" : "Read More"}
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      {long_description && (
+                        <div>
+                          <h3 className="font-semibold text-gray-800 mb-1">
+                            Key Features
+                          </h3>
+
+                          <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                            {showFullDescription
+                              ? long_description
+                              : long_description.slice(0, 250)}
+
+                            {!showFullDescription &&
+                              long_description.length > 250 &&
+                              "..."}
+                          </p>
+
+                          {long_description.length > 250 && (
+                            <button
+                              onClick={() =>
+                                setShowFullDescription(!showFullDescription)
+                              }
+                              className="mt-3 text-red-600 font-semibold hover:text-red-700 transition"
+                            >
+                              {showFullDescription ? "Read Less" : "Read More"}
+                            </button>
+                          )}
+                        </div>
+                      )}
+                      {seo_description && (
+                        <div className="mt-6">
+                          <h4 className="font-semibold text-gray-800 mb-2">
+                            Specification
+                          </h4>
+
+                          <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                            {seo_description}
+                          </p>
+                        </div>
+                      )}
+                      <div className="grid grid-cols-3 gap-3 mt-4">
+                        <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                          <Truck
+                            className="text-red-500 mx-auto mb-1"
+                            size={20}
+                          />
+                          <p className="text-xs text-gray-600">Free Shipping</p>
+                        </div>
+                        <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                          <ShieldCheck
+                            className="text-red-500 mx-auto mb-1"
+                            size={20}
+                          />
+                          <p className="text-xs text-gray-600">
+                            Genuine Product
+                          </p>
+                        </div>
+                        {warranty_months ? (
+                          <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                            <Star
+                              className="text-red-500 mx-auto mb-1"
+                              size={20}
+                            />
+                            <p className="text-xs text-gray-600">
+                              Premium quality{" "}
+                              {warranty_months &&
+                                `(${warranty_months}month warranty)`}
+                            </p>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ))}
               {activeTab === "compatibility" && (
                 <div>
                   {is_universal === 1 ? (

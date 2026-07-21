@@ -32,15 +32,15 @@ const handleAdd = async (e) => {
     <div
       data-tilt-3d
       onClick={handleCardClick}
-      className={`product-card tilt-card overflow-hidden cursor-pointer group
-        ${
-          light
-            ? "bg-white border border-brand-ink/10 hover:border-brand-red"
-            : "glass hover:border-brand-red/40"
-        }`}
+       className={`product-card tilt-card overflow-hidden cursor-pointer group flex flex-col h-full
+  ${
+    light
+      ? "bg-white border border-brand-ink/10 hover:border-brand-red"
+      : "glass hover:border-brand-red/40"
+  }`}
     >
       {/* IMAGE */}
-      <div className="relative h-52 overflow-hidden bg-brand-light">
+      <div className="relative h-32 sm:h-44 lg:h-52 overflow-hidden bg-brand-light">
         <img
           src={
             // product.primary_image ||
@@ -59,11 +59,11 @@ const handleAdd = async (e) => {
         />
 
         {/* Hover Overlay */}
-        <div
+        {/* <div
           className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent
           opacity-0 group-hover:opacity-100 transition-opacity duration-300
           flex items-end justify-center pb-4"
-        >
+        > */}
           {/* <button
             onClick={handleAdd}
             className="btn-shine bg-brand-red text-white font-label font-bold
@@ -73,13 +73,13 @@ const handleAdd = async (e) => {
             <ShoppingCart size={14} />
             {added ? "✓ Added!" : "Add to Cart"}
           </button> */}
-        </div>
+        {/* </div> */}
 
         {/* Product Badge */}
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-1 left-3 hidden lg:block">
           <span
-            className="bg-brand-red text-white font-label font-bold
-            text-[10px] tracking-[0.15em] uppercase px-2.5 py-1"
+            className="bg-brand-red text-white font-label font-bold text-[8px]
+             sm:text-[10px] tracking-[0.1em] uppercase px-2 py-1"
           >
             {product.name}
           </span>
@@ -87,20 +87,21 @@ const handleAdd = async (e) => {
       </div>
 
       {/* BODY */}
-      <div className="p-5">
+      <div className="p-2.5 lg:p-5 flex flex-col flex-1">
         <div
-          className={`font-label font-semibold text-[11px] tracking-[0.25em] uppercase mb-1 text-brand-red`}
-        >
-          {product.brand_name} · {product.category_name}
-        </div>
+  className="font-label font-semibold text-[9px] sm:text-[10px] lg:text-[11px]
+  tracking-[0.09em] uppercase mb-2 text-brand-red line-clamp-1"
+>
+  {product.brand_name} · {product.category_name}
+</div>
 
         <h3
-          className={`font-label font-bold text-lg leading-tight mb-2 ${
-            light ? "text-brand-ink" : "text-white"
-          }`}
-        >
-          {product.name}
-        </h3>
+  className={`font-label font-bold text-sm sm:text-base lg:text-lg
+  leading-tight line-clamp-2 min-h-[56px] lg:min-h-[64px]
+  ${light ? "text-brand-ink" : "text-white"}`}
+>
+  {product.name}
+</h3>
 
         <div
           className={`flex items-center justify-between pt-3 ${
@@ -111,7 +112,7 @@ const handleAdd = async (e) => {
         >
           <div>
             <div
-              className={`font-display text-[15px] ${
+              className={`font-display tracking-wide text-sm lg:text-[15px] ${
                 light ? "text-brand-ink" : "text-white"
               }`}
             >
@@ -123,15 +124,14 @@ const handleAdd = async (e) => {
               
           <button
             onClick={handleCardClick}
-            className={`w-9 h-9 flex items-center justify-center transition-all
-              hover:bg-brand-red hover:text-white hover:border-brand-red
-              ${
-                light
-                  ? "border border-brand-ink/15 text-gray-400"
-                  : "glass text-gray-400"
-              }`}
+           className={`w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center transition-all hover:bg-brand-red hover:text-white hover:border-brand-red 
+            ${light ? 
+              "border border-brand-ink/15 text-gray-400" 
+              : 
+              "glass text-gray-400"
+            }`}
           >
-            <ArrowRight size={15} />
+            <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
           </button>
         </div>
       </div>

@@ -38,7 +38,7 @@ function AppRoutes() {
 
        
 
-        {/* <Route path="/category/:categoryId" element={<CategoryPage/>}/> */}
+        {/* <Route path="/viewAllCategory" element={<CategoryPage/>}/> */}
 
 
         {/* login */}

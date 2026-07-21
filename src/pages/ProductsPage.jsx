@@ -559,7 +559,9 @@ const brandSlugFromUrl = searchParams.get("brand") || null;
   });
 
   // ─── Data fetching ─────────────────────────────────────
-  const { categories = [], loading: catLoading } = useCategories();
+  const { categories = [], loading: catLoading } = useCategories({
+    limit:20
+  });
   const { sub = [] } = useSubCategories({category_id: filters.category_id,});
   const {
     products = [],
@@ -801,7 +803,7 @@ const brandSlug = searchParams.get("brand");
             ALL <span className="text-gradient">PRODUCTS</span>
           </h1>
           <p className="text-white/55 mt-4 max-w-xl mx-auto">
-            40,000+ genuine parts from 20+ global brands.
+            15,000+ genuine parts from 20+ global brands.
           </p>
         </div>
       </section>
@@ -912,7 +914,7 @@ const brandSlug = searchParams.get("brand");
               {/* Product Grid */}
               <motion.div
                 layout
-                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 lg:gap-6"
               >
                 <AnimatePresence mode="popLayout">
                   {!productLoading &&

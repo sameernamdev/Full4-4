@@ -440,7 +440,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <section className="dark-panel  relative py-14 sm:py-28 overflow-hidden ">
+      <section className="dark-panel  relative py-14 sm:py-22 overflow-hidden ">
         {/* <div className="absolute inset-0 bg-[#0c2237]/88" /> */}
         <div className="absolute inset-0 bg-white " />
 
@@ -466,13 +466,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <motion.button
-              onClick={() => navigate("products")}
-              className="btn-clip bg-brand-red text-white px-12 py-6 font-label font-bold tracking-[0.18em] uppercase"
-              whileHover={{ scale: 1.06, x: 8 }}
-            >
-              View All Categories
-            </motion.button>
+        
           </div>
           {categoriesLoading ? (
             <div className="flex items-center justify-center py-12">
@@ -535,6 +529,16 @@ export default function HomePage() {
                   })}
             </div>
           )}
+             <div className="flex lg:justify-end mt-12 justify-center  sm:mt-14">
+  <motion.button
+    onClick={() => navigate("/products")}
+    className="btn-clip bg-brand-red text-white px-12 py-6 font-label font-bold tracking-[0.18em] uppercase"
+    whileHover={{ scale: 1.06, y: -3 }}
+    whileTap={{ scale: 0.96 }}
+  >
+    View All Products
+  </motion.button>
+</div>
         </div>
       </section>
 
@@ -572,7 +576,7 @@ export default function HomePage() {
               <div className="w-8 h-8 border-4 border-brand-red border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {loading ? (
                 "Loading....."
               ) : (
