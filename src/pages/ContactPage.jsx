@@ -136,8 +136,10 @@ import { useState } from "react";
 import { Phone, Mail, MapPin, Clock, CheckCircle, ArrowRight } from "lucide-react";
 import { useReveal } from "../hooks/useReveal";
 import { sendContactMessage } from "../config/axios";
+import useScrollToTop from "../hooks/useScrollTop";
 
 export default function ContactPage() {
+  useScrollToTop()
   useReveal();
   // const [form, setForm] = useState({ name: '', email: '', phone: '', car: '', message: '' });
   const [form, setForm] = useState({
@@ -232,6 +234,7 @@ const handleSubmit = async () => {
   }
 };
   return (
+
     <div className="pt-24 min-h-screen bg-[#080808]">
       {/* Hero – light variant */}
       <div className="relative py-20 bg-[#080808] overflow-hidden">

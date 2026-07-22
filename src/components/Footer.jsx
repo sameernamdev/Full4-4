@@ -2,6 +2,7 @@ import { ChevronRight, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { CATEGORIES } from "../data/data";
 import { useNavigate } from "react-router-dom";
 import { useCategories } from "../hooks/useCatgories";
+import useScrollToTop from "../hooks/useScrollTop";
 
 const socials = [
   {
@@ -38,6 +39,7 @@ const contactItems = [
 ];
 
 export default function Footer({ setPage }) {
+  useScrollToTop()
   const{categories}=useCategories({is_front:true})
   const navigate=useNavigate()
   return (

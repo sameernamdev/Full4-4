@@ -407,8 +407,10 @@ import { Navigation } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
+import useScrollToTop from "../hooks/useScrollTop";
 
 export default function ProductDetailsPage() {
+  useScrollToTop()
   const { id } = useParams();
   const { addToCart } = useCart();
 

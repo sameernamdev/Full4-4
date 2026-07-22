@@ -537,8 +537,10 @@ import ProductCard from "../components/ProductCard";
 import { useCategories } from "../hooks/useCatgories";
 import { useProducts } from "../hooks/useProducts";
 import { useSubCategories } from "../hooks/useSubCategories";
+import useScrollToTop from "../hooks/useScrollTop";
 
 export default function ProductsPage() {
+  useScrollToTop()
   const [searchParams, setSearchParams] = useSearchParams();
  const brandIdFromUrl = searchParams.get("brand_id") || null;
 const brandSlugFromUrl = searchParams.get("brand") || null;
