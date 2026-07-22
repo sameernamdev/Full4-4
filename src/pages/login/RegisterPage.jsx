@@ -252,8 +252,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Lock, User, Phone, Mail, ArrowRight, ImagePlus } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import useScrollToTop from "../../hooks/useScrollTop";
 
 export default function RegisterPage() {
+  useScrollToTop()
   const navigate = useNavigate();
   const { register } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
