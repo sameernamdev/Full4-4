@@ -57,8 +57,12 @@ export default function Navbar() {
           if (!map[catId]) map[catId] = [];
           map[catId].push(sub);
         }
-      });
+      })
     }
+     // Latest first
+    Object.values(map).forEach((subs) => {
+      subs.sort((a, b) => Number(a.id) - Number(b.id));
+    });
     return map;
   }, [allSubcategories]);
 

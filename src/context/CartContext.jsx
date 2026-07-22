@@ -72,6 +72,7 @@ const increaseQuantity = async (productId, quantity) => {
           : item
       )
     );
+     throw error;
   }
 };
 
@@ -102,6 +103,7 @@ const increaseQuantity = async (productId, quantity) => {
           : item
       )
     );
+    throw error;
   }
 };
 

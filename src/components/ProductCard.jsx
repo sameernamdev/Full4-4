@@ -3,11 +3,12 @@ import { ShoppingCart, ArrowRight } from "lucide-react";
 import fallbackImage from "../assets/hero.png";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../hooks/useCart";
+import { toast } from "react-toastify";
 
 export default function ProductCard({ product, light = true }) {
   const navigate = useNavigate();
   const { addToCart } = useCart();
-console.log(product);
+  // console.log(product);
 
   const [added, setAdded] = useState(false);
 
@@ -16,23 +17,23 @@ console.log(product);
       state: { product },
     });
   };
-const handleAdd = async (e) => {
-  e.stopPropagation();
+  const handleAdd = async (e) => {
+    e.stopPropagation();
 
-  await addToCart(product);
+    await addToCart(product.id);
+      toast.success("Product added to cart!");
+    setAdded(true);
 
-  setAdded(true);
-
-  setTimeout(() => {
-    setAdded(false);
-  }, 2000);
-};
+    setTimeout(() => {
+      setAdded(false);
+    }, 2000);
+  };
 
   return (
     <div
       data-tilt-3d
       onClick={handleCardClick}
-       className={`product-card tilt-card overflow-hidden cursor-pointer group flex flex-col h-full
+      className={`product-card tilt-card overflow-hidden cursor-pointer group flex flex-col h-full
   ${
     light
       ? "bg-white border border-brand-ink/10 hover:border-brand-red"
@@ -46,7 +47,7 @@ const handleAdd = async (e) => {
             // product.primary_image ||
             product.media[0]?.image_url ||
             // "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=500&q=80"
-             "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png"
+            "https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png"
           }
           alt={product.name}
           loading="lazy"
@@ -63,8 +64,8 @@ const handleAdd = async (e) => {
           className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent
           opacity-0 group-hover:opacity-100 transition-opacity duration-300
           flex items-end justify-center pb-4"
-        > */}
-          {/* <button
+        >
+          <button
             onClick={handleAdd}
             className="btn-shine bg-brand-red text-white font-label font-bold
             text-[12px] tracking-[0.15em] uppercase px-6 py-2.5
@@ -72,8 +73,8 @@ const handleAdd = async (e) => {
           >
             <ShoppingCart size={14} />
             {added ? "✓ Added!" : "Add to Cart"}
-          </button> */}
-        {/* </div> */}
+          </button>
+        </div> */}
 
         {/* Product Badge */}
         <div className="absolute top-1 left-3 hidden lg:block">
@@ -89,25 +90,23 @@ const handleAdd = async (e) => {
       {/* BODY */}
       <div className="p-2.5 lg:p-5 flex flex-col flex-1">
         <div
-  className="font-label font-semibold text-[9px] sm:text-[10px] lg:text-[11px]
+          className="font-label font-semibold text-[9px] sm:text-[10px] lg:text-[11px]
   tracking-[0.09em] uppercase mb-2 text-brand-red line-clamp-1"
->
-  {product.brand_name} · {product.category_name}
-</div>
+        >
+          {product.brand_name} · {product.category_name}
+        </div>
 
         <h3
-  className={`font-label font-bold text-sm sm:text-base lg:text-lg
+          className={`font-label font-bold text-sm sm:text-base lg:text-lg
   leading-tight line-clamp-2 min-h-[56px] lg:min-h-[64px]
   ${light ? "text-brand-ink" : "text-white"}`}
->
-  {product.name}
-</h3>
+        >
+          {product.name}
+        </h3>
 
         <div
           className={`flex items-center justify-between pt-3 ${
-            light
-              ? "border-t border-brand-ink/10"
-              : "border-t border-white/6"
+            light ? "border-t border-brand-ink/10" : "border-t border-white/6"
           }`}
         >
           <div>
@@ -116,13 +115,18 @@ const handleAdd = async (e) => {
                 light ? "text-brand-ink" : "text-white"
               }`}
             >
-              Price ₹ {product.price} 
+              Price ₹ {product.price}
             </div>
-
-           
+          
           </div>
+                <button
+              onClick={handleAdd}
+              className="w-10 h-10 rounded-full bg-brand-red text-white flex items-center justify-center hover:scale-105 transition"
+            >
               
-          <button
+              {added ? "✓" : <ShoppingCart size={18} />}
+            </button>
+          {/* <button
             onClick={handleCardClick}
            className={`w-8 h-8 lg:w-9 lg:h-9 flex items-center justify-center transition-all hover:bg-brand-red hover:text-white hover:border-brand-red 
             ${light ? 
@@ -132,22 +136,12 @@ const handleAdd = async (e) => {
             }`}
           >
             <ArrowRight className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
 
 // import { useState } from "react";
 // import { ShoppingCart, ArrowRight } from "lucide-react";

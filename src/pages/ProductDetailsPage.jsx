@@ -563,9 +563,10 @@ export default function ProductDetailsPage() {
           Back to Products
         </Link>
         {/* grid lg:grid-cols-2 gap-8 lg:gap-12 */}
-        <div className="grid lg:grid-cols-2 gap-10 grid-cols-1">
+        <div className="grid lg:grid-cols-2 gap-10 grid-cols-1 ">
           {/* ─── LEFT: Image Gallery ─────────────────────────── */}
-          <div className="w-full min-h-60">
+          {/* <div className="w-full min-h-60 "> */}
+          <div className="lg:sticky lg:top-28 self-start ">
             <Swiper
               modules={[Navigation]}
               navigation
@@ -733,7 +734,15 @@ export default function ProductDetailsPage() {
 
             {/* ─── TAB CONTENT ────────────────────────────────── */}
             <div className="pt-2">
-              <div className="bg-gray-50 rounded-xl p-2 text-sm space-y-2">
+            
+              {activeTab === "description" &&
+                (!short_description && !long_description && !seo_description ? (
+                  <div className="py-6 text-left text-gray-500">
+                    No description available.
+                  </div>
+                ) : (
+                  <>
+                    <div className="bg-gray-50 rounded-xl p-2 text-sm space-y-2">
                 {/* <div className="flex justify-between border-b border-gray-200 pb-2">
                       <span className="text-gray-500">SKU</span>
                       <span className="font-medium">{sku || "N/A"}</span>
@@ -753,13 +762,6 @@ export default function ProductDetailsPage() {
                   </span>
                 </div>
               </div>
-              {activeTab === "description" &&
-                (!short_description && !long_description && !seo_description ? (
-                  <div className="py-6 text-left text-gray-500">
-                    No description available.
-                  </div>
-                ) : (
-                  <>
                     <div className="space-y-4 pt-6">
                       {short_description && (
                         <div>
@@ -859,7 +861,16 @@ export default function ProductDetailsPage() {
                             </p>
                           </div>
                         ) : (
-                          ""
+                          <div className="bg-white border border-gray-200 rounded-xl p-3 text-center shadow-sm">
+                            <Star
+                              className="text-red-500 mx-auto mb-1"
+                              size={20}
+                            />
+                            <p className="text-xs text-gray-600">
+                              Premium quality
+                             
+                            </p>
+                          </div>
                         )}
                       </div>
                     </div>

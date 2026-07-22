@@ -653,7 +653,8 @@ const brandSlug = searchParams.get("brand");
 
   const filteredSubCategories = useMemo(() => {
     if (!selectedCat) return [];
-    return sub.filter((item) => item.category_id === selectedCat.id);
+    return sub.filter((item) => item.category_id === selectedCat.id)
+    .sort((a,b)=>a.id-b.id) //latest first
   }, [sub, selectedCat]);
 
   const selectedSubCategoryName = useMemo(() => {

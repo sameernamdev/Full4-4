@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { useCoupons } from "../hooks/useCoupons";
 import { applycoupon } from "../config/axios";
 import InlineCheckoutForm from "../components/InlineCheckoutForm";
+import { toast } from "react-toastify";
 
 export default function CartPage() {
   const { cart, totalPrice, increaseQuantity, decreaseQuantity, removeFromCart, fetchCart, loading } =
@@ -26,11 +27,35 @@ export default function CartPage() {
   const [couponLoading, setCouponLoading] = useState(false);
   const [showCouponSection, setShowCouponSection] = useState(false);
 
-  const handleRemove = (itemId) => {
-    if (window.confirm("Are you sure you want to remove this item?")) {
-      removeFromCart(itemId);
-    }
-  };
+const handleIncrease = async (itemId, quantity) => {
+  try {
+    await increaseQuantity(itemId, quantity);
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message ||
+      "Unable to update quantity"
+    );
+  }
+};
+const handleDecrease = async (itemId, quantity) => {
+  try {
+    await decreaseQuantity(itemId, quantity);
+  } catch (err) {
+    toast.error(
+      err.response?.data?.message ||
+      "Unable to update quantity"
+    );
+  }
+};
+const handleRemove = async (itemId) => {
+  try {
+    await removeFromCart(itemId);
+
+    toast.success("Product removed from cart");
+  } catch (err) {
+    toast.error("Failed to remove product");
+  }
+};
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
@@ -161,7 +186,7 @@ const finalTotal = totalPrice - discountAmount + totalTax;
                   key={itemId}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm flex flex-col sm:flex-row items-center gap-4 hover:shadow-md transition-shadow"
+                  className="bg-white relative rounded-xl p-4 border border-gray-200 shadow-sm flex flex-col sm:flex-row items-center gap-4 hover:shadow-md transition-shadow"
                 >
                   <img
                     src={image || "https://placehold.co/100x100?text=No+Image"}
@@ -174,25 +199,33 @@ const finalTotal = totalPrice - discountAmount + totalTax;
                   </div>
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={() => decreaseQuantity(itemId, item.quantity)}
+                      onClick={() => handleDecrease(itemId, item.quantity)}
                       className="p-1 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                     >
                       <Minus size={16} className="text-gray-600" />
                     </button>
                     <span className="text-gray-800 w-8 text-center">{item.quantity}</span>
                     <button
-                      onClick={() => increaseQuantity(itemId, item.quantity)}
+                     onClick={() => handleIncrease(itemId, item.quantity)}
                       className="p-1 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
                     >
                       <Plus size={16} className="text-gray-600" />
                     </button>
                   </div>
-                  <button
-                    onClick={() => handleRemove(itemId)}
-                    className="text-red-500 hover:text-red-700 transition p-2"
-                  >
-                    <Trash2 size={20} />
-                  </button>
+ <button
+  onClick={() => handleRemove(itemId)}
+  className="
+    sm:static
+    absolute top-3 right-4
+    p-2 rounded-full
+    text-red-500 hover:text-red-700
+    hover:bg-red-50
+    transition
+  "
+  aria-label="Remove item"
+>
+  <Trash2 size={18} />
+</button>
                 </motion.div>
               );
             })}
