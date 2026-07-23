@@ -233,10 +233,10 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Lock, Mail, ArrowRight } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import useScrollToTop from "../../hooks/useScrollTop";
+
 
 export default function LoginPage() {
-  useScrollToTop()
+  
   const navigate = useNavigate();
   const location = useLocation();
   const { login,resendOTP } = useAuth();

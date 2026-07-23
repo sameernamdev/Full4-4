@@ -6,6 +6,7 @@ import { useCart } from "../hooks/useCart";
 import { toast } from "react-toastify";
 
 export default function ProductCard({ product, light = true }) {
+  console.count(`ProductCard ${product.id}`);
   const navigate = useNavigate();
   const { addToCart } = useCart();
   // console.log(product);
@@ -28,8 +29,9 @@ export default function ProductCard({ product, light = true }) {
       setAdded(false);
     }, 2000);
   };
-
+console.log("ProductCard Render:", product.id);
   return (
+    
     <div
       data-tilt-3d
       onClick={handleCardClick}
@@ -39,7 +41,9 @@ export default function ProductCard({ product, light = true }) {
       ? "bg-white border border-brand-ink/10 hover:border-brand-red"
       : "glass hover:border-brand-red/40"
   }`}
+  
     >
+      
       {/* IMAGE */}
       <div className="relative h-32 sm:h-44 lg:h-52 overflow-hidden bg-brand-light">
         <img

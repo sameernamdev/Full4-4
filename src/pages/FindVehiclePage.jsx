@@ -14,10 +14,10 @@ import { useVehicleGenerations } from "../hooks/useVehicleGenerations";
 
 import ProductCard from "../components/ProductCard";
 import { useVehicleProducts } from "../hooks/useVehicleProducts";
-import useScrollToTop from "../hooks/useScrollTop";
+
 
 export default function FindVehiclePage() {
-  useScrollToTop()
+
   const [makeId, setMakeId] = useState("");
   const [modelId, setModelId] = useState("");
   const [generationId, setGenerationId] = useState("");

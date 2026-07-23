@@ -67,7 +67,7 @@
 
 
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getallproducts, getProductId } from "../config/axios";
 
 export const useProducts = (params = {}, productId = null) => {
@@ -77,6 +77,12 @@ export const useProducts = (params = {}, productId = null) => {
   const [pagination, setPagination] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const requestRef = useRef(0);
+  const hasLoadedOnceRef = useRef(false);
+
+  // Resolves flickering when backspacing/searching by keeping the last successful results
+  // visible while the next request is pending and ignoring stale responses.
 
 
   // =======================
@@ -87,20 +93,35 @@ export const useProducts = (params = {}, productId = null) => {
       // Agar productId diya hai to list fetch mat karo
       if (productId) return;
 
-      setLoading(true);
+      const requestId = ++requestRef.current;
+      const shouldShowInitialLoader = !hasLoadedOnceRef.current;
+
+      if (shouldShowInitialLoader) {
+        setLoading(true);
+      }
 
       try {
         const data = await getallproducts(params);
 
+        if (requestId !== requestRef.current) return;
+
         setProducts(data?.data || []);
         setPagination(data?.pagination || {});
         setError(null);
+        hasLoadedOnceRef.current = true;
+        setHasLoadedOnce(true);
       } catch (err) {
+        if (requestId !== requestRef.current) return;
+
         setError(err);
-        setProducts([]);
-        setPagination({});
+        if (!hasLoadedOnceRef.current) {
+          setProducts([]);
+          setPagination({});
+        }
       } finally {
-        setLoading(false);
+        if (requestId === requestRef.current) {
+          setLoading(false);
+        }
       }
     };
 
@@ -138,5 +159,6 @@ export const useProducts = (params = {}, productId = null) => {
     pagination,
     loading,
     error,
+    hasLoadedOnce,
   };
 };

@@ -15,6 +15,7 @@ import {
   ChevronUp,
   Ticket,
   MapPin,
+  Search,
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -22,6 +23,8 @@ import { useAuth } from "../context/AuthContext";
 // import { useCategories } from "../hooks/useCategories";
 import { useSubCategories } from "../hooks/useSubCategories";
 import { useCategories } from "../hooks/useCatgories";
+import { useProducts } from "../hooks/useProducts";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -98,6 +101,7 @@ export default function Navbar() {
     setMobileExpandedCategory(null);
     setIsProductsOpen(false);
     setHoveredCategoryId(null);
+    setSearchOpen(false);
   }, [location.pathname]);
 
   // Don't allow both together
@@ -154,6 +158,35 @@ export default function Navbar() {
       setHoveredCategoryId(null);
     }, 200);
   };
+
+  // Search states
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useDebounce(searchQuery, 400);
+
+  // Use products hook for search. Limit results to 6 for the dropdown.
+  const { products: searchResults = [], loading: searchLoading } = useProducts(
+    debouncedSearch && debouncedSearch.length >= 2 ? { search: debouncedSearch, limit: 6 } : { limit: 6 }
+  );
+  const searchInputRef = useRef(null);
+  const searchRef = useRef(null);
+
+  // Close search when clicking/tapping outside
+  useEffect(() => {
+    const handleOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutside);
+    document.addEventListener("touchstart", handleOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("touchstart", handleOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -331,6 +364,67 @@ export default function Navbar() {
                 </span>
               </button>
             </Link>
+
+            {/* Search */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setSearchOpen((s) => !s);
+                  setTimeout(() => searchInputRef.current?.focus?.(), 50);
+                }}
+                className="p-2 rounded-lg hover:bg-white/10 transition"
+              >
+                <Search size={18} className="text-white" />
+              </button>
+
+              {searchOpen && (
+                <div ref={searchRef} className="fixed top-16 left-0 right-0 w-full bg-[#0b0b0b] border border-white/10 rounded-none shadow-2xl z-[1000] lg:absolute lg:top-auto lg:mt-2 lg:left-auto lg:right-0 lg:w-[360px] lg:max-w-[90vw] lg:rounded-lg lg:shadow-2xl lg:z-50">
+                  <div className="p-3">
+                    <input
+                      ref={searchInputRef}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search products..."
+                      className="w-full bg-transparent border border-white/10 rounded px-3 py-2 text-white outline-none"
+                    />
+                  </div>
+
+                  <div className="max-h-64 overflow-y-auto">
+                    {debouncedSearch && debouncedSearch.length < 2 ? (
+                      <div className="p-3 text-gray-400">Type at least 2 characters</div>
+                    ) : searchLoading ? (
+                      <div className="p-3 text-gray-400">Searching...</div>
+                    ) : !searchResults || searchResults.length === 0 ? (
+                      <div className="p-3 text-gray-400">No products</div>
+                    ) : (
+                      <div className="grid grid-cols-1 gap-2 p-3">
+                        {searchResults.map((p) => (
+                          <div
+                            key={p.id}
+                            onClick={() => {
+                              setSearchOpen(false);
+                              setSearchQuery("");
+                              navigate(`/products/${p.slug}`);
+                            }}
+                            className="flex items-center gap-3 p-2 hover:bg-white/5 rounded cursor-pointer"
+                          >
+                            <img
+                              src={p.media?.[0]?.image_url || "/img/placeholder.png"}
+                              alt={p.name}
+                              className="w-12 h-12 object-cover rounded"
+                            />
+                            <div className="flex-1">
+                              <div className="text-sm text-white font-semibold line-clamp-1">{p.name}</div>
+                              <div className="text-xs text-gray-400">₹ {p.price}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Profile */}
             <button

@@ -31,7 +31,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCategories } from "../hooks/useCatgories";
 import { useBrands } from "../hooks/useBrands";
 import { useReviews } from "../hooks/useReviews";
-import useScrollToTop from "../hooks/useScrollTop";
+
 
 const imageFallback = (e) => {
   e.currentTarget.onerror = null;
@@ -160,7 +160,7 @@ const features = [
 ];
 
 export default function HomePage() {
-  useScrollToTop()
+  
   useReveal();
   const [statsVisible, setStatsVisible] = useState(false);
   const statsRef = useRef(null);

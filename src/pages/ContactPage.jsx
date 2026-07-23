@@ -136,10 +136,9 @@ import { useState } from "react";
 import { Phone, Mail, MapPin, Clock, CheckCircle, ArrowRight } from "lucide-react";
 import { useReveal } from "../hooks/useReveal";
 import { sendContactMessage } from "../config/axios";
-import useScrollToTop from "../hooks/useScrollTop";
+
 
 export default function ContactPage() {
-  useScrollToTop()
   useReveal();
   // const [form, setForm] = useState({ name: '', email: '', phone: '', car: '', message: '' });
   const [form, setForm] = useState({

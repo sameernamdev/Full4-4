@@ -537,10 +537,9 @@ import ProductCard from "../components/ProductCard";
 import { useCategories } from "../hooks/useCatgories";
 import { useProducts } from "../hooks/useProducts";
 import { useSubCategories } from "../hooks/useSubCategories";
-import useScrollToTop from "../hooks/useScrollTop";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function ProductsPage() {
-  useScrollToTop()
   const [searchParams, setSearchParams] = useSearchParams();
  const brandIdFromUrl = searchParams.get("brand_id") || null;
 const brandSlugFromUrl = searchParams.get("brand") || null;
@@ -560,6 +559,8 @@ const brandSlugFromUrl = searchParams.get("brand") || null;
     sort_by: "",
   });
 
+  const debouncedSearch=useDebounce(filters.search,500)
+
   // ─── Data fetching ─────────────────────────────────────
   const { categories = [], loading: catLoading } = useCategories({
     limit:20
@@ -569,7 +570,10 @@ const brandSlugFromUrl = searchParams.get("brand") || null;
     products = [],
     loading: productLoading,
     pagination,
-  } = useProducts(filters);
+    hasLoadedOnce,
+  // } = useProducts(filters);
+  } = useProducts({...filters,search:debouncedSearch});
+
 
 
   useReveal();
@@ -676,7 +680,9 @@ const brandSlug = searchParams.get("brand");
   }, [products, filters.brand_id]);
 
   // ─── Loading state ────────────────────────────────────
-  if (productLoading && !products.length) {
+  // Resolves flickering when backspacing/searching by showing the initial loader only
+  // on the first load and keeping the previous results visible during later refreshes.
+  if (productLoading && !hasLoadedOnce) {
     return (
       <div className="pt-24 min-h-screen bg-[#080808] flex items-center justify-center">
         <div className="text-center">
@@ -920,7 +926,7 @@ const brandSlug = searchParams.get("brand");
                 className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 lg:gap-6"
               >
                 <AnimatePresence mode="popLayout">
-                  {!productLoading &&
+                  {(products.length > 0 || !productLoading) &&
                     products.map((product, i) => (
                       <motion.div
                         key={product.id}

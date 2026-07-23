@@ -5,7 +5,7 @@ const useScrollToTop = () => {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: "smooth", // change to "auto" if you don't want animation
+      behavior: "auto",
     });
   }, []);
 };

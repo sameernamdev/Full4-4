@@ -15,6 +15,7 @@ import Footer from "./components/Footer";
 import { useEffect, useState } from "react";
 import { getGuestToken } from "./config/axios";
 import { ToastContainer } from "react-toastify";
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function App() {
   const [isTokenReady, setIsTokenReady] = useState(false);
@@ -37,6 +38,7 @@ export default function App() {
   return (
     <>
       <BrowserRouter>
+        <ScrollToTop />
         <Navbar />
         <AppRoutes />
         <ToastContainer position="top-right" autoClose={2000} theme="dark" />

@@ -6,10 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useVehicleGenerations } from "../hooks/useVehicleGenerations.js";
 import { useModels } from "../hooks/useModels.js";
 import { useState } from "react";
-import useScrollToTop from "../hooks/useScrollTop.jsx";
 
 export default function BrandsPage({ setPage }) {
-  useScrollToTop()
+
   useReveal();
 
   const{model}=useModels()

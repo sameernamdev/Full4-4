@@ -98,10 +98,9 @@
 
 import { Shield, Users, Zap } from "lucide-react";
 import { useReveal } from "../hooks/useReveal";
-import useScrollToTop from "../hooks/useScrollTop";
 
 export default function AboutPage() {
-  useScrollToTop()
+  
   useReveal();
   return (
     <div className="pt-24 min-h-screen bg-[#080808]">
