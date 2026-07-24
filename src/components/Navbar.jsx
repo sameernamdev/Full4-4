@@ -219,7 +219,7 @@ export default function Navbar() {
 
             <h1
               className=" font-[Rajdhani font-bold uppercase leading-10 tracking-[0.02em] text-white
-             text-[25px] sm:text-[35px] flex items-center whitespace-nowrap "
+             text-[25px] sm:text-[35px] flex items-center whitespace-nowrap  "
             >
               DRIVE
               <span className="text-brand-red ml-1">RANGER</span>

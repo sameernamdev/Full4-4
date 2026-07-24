@@ -37,7 +37,6 @@ const imageFallback = (e) => {
   e.currentTarget.src = fallbackImage;
 };
 
-
 // ---------- Helper functions ----------
 // 1. Generate row sizes: 2, 3, 2, 3, ...
 const getRowSizes = (total) => {
@@ -70,20 +69,13 @@ const servicePhotos = [
   "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=720&q=80",
 ];
 
-
-
 // const partsShowcase = [
 //   "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=760&q=80",
 //   "https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=760&q=80",
 //   "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=760&q=80",
 //   "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=760&q=80",
 // ];
-const partsShowcase = [
-  "/w1.jpg",
-  "/w2.jpg",
-  "/w3.jpg",
-  "/w4.jpg",
-];
+const partsShowcase = ["/w1.jpg", "/w2.jpg", "/w3.jpg", "/w4.jpg"];
 
 const features = [
   {
@@ -172,7 +164,7 @@ export default function HomePage() {
 
   return (
     <div className="bg-brand-off">
-       <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-[85vh] md:min-h-screen">
+      <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-[85vh] md:min-h-screen">
         {/* Background */}
         <div className="absolute inset-0">
           <picture>
@@ -189,66 +181,26 @@ export default function HomePage() {
               initial={{ scale: 1.05 }}
               animate={{ scale: 1 }}
               transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-              className="
-          absolute inset-0
-          w-full h-full
-          object-cover
-          object-[72%_center]
-          lg:object-center
-          opacity-95
-          brightness-[1.05]
-          contrast-105
-          saturate-110
-        "
+              className=" absolute inset-0 w-full h-full object-cover object-[72%_center] 
+              lg:object-center opacity-95 brightness-[1.05] contrast-105 saturate-110
+              "
             />
           </picture>
 
           {/* Better overlay for mobile */}
           <div
-            className="
-        absolute inset-0
-
-        bg-gradient-to-b
-        from-black/50
-        via-black/25
-        to-black/10
-
-        lg:bg-gradient-to-r
-        lg:from-black/5
-        lg:via-black/10
-        lg:to-black/15
-      "
+            className=" absolute inset-0 bg-gradient-to-b from-black/50 via-black/25 to-black/10
+              lg:bg-gradient-to-r lg:from-black/5 lg:via-black/10 lg:to-black/15
+              "
           />
         </div>
         <div className="absolute inset-0 bg-black/10"></div>
         {/* Content */}
         <div
-          className="
-      relative z-20
-      max-w-7xl
-      mx-auto
-      w-full
-      min-h-[85vh]
-      md:min-h-screen
-
-      flex
-      flex-col
-
-      justify-start
-      lg:justify-center
-
-      px-5
-      sm:px-8
-      lg:px-10
-
-      pt-20
-      md:pt-28
-      lg:pt-20
-
-      pb-6
-      sm:pb-12
-      lg:pb-10
-    "
+          className=" relative z-20 max-w-7xl mx-auto w-full min-h-[85vh] md:min-h-screen
+          flex flex-col justify-start lg:justify-center px-5
+          sm:px-8 lg:px-10 pt-20 md:pt-28 lg:pt-20 pb-6 sm:pb-12 lg:pb-10
+          "
         >
           {/* Badge */}
           <motion.div
@@ -285,26 +237,10 @@ export default function HomePage() {
           <div className="relative inline-block rounded-xl mt-3">
             <motion.p
               data-anime-hero
-              className="
-          relative
-
-          font-body
-          font-semibold
-
-          text-white
-
-          text-[16px]
-          sm:text-[17px]
-          lg:text-[20px]
-
-          leading-7
-
-          max-w-[320px]
-          sm:max-w-md
-          lg:max-w-xl
-
-          drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]
-        "
+              className="relative font-body font-semibold text-white text-[16px] sm:text-[17px] 
+              lg:text-[20px] leading-7 max-w-[320px] sm:max-w-md lg:max-w-xl 
+              drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]
+                "
               initial={{ opacity: 0, y: 34 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.72, delay: 0.26 }}
@@ -872,8 +808,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      
-     
       <section className="dark-panel bg-[#080808] py-28">
         <div className="max-w-7xl mx-auto sm:px-4">
           <div className="reveal text-center mb-16">
@@ -896,14 +830,14 @@ export default function HomePage() {
           <div className="overflow-hidden mb-8 reveal">
             {brandloading ? (
               <div className="flex justify-around sm:justify-between items-center gap-10">
-              <div className="w-8 h-8 border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
-              <div className="w-8 h-8 border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
-              <div className="w-8 h-8 border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
-              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
-              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
-              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
-              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
-              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : (
               <div className="brands-track">
@@ -929,7 +863,6 @@ export default function HomePage() {
                 key={i}
                 className="overflow-hidden "
                 // style={{ aspectRatio: "16/7" }}
-
               >
                 <img
                   src={photo}
