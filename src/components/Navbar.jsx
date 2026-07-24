@@ -177,22 +177,32 @@ export default function Navbar() {
   const searchInputRef = useRef(null);
   const searchRef = useRef(null);
 
+  const searchButtonRef = useRef(null);
+  const closeSearch = () => {
+  setSearchOpen(false);
+  setSearchQuery("");
+  searchInputRef.current?.blur();
+};
+
   // Close search when clicking/tapping outside
-  useEffect(() => {
-    const handleOutside = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setSearchOpen(false);
-      }
-    };
+ useEffect(() => {
+  const handleOutside = (e) => {
+    if (
+      searchRef.current?.contains(e.target) ||
+      searchButtonRef.current?.contains(e.target)
+    ) {
+      return;
+    }
 
-    document.addEventListener("mousedown", handleOutside);
-    document.addEventListener("touchstart", handleOutside);
+    closeSearch();
+  };
 
-    return () => {
-      document.removeEventListener("mousedown", handleOutside);
-      document.removeEventListener("touchstart", handleOutside);
-    };
-  }, []);
+  document.addEventListener("pointerdown", handleOutside);
+
+  return () => {
+    document.removeEventListener("pointerdown", handleOutside);
+  };
+}, []);
 
   return (
     <>
@@ -204,9 +214,9 @@ export default function Navbar() {
             className="flex items-center gap-1.5 sm:gap-1.5 shrink-0"
           >
             <img
-              src="/drivelogo.jpg"
+              src="/DRlogonew.jpeg"
               alt="Drive Ranger"
-              className=" h-7 sm:h-10 lg:h-9  object-contain flex-shrink-0 "
+              className=" h-6 sm:h-8 lg:h-8  object-contain flex-shrink-0 "
             />
 
             <h1
@@ -355,6 +365,7 @@ export default function Navbar() {
             {/* Search */}
             <div className="relative">
               <button
+              ref={searchButtonRef}
                 onClick={() => {
                   // if(searchOpen === true) return setSearchOpen(false)
                   setSearchOpen((s) => !s);
