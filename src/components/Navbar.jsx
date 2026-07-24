@@ -16,6 +16,7 @@ import {
   Ticket,
   MapPin,
   Search,
+  XCircle,
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -31,7 +32,7 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   
 
-  // Mobile accordion states
+  // Mobile a
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
   const [mobileExpandedCategory, setMobileExpandedCategory] = useState(null);
 
@@ -162,7 +163,7 @@ export default function Navbar() {
     }, 200);
   };
 
-  // Search states
+  
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 400);
@@ -355,13 +356,14 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => {
+                  // if(searchOpen === true) return setSearchOpen(false)
                   setSearchOpen((s) => !s);
                   setTimeout(() => searchInputRef.current?.focus?.(), 50);
                 }}
                 
                 className="p-2 rounded-lg hover:bg-white/10 transition"
               >
-                <Search size={18} className="text-white" />
+               {searchOpen ? <XCircle size={18} className="text-white"/> : <Search size={18} className="text-white" />} 
               </button>
 
               {searchOpen && (
