@@ -29,6 +29,7 @@ import { useDebounce } from "../hooks/useDebounce";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  
 
   // Mobile accordion states
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
@@ -47,8 +48,10 @@ export default function Navbar() {
   const closeTimeout = useRef(null);
 
   // Fetch categories and subcategories (hooks unchanged)
-  const { categories, loading: catLoading } = useCategories({limit:50});
-  const { sub: allSubcategories, loading: subLoading } = useSubCategories({limit:100});
+  const { categories, loading: catLoading } = useCategories({ limit: 50 });
+  const { sub: allSubcategories, loading: subLoading } = useSubCategories({
+    limit: 100,
+  });
 
   // Build a map: categoryId -> array of subcategories
   const subcategoryMap = useMemo(() => {
@@ -60,9 +63,9 @@ export default function Navbar() {
           if (!map[catId]) map[catId] = [];
           map[catId].push(sub);
         }
-      })
+      });
     }
-     // Latest first
+    // Latest first
     Object.values(map).forEach((subs) => {
       subs.sort((a, b) => Number(a.id) - Number(b.id));
     });
@@ -166,7 +169,9 @@ export default function Navbar() {
 
   // Use products hook for search. Limit results to 6 for the dropdown.
   const { products: searchResults = [], loading: searchLoading } = useProducts(
-    debouncedSearch && debouncedSearch.length >= 2 ? { search: debouncedSearch, limit: 6 } : { limit: 6 }
+    debouncedSearch && debouncedSearch.length >= 2
+      ? { search: debouncedSearch, limit: 6 }
+      : { limit: 6 },
   );
   const searchInputRef = useRef(null);
   const searchRef = useRef(null);
@@ -193,37 +198,24 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-[999] font-[Rajdhani,sans-serif] h-16 sm:h-[72px] lg:h-20 bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-lg">
         <div className="max-w-7xl h-full mx-auto px-3 sm:px-5 lg:px-8 flex items-center justify-between">
           {/* Logo */}
-<Link
-  to="/"
-  className="flex items-center gap-1.5 sm:gap-1.5 shrink-0"
->
-  <img
-    src="/drivelogo.jpg"
-    alt="Drive Ranger"
-    className=" h-7 sm:h-10 lg:h-9  object-contain flex-shrink-0 "
-  />
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 sm:gap-1.5 shrink-0"
+          >
+            <img
+              src="/drivelogo.jpg"
+              alt="Drive Ranger"
+              className=" h-7 sm:h-10 lg:h-9  object-contain flex-shrink-0 "
+            />
 
-  <h1
-    className="
-
-      font-[Rajdhani]
-      font-bold
-      uppercase
-      leading-10
-      tracking-[0.02em]
-      text-white
-      text-[25px]
-      sm:text-[35px]
-      
-      flex
-      items-center
-      whitespace-nowrap
-    "
-  >
-    DRIVE
-    <span className="text-brand-red ml-1">RANGER</span>
-  </h1>
-</Link>
+            <h1
+              className=" font-[Rajdhani font-bold uppercase leading-10 tracking-[0.02em] text-white
+             text-[25px] sm:text-[35px] flex items-center whitespace-nowrap "
+            >
+              DRIVE
+              <span className="text-brand-red ml-1">RANGER</span>
+            </h1>
+          </Link>
 
           {/* ===== DESKTOP MENU ===== */}
           <ul className="hidden lg:flex items-center gap-8 text-white font-semibold">
@@ -332,7 +324,10 @@ export default function Navbar() {
               </Link>
             </li>
             <li>
-              <Link to="find-vehicle" className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300">
+              <Link
+                to="find-vehicle"
+                className="uppercase text-[13px] tracking-[0.18em] hover:text-brand-red duration-300"
+              >
                 vehicle
               </Link>
             </li>
@@ -355,16 +350,7 @@ export default function Navbar() {
           </ul>
 
           {/* Right Side */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Link to="/cart">
-              <button className="relative p-2 rounded-lg hover:bg-white/10 transition">
-                <ShoppingCart size={18} className="text-white" />
-                <span className="absolute -top-1 -right-1 min-w-[15px] h-[15px] rounded-full bg-brand-red flex items-center justify-center text-[9px] font-bold text-white px-1">
-                  {totalItems}
-                </span>
-              </button>
-            </Link>
-
+          <div className="flex items-center gap-0.5 sm:gap-3 ">
             {/* Search */}
             <div className="relative">
               <button
@@ -372,13 +358,17 @@ export default function Navbar() {
                   setSearchOpen((s) => !s);
                   setTimeout(() => searchInputRef.current?.focus?.(), 50);
                 }}
+                
                 className="p-2 rounded-lg hover:bg-white/10 transition"
               >
                 <Search size={18} className="text-white" />
               </button>
 
               {searchOpen && (
-                <div ref={searchRef} className="fixed top-16 left-0 right-0 w-full bg-[#0b0b0b] border border-white/10 rounded-none shadow-2xl z-[1000] lg:absolute lg:top-auto lg:mt-2 lg:left-auto lg:right-0 lg:w-[360px] lg:max-w-[90vw] lg:rounded-lg lg:shadow-2xl lg:z-50">
+                <div
+                  ref={searchRef}
+                  className="fixed top-16 left-0 right-0 w-full bg-[#0b0b0b] border border-white/10 rounded-none shadow-2xl z-[1000] lg:absolute lg:top-auto lg:mt-2 lg:left-auto lg:right-0 lg:w-[360px] lg:max-w-[90vw] lg:rounded-lg lg:shadow-2xl lg:z-50"
+                >
                   <div className="p-3">
                     <input
                       ref={searchInputRef}
@@ -391,7 +381,9 @@ export default function Navbar() {
 
                   <div className="max-h-64 overflow-y-auto">
                     {debouncedSearch && debouncedSearch.length < 2 ? (
-                      <div className="p-3 text-gray-400">Type at least 2 characters</div>
+                      <div className="p-3 text-gray-400">
+                        Type at least 2 characters
+                      </div>
                     ) : searchLoading ? (
                       <div className="p-3 text-gray-400">Searching...</div>
                     ) : !searchResults || searchResults.length === 0 ? (
@@ -409,13 +401,20 @@ export default function Navbar() {
                             className="flex items-center gap-3 p-2 hover:bg-white/5 rounded cursor-pointer"
                           >
                             <img
-                              src={p.media?.[0]?.image_url || "/img/placeholder.png"}
+                              src={
+                                p.media?.[0]?.image_url ||
+                                "/img/placeholder.png"
+                              }
                               alt={p.name}
                               className="w-12 h-12 object-cover rounded"
                             />
                             <div className="flex-1">
-                              <div className="text-sm text-white font-semibold line-clamp-1">{p.name}</div>
-                              <div className="text-xs text-gray-400">₹ {p.price}</div>
+                              <div className="text-sm text-white font-semibold line-clamp-1">
+                                {p.name}
+                              </div>
+                              <div className="text-xs text-gray-400">
+                                ₹ {p.price}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -425,6 +424,15 @@ export default function Navbar() {
                 </div>
               )}
             </div>
+
+            <Link to="/cart">
+              <button className="relative p-2 rounded-lg hover:bg-white/10 transition">
+                <ShoppingCart size={18} className="text-white" />
+                <span className="absolute -top-1 -right-1 min-w-[15px] h-[15px] rounded-full bg-brand-red flex items-center justify-center text-[9px] font-bold text-white px-1">
+                  {totalItems}
+                </span>
+              </button>
+            </Link>
 
             {/* Profile */}
             <button

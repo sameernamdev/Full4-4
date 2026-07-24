@@ -32,70 +32,12 @@ import { useCategories } from "../hooks/useCatgories";
 import { useBrands } from "../hooks/useBrands";
 import { useReviews } from "../hooks/useReviews";
 
-
 const imageFallback = (e) => {
   e.currentTarget.onerror = null;
   e.currentTarget.src = fallbackImage;
 };
 
-// adding categories in our services
-export const dummycategories = [
-  {
-    title: "Suspension",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStcm386cvgxXlldNhD3TtW0BNdMxFHSf_hkaJDGk7Gf3uOlKqNviduEXw&s=10",
-  },
-  {
-    title: "Suspension",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStcm386cvgxXlldNhD3TtW0BNdMxFHSf_hkaJDGk7Gf3uOlKqNviduEXw&s=10",
-  },
-  {
-    title: "Bull Bars",
-    image:
-      "https://res.cloudinary.com/total-dealer/image/upload/w_1920,f_auto,q_75/v1/production/tciu1cx03irp5m2pdjkoy89pojfl",
-  },
-  {
-    title: "Camping & Touring",
-    image:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvgYq3iNRpq2Xs7_9AlENgYArqdE6HLW8gPiEoq7JoDMnwtyNlwlAaoQQ&s=10",
-  },
-  {
-    title: "Winch & Recovery",
-    image:
-      "https://7bfd457553.clvaw-cdnwnd.com/f8dbf3bf6af4cfad9b2cdf3375dc50e4/200000438-31d8331d85/HNTR-001%20%2866%20von%2070%29.jpeg?ph=7bfd457553",
-  },
-  {
-    title: "Vehicle Lighting",
-    image:
-      "https://apollooffroad.com/cdn/shop/files/50-gravity-titan-led-light-bar-8-light-apollo-off-road-34411.jpg?v=1745164209&width=2000",
-  },
-  {
-    title: "Vehicle ghting",
-    image:
-      "https://apollooffroad.com/cdn/shop/files/50-gravity-titan-led-light-bar-8-light-apollo-off-road-34411.jpg?v=1745164209&width=2000",
-  },
-  {
-    title: "Vehicle Lightg",
-    image:
-      "https://apollooffroad.com/cdn/shop/files/50-gravity-titan-led-light-bar-8-light-apollo-off-road-34411.jpg?v=1745164209&width=2000",
-  },
-  {
-    title: "Vehicle Ligting",
-    image:
-      "https://apollooffroad.com/cdn/shop/files/50-gravity-titan-led-light-bar-8-light-apollo-off-road-34411.jpg?v=1745164209&width=2000",
-  },
-  {
-    title: "Vehicle Lighting",
-    image:
-      "https://apollooffroad.com/cdn/shop/files/50-gravity-titan-led-light-bar-8-light-apollo-off-road-34411.jpg?v=1745164209&width=2000",
-  },
-  {
-    title: "Vehicle Lightng",
-    image:
-      "https://apollooffroad.com/cdn/shop/files/50-gravity-titan-led-light-bar-8-light-apollo-off-road-34411.jpg?v=1745164209&width=2000",
-  },
-];
+
 // ---------- Helper functions ----------
 // 1. Generate row sizes: 2, 3, 2, 3, ...
 const getRowSizes = (total) => {
@@ -128,11 +70,7 @@ const servicePhotos = [
   "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=720&q=80",
 ];
 
-const avatarPhotos = [
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&q=80",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&q=80",
-  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=160&q=80",
-];
+
 
 const partsShowcase = [
   "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=760&q=80",
@@ -160,17 +98,16 @@ const features = [
 ];
 
 export default function HomePage() {
-  
   useReveal();
   const [statsVisible, setStatsVisible] = useState(false);
   const statsRef = useRef(null);
   // const { products, loading, error } = useProducts({ is_front: true });
   const { products, loading, error } = useProducts({ is_featured: true });
   // const { products, loading, error } = useProducts();
-  const { brands } = useBrands();
+  const { brands, loading: brandloading } = useBrands();
   const { categories, loading: categoriesLoading } = useCategories({
     is_front: true,
-    limit: 5
+    limit: 5,
   });
   // taking load state for categories
   const [load, setLoad] = useState(false);
@@ -229,24 +166,24 @@ export default function HomePage() {
 
   return (
     <div className="bg-brand-off">
-     <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-[85vh] md:min-h-screen">
-  {/* Background */}
-  <div className="absolute inset-0">
-    <picture>
-      {/* Mobile */}
-      <source media="(max-width:1024px)" srcSet="/updatedmobimg.png" />
+       <section className="dark-panel relative overflow-hidden bg-[#ece7db] min-h-[85vh] md:min-h-screen">
+        {/* Background */}
+        <div className="absolute inset-0">
+          <picture>
+            {/* Mobile */}
+            <source media="(max-width:1024px)" srcSet="/updatedmobimg.png" />
 
-      {/* Desktop */}
-      <motion.img
-        src="/updated deskimg.png"
-        alt="Drive Ranger Hero"
-        fetchPriority="high"
-        decoding="async"
-        onError={imageFallback}
-        initial={{ scale: 1.05 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
-        className="
+            {/* Desktop */}
+            <motion.img
+              src="/updated deskimg.png"
+              alt="Drive Ranger Hero"
+              fetchPriority="high"
+              decoding="async"
+              onError={imageFallback}
+              initial={{ scale: 1.05 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+              className="
           absolute inset-0
           w-full h-full
           object-cover
@@ -257,12 +194,12 @@ export default function HomePage() {
           contrast-105
           saturate-110
         "
-      />
-    </picture>
+            />
+          </picture>
 
-    {/* Better overlay for mobile */}
-    <div
-      className="
+          {/* Better overlay for mobile */}
+          <div
+            className="
         absolute inset-0
 
         bg-gradient-to-b
@@ -275,12 +212,12 @@ export default function HomePage() {
         lg:via-black/10
         lg:to-black/15
       "
-    />
-  </div>
-<div className="absolute inset-0 bg-black/10"></div>
-  {/* Content */}
-  <div
-    className="
+          />
+        </div>
+        <div className="absolute inset-0 bg-black/10"></div>
+        {/* Content */}
+        <div
+          className="
       relative z-20
       max-w-7xl
       mx-auto
@@ -306,45 +243,43 @@ export default function HomePage() {
       sm:pb-12
       lg:pb-10
     "
-  >
-    {/* Badge */}
-    <motion.div
-      data-anime-hero
-      className="inline-flex w-fit items-center gap-2 border border-brand-red/45 px-3 sm:px-10 py-2 bg-black/30 backdrop-blur-sm mb-4 mt-4 sm:mt-6 "
-      initial={{ opacity: 0, x: -42 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.7 }}
-    >
-      <span className="blink w-2 h-2 bg-brand-red rounded-full" />
+        >
+          {/* Badge */}
+          <motion.div
+            data-anime-hero
+            className="inline-flex w-fit items-center gap-2 border border-brand-red/45 px-3 sm:px-10 py-2 bg-black/30 backdrop-blur-sm mb-4 mt-4 sm:mt-6 "
+            initial={{ opacity: 0, x: -42 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <span className="blink w-2 h-2 bg-brand-red rounded-full" />
 
-      <span className="font-label font-semibold text-[10px]  sm:text-[11px] tracking-[0.3em] uppercase text-white">
-        New Gear Arrived
-      </span>
-    </motion.div>
+            <span className="font-label font-semibold text-[10px]  sm:text-[11px] tracking-[0.3em] uppercase text-white">
+              New Gear Arrived
+            </span>
+          </motion.div>
 
-    {/* Heading */}
-    <motion.h1
-      data-anime-hero
-      className="mt-4 sm:mt-0 font-display leading-[0.88] drop"
-      style={{
-        fontSize: "clamp(52px,11vw,145px)",
-      }}
-      initial={{ opacity: 0, y: 55 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.85, delay: 0.12 }}
-    >
-      <span className="block text-white">DRIVE</span>
+          {/* Heading */}
+          <motion.h1
+            data-anime-hero
+            className="mt-4 sm:mt-0 font-display leading-[0.88] drop"
+            style={{
+              fontSize: "clamp(52px,11vw,145px)",
+            }}
+            initial={{ opacity: 0, y: 55 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.85, delay: 0.12 }}
+          >
+            <span className="block text-white">DRIVE</span>
 
-      <span className="block text-brand-red">RANGER.</span>
-    </motion.h1>
+            <span className="block text-brand-red">RANGER.</span>
+          </motion.h1>
 
-    {/* Description */}
-    <div className="relative inline-block rounded-xl mt-3">
-     
-
-      <motion.p
-        data-anime-hero
-        className="
+          {/* Description */}
+          <div className="relative inline-block rounded-xl mt-3">
+            <motion.p
+              data-anime-hero
+              className="
           relative
 
           font-body
@@ -364,69 +299,70 @@ export default function HomePage() {
 
           drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]
         "
-        initial={{ opacity: 0, y: 34 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.72, delay: 0.26 }}
-      >
-        Car Accessories and Camping <br /> Gears from <br /> 20+ global brands.
-      </motion.p>
-    </div>
-
-    {/* Buttons (Hidden on Mobile) */}
-    <motion.div
-      data-anime-hero
-      className="hidden md:flex flex-col sm:flex-row items-start gap-3 sm:gap-5 mt-5 mb-6 sm:mb-10"
-      initial={{ opacity: 0, y: 34 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.72, delay: 0.38 }}
-    >
-      <motion.button
-        onClick={() => navigate("products")}
-        className="btn-clip btn-shine bg-brand-red text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.18em] uppercase px-6 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center gap-3 min-w-[160px] hover:bg-brand-red2 transition-colors"
-        whileHover={{ scale: 1.05, x: 5 }}
-        whileTap={{ scale: 0.96 }}
-      >
-        Products <ArrowRight size={16} />
-      </motion.button>
-
-      <motion.button
-        onClick={() => navigate("about")}
-        className="btn-clip border border-white/40 bg-white/10 backdrop-blur-sm text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.15em] uppercase px-6 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center min-w-[160px] hover:border-brand-red hover:text-brand-red transition-all"
-        whileHover={{ scale: 1.05, y: -3 }}
-        whileTap={{ scale: 0.96 }}
-      >
-        Our Story
-      </motion.button>
-    </motion.div>
-
-    {/* Stats */}
-    <div className="mt-32 md:mt-0 pt-3 md:pt-8 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-10">
-      {[
-        ["15K+", "Parts in Stock"],
-        ["20+", "Global Brands"],
-        ["9Yr", "Experience"],
-      ].map(([val, lbl], i) => (
-        <motion.div
-          key={lbl}
-          className={`text-center sm:text-left ${
-            i > 0 ? "sm:pl-10 sm:border-l sm:border-white/30" : ""
-          }`}
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, delay: 0.55 + i * 0.08 }}
-        >
-          <div className="font-display text-2xl sm:text-3xl lg:text-4xl text-white leading-none">
-            {val}
+              initial={{ opacity: 0, y: 34 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.72, delay: 0.26 }}
+            >
+              Car Accessories and Camping <br /> Gears from <br /> 20+ global
+              brands.
+            </motion.p>
           </div>
 
-          <div className="font-label font-semibold text-[11px] sm:text-[11px] tracking-[0.22em] uppercase text-white mt-2">
-            {lbl}
+          {/* Buttons (Hidden on Mobile) */}
+          <motion.div
+            data-anime-hero
+            className="hidden md:flex flex-col sm:flex-row items-start gap-3 sm:gap-5 mt-5 mb-6 sm:mb-10"
+            initial={{ opacity: 0, y: 34 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.72, delay: 0.38 }}
+          >
+            <motion.button
+              onClick={() => navigate("products")}
+              className="btn-clip btn-shine bg-brand-red text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.18em] uppercase px-6 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center gap-3 min-w-[160px] hover:bg-brand-red2 transition-colors"
+              whileHover={{ scale: 1.05, x: 5 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              Products <ArrowRight size={16} />
+            </motion.button>
+
+            <motion.button
+              onClick={() => navigate("about")}
+              className="btn-clip border border-white/40 bg-white/10 backdrop-blur-sm text-white font-label font-bold text-[12px] sm:text-[14px] tracking-[0.15em] uppercase px-6 sm:px-10 py-3 sm:py-4 inline-flex items-center justify-center min-w-[160px] hover:border-brand-red hover:text-brand-red transition-all"
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              Our Story
+            </motion.button>
+          </motion.div>
+
+          {/* Stats */}
+          <div className="mt-32 md:mt-0 pt-3 md:pt-8 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:gap-10">
+            {[
+              ["15K+", "Parts in Stock"],
+              ["20+", "Global Brands"],
+              ["9Yr", "Experience"],
+            ].map(([val, lbl], i) => (
+              <motion.div
+                key={lbl}
+                className={`text-center sm:text-left ${
+                  i > 0 ? "sm:pl-10 sm:border-l sm:border-white/30" : ""
+                }`}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.55 + i * 0.08 }}
+              >
+                <div className="font-display text-2xl sm:text-3xl lg:text-4xl text-white leading-none">
+                  {val}
+                </div>
+
+                <div className="font-label font-semibold text-[11px] sm:text-[11px] tracking-[0.22em] uppercase text-white mt-2">
+                  {lbl}
+                </div>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
-      ))}
-    </div>
-  </div>
-</section>
+        </div>
+      </section>
 
       <div className="bg-brand-red overflow-hidden py-4">
         <div className="marquee-track">
@@ -436,7 +372,8 @@ export default function HomePage() {
               className="font-display text-[18px] tracking-[0.12em] text-white px-10 whitespace-nowrap flex items-center gap-4 "
             >
               {item}
-             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span className="w-1.5 h-1.5 bg-white/40 rounded-full inline-block " />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{" "}
+              <span className="w-1.5 h-1.5 bg-white/40 rounded-full inline-block " />
             </span>
           ))}
         </div>
@@ -467,8 +404,6 @@ export default function HomePage() {
                 takes you.
               </p>
             </div>
-
-        
           </div>
           {categoriesLoading ? (
             <div className="flex items-center justify-center py-12">
@@ -531,16 +466,16 @@ export default function HomePage() {
                   })}
             </div>
           )}
-             <div className="flex lg:justify-end mt-12 justify-center  sm:mt-14">
-  <motion.button
-    onClick={() => navigate("/products")}
-    className="btn-clip bg-brand-red text-white px-12 py-6 font-label font-bold tracking-[0.18em] uppercase"
-    whileHover={{ scale: 1.06, y: -3 }}
-    whileTap={{ scale: 0.96 }}
-  >
-    View All Products
-  </motion.button>
-</div>
+          <div className="flex lg:justify-end mt-12 justify-center  sm:mt-14">
+            <motion.button
+              onClick={() => navigate("/products")}
+              className="btn-clip bg-brand-red text-white px-12 py-6 font-label font-bold tracking-[0.18em] uppercase"
+              whileHover={{ scale: 1.06, y: -3 }}
+              whileTap={{ scale: 0.96 }}
+            >
+              View All Products
+            </motion.button>
+          </div>
         </div>
       </section>
 
@@ -837,12 +772,12 @@ export default function HomePage() {
                 </div>
               ) : (
                 <div
-  className={`flex gap-4 ${
-    featuredReviews.length > 3
-      ? "w-max px-5 pr-10"
-      : "w-full justify-start md:justify-center px-5"
-  }`}
->
+                  className={`flex gap-4 ${
+                    featuredReviews.length > 3
+                      ? "w-max px-5 pr-10"
+                      : "w-full justify-start md:justify-center px-5"
+                  }`}
+                >
                   {/* {featuredReviews.map((review, i) => ( */}
                   {[...featuredReviews]
                     .sort((a, b) => b.rating - a.rating)
@@ -924,12 +859,14 @@ export default function HomePage() {
 
             {/* Right Fade */}
             {featuredReviews.length > 3 && (
-  <div className="pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-[#ece7db] to-transparent"></div>
-)}
+              <div className="pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-[#ece7db] to-transparent"></div>
+            )}
           </div>
         </div>
       </section>
 
+      
+     
       <section className="dark-panel bg-[#080808] py-28">
         <div className="max-w-7xl mx-auto sm:px-4">
           <div className="reveal text-center mb-16">
@@ -950,21 +887,34 @@ export default function HomePage() {
             </h2>
           </div>
           <div className="overflow-hidden mb-8 reveal">
-            <div className="brands-track">
-              {[...brands, ...brands].map((b) => (
-                <div
-                  key={b.id}
-                  // className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl border border-white/10  p-4 hover:border-brand-red  transition-all duration-300 "
-                  className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl  p-4 hover:border-brand-red  transition-all duration-300 "
-                >
-                  <img
-                    src={b.logo_url}
-                    alt={b.name}
-                    className="max-h- w-auto object-contain  hover:grayscale-0 transition duration-300 text-black"
-                  />
-                </div>
-              ))}
-            </div>
+            {brandloading ? (
+              <div className="flex justify-around sm:justify-between items-center gap-10">
+              <div className="w-8 h-8 border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-8 h-8 hidden sm:block border-4 text-center border-brand-red border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : (
+              <div className="brands-track">
+                {[...brands, ...brands].map((b) => (
+                  <div
+                    key={b.id}
+                    // className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl border border-white/10  p-4 hover:border-brand-red  transition-all duration-300 "
+                    className="flex-shrink-0 mx-4 flex h-24 w-44 items-center justify-center rounded-2xl  p-4 hover:border-brand-red  transition-all duration-300 "
+                  >
+                    <img
+                      src={b.logo_url}
+                      alt={b.name}
+                      className="max-h- w-auto object-contain  hover:grayscale-0 transition duration-300 text-black"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 reveal">
             {BRAND_PHOTOS.map((photo, i) => (
