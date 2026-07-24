@@ -72,11 +72,17 @@ const servicePhotos = [
 
 
 
+// const partsShowcase = [
+//   "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=760&q=80",
+//   "https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=760&q=80",
+//   "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=760&q=80",
+//   "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=760&q=80",
+// ];
 const partsShowcase = [
-  "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=760&q=80",
-  "https://images.unsplash.com/photo-1625047509168-a7026f36de04?w=760&q=80",
-  "https://images.unsplash.com/photo-1607860108855-64acf2078ed9?w=760&q=80",
-  "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=760&q=80",
+  "/w1.jpg",
+  "/w2.jpg",
+  "/w3.jpg",
+  "/w4.jpg",
 ];
 
 const features = [
@@ -383,7 +389,7 @@ export default function HomePage() {
         {/* <div className="absolute inset-0 bg-[#0c2237]/88" /> */}
         <div className="absolute inset-0 bg-white " />
 
-        <div className="relative max-w-7xl mx-auto px-6">
+        <div className="relative max-w-7xl mx-auto px-6 ">
           {/* Heading */}
           <div className="grid lg:grid-cols-[1fr_auto] gap-10 items-end mb-16">
             <div className="reveal">
@@ -608,7 +614,8 @@ export default function HomePage() {
                 loading="lazy"
                 decoding="async"
                 onError={imageFallback}
-                className="w-full h-full object-cover grayscale contrast-125"
+                // className="w-full h-full object-cover grayscale contrast-125"
+                className="w-full h-full object-cover contrast-125"
               />
             </motion.div>
             <motion.div
@@ -916,12 +923,13 @@ export default function HomePage() {
               </div>
             )}
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 reveal">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 h-[150px] reveal">
             {BRAND_PHOTOS.map((photo, i) => (
               <div
                 key={i}
-                className="overflow-hidden"
-                style={{ aspectRatio: "16/7" }}
+                className="overflow-hidden "
+                // style={{ aspectRatio: "16/7" }}
+
               >
                 <img
                   src={photo}

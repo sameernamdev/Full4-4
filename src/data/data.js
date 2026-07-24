@@ -75,9 +75,15 @@ export const BRAND_NAMES = [
   "NGK","OZ RACING","DELPHI","BORLA","SEIBON","DENSO","VALEO","TRW",
 ];
 
+// export const BRAND_PHOTOS = [
+//   "https://images.unsplash.com/photo-1617654112368-307921291f42?w=400&q=75",
+//   "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&q=75",
+//   "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400&q=75",
+//   "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=400&q=75",
+// ];
 export const BRAND_PHOTOS = [
-  "https://images.unsplash.com/photo-1617654112368-307921291f42?w=400&q=75",
-  "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&q=75",
-  "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400&q=75",
-  "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=400&q=75",
+  "/b1.jpg",
+  "/b2.jpg",
+  "/b4.jpg",
+  "b3.jpg",
 ];

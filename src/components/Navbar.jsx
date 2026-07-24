@@ -30,7 +30,6 @@ import { useDebounce } from "../hooks/useDebounce";
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  
 
   // Mobile a
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
@@ -163,7 +162,6 @@ export default function Navbar() {
     }, 200);
   };
 
-  
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 400);
@@ -179,30 +177,30 @@ export default function Navbar() {
 
   const searchButtonRef = useRef(null);
   const closeSearch = () => {
-  setSearchOpen(false);
-  setSearchQuery("");
-  searchInputRef.current?.blur();
-};
+    setSearchOpen(false);
+    setSearchQuery("");
+    searchInputRef.current?.blur();
+  };
 
   // Close search when clicking/tapping outside
- useEffect(() => {
-  const handleOutside = (e) => {
-    if (
-      searchRef.current?.contains(e.target) ||
-      searchButtonRef.current?.contains(e.target)
-    ) {
-      return;
-    }
+  useEffect(() => {
+    const handleOutside = (e) => {
+      if (
+        searchRef.current?.contains(e.target) ||
+        searchButtonRef.current?.contains(e.target)
+      ) {
+        return;
+      }
 
-    closeSearch();
-  };
+      closeSearch();
+    };
 
-  document.addEventListener("pointerdown", handleOutside);
+    document.addEventListener("pointerdown", handleOutside);
 
-  return () => {
-    document.removeEventListener("pointerdown", handleOutside);
-  };
-}, []);
+    return () => {
+      document.removeEventListener("pointerdown", handleOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -365,16 +363,22 @@ export default function Navbar() {
             {/* Search */}
             <div className="relative">
               <button
-              ref={searchButtonRef}
+                ref={searchButtonRef}
                 onClick={() => {
-                  // if(searchOpen === true) return setSearchOpen(false)
-                  setSearchOpen((s) => !s);
-                  setTimeout(() => searchInputRef.current?.focus?.(), 50);
+                  if (searchOpen) {
+                    closeSearch();
+                  } else {
+                    setSearchOpen(true);
+                    setTimeout(() => searchInputRef.current?.focus(), 100);
+                  }
                 }}
-                
                 className="p-2 rounded-lg hover:bg-white/10 transition"
               >
-               {searchOpen ? <XCircle size={18} className="text-white"/> : <Search size={18} className="text-white" />} 
+                {searchOpen ? (
+                  <XCircle size={18} className="text-white" />
+                ) : (
+                  <Search size={18} className="text-white" />
+                )}
               </button>
 
               {searchOpen && (
